@@ -21,7 +21,7 @@ function TaskItemCheckbox({
                 >
                     <a className="pl-1">{taskItemContent}</a>
                 </Checkbox>
-                <div className="align-top text-sm text-default-300 font-mono text-nowrap">
+                <div className="align-top text-sm text-default-500 pt-1 font-mono text-nowrap">
                     {item.dateTime?.due ? item.dateTime.due.format("h:m, A") : ""}
                 </div>
             </div>
