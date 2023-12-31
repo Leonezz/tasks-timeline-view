@@ -25,13 +25,18 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "latest",
-    "moment": "latest",
-    "tailwindcss": "latest",
+    "@nextui-org/react": "latest",
     "framer-motion": "^10.16.16",
-    "@nextui-org/react": "latest"
+    "moment": "latest",
+    "react": "latest",
+    "tailwindcss": "latest"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "latest",
+    "@babel/plugin-proposal-private-property-in-object": "latest",
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "@nextui-org/react": "latest",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -41,8 +46,7 @@
     "@types/react-dom": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
-    "@babel/eslint-parser": "latest",
-    "@babel/plugin-proposal-private-property-in-object": "latest",
+    "commitlint": "latest",
     "cross-env": "^7.0.2",
     "eslint": "latest",
     "eslint-config-prettier": "latest",
@@ -52,22 +56,21 @@
     "eslint-plugin-prettier": "latest",
     "eslint-plugin-promise": "latest",
     "eslint-plugin-react": "latest",
+    "framer-motion": "^10.16.16",
     "gh-pages": "^2.2.0",
+    "husky": "^8.0.3",
     "microbundle-crl": "^0.13.10",
+    "moment": "latest",
     "npm-run-all": "^4.1.5",
     "prettier": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-scripts": "latest",
-		"tslib": "latest",
-		"typescript": "latest",
-    "moment": "latest",
     "tailwindcss": "latest",
-    "framer-motion": "^10.16.16",
-    "@nextui-org/react": "latest"
+    "tslib": "latest",
+    "typescript": "latest"
   },
   "files": [
     "dist"
-  ],
-  "dependencies": {}
+  ]
 }
