@@ -1,10 +1,11 @@
 import React from 'react'
 
-import { ExampleComponent } from 'tasks-timeline-view'
+import { TimelineView } from 'tasks-timeline-view'
 import 'tasks-timeline-view/dist/index.css'
+import { TodoList } from './taskList'
 
 const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+  return <TimelineView taskList={TodoList} />
 }
 
 export default App

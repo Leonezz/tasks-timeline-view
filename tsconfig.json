@@ -2,7 +2,12 @@
   "compilerOptions": {
     "outDir": "dist",
     "module": "esnext",
-    "lib": ["dom", "esnext"],
+    "lib": [
+      "DOM",
+      "ES6",
+      "esnext",
+    ],
+    "target": "ES6",
     "moduleResolution": "node",
     "jsx": "react",
     "sourceMap": true,
@@ -12,11 +17,17 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "suppressImplicitAnyIndexErrors": true,
+    // "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "example"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "example"
+  ]
 }

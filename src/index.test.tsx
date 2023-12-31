@@ -1,7 +1,7 @@
-import { ExampleComponent } from '.'
+import { TimelineView } from './components/TimelineView'
 
-describe('ExampleComponent', () => {
+describe('TimelineView', () => {
   it('is truthy', () => {
-    expect(ExampleComponent).toBeTruthy()
+    expect(TimelineView).toBeTruthy()
   })
 })
