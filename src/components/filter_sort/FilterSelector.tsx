@@ -47,12 +47,13 @@ function FilterSelector({
                 <CheckboxGroup
                     className="gap-1"
                     label={
-                        <div className="flex items-center justify-between">
-                            <p>{`${selectedOptionsCnt} ${label} selected.`}</p>
+                        <div className="flex items-center gap-2 justify-between">
+                            <p>{`${selectedOptionsCnt} ${label} selected`}</p>
                             <Button
                                 onClick={() => setSelectedOptions([])}
                                 size="sm"
                                 isDisabled={selectedOptionsCnt === 0}
+                                className="p-0"
                             >
                                 Clear All
                             </Button>
