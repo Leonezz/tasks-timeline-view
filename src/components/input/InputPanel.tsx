@@ -33,9 +33,9 @@ function InputPanel({
             labelPlacement="outside"
             size="sm"
             classNames={{
-                base: "p-0 h-fit",
+                base: "px-2 h-fit",
                 label: "w-full pl-1 font-mono text-sm",
-                input: "p-0 w-full absolute",
+                input: "p-2 w-full absolute",
                 innerWrapper: "justify-end p-0 border-none",
                 inputWrapper: "p-0 h-fit"
             }}
