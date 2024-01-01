@@ -1,34 +1,35 @@
 /**
  * @deprecated
  */
-import TaskItemInfoBadge from "./TaskItemInfoBadge";
-import { iconMap } from "../asserts/icons";
-import { getFileTitle } from '../../util/string';
-import React from "react";
+import TaskItemInfoBadge from './TaskItemInfoBadge'
+import { iconMap } from '../asserts/icons'
+import { getFileTitle } from '../../util/string'
+import React from 'react'
 
 function FileIcon() {
-    const icon = iconMap.fileIcon;
-    icon.props["width"] = 14
-    icon.props["height"] = 14
-    return icon;
+    const icon = iconMap.fileIcon
+    icon.props['width'] = 14
+    icon.props['height'] = 14
+    return icon
 }
 
-function FileBadge(
-    {
-        filePath,
-        subPath,
-    }: {
-        filePath: string,
-        subPath?: string
-    }
-) {
+function FileBadge({
+    filePath,
+    subPath
+}: {
+    filePath: string
+    subPath?: string
+}) {
     return (
-        <TaskItemInfoBadge icon={<FileIcon></FileIcon>}
-            label={getFileTitle(filePath) + ((subPath && subPath !== "") ? " > " + subPath : "")}
+        <TaskItemInfoBadge
+            icon={<FileIcon></FileIcon>}
+            label={
+                getFileTitle(filePath) +
+                (subPath && subPath !== '' ? ' > ' + subPath : '')
+            }
             ariaLabel={filePath}
-        >
-        </TaskItemInfoBadge>
+        ></TaskItemInfoBadge>
     )
 }
 
-export default FileBadge;
+export default FileBadge

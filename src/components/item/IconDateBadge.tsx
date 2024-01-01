@@ -1,9 +1,8 @@
-import React from "react";
-import { MouseEventHandler } from "react";
-import moment from "moment";
-import IconTextBadge from "./IconTextBadge";
+import React from 'react'
+import { MouseEventHandler } from 'react'
+import moment from 'moment'
+import IconTextBadge from './IconTextBadge'
 import { innerDateFormat } from '../../util/defs'
-
 
 function IconDateBadge({
     icon,
@@ -13,24 +12,23 @@ function IconDateBadge({
     ariaLabelSuffix,
     date,
     onClick,
-    color: iconColor,
+    color: iconColor
 }: {
-    icon: JSX.Element,
-    labelPrefix?: string,
-    labelSuffix?: string,
-    ariaLabelPrefix?: string,
-    ariaLabelSuffix?: string,
-    date: moment.Moment,
-    onClick?: MouseEventHandler,
-    color?: string,
+    icon: JSX.Element
+    labelPrefix?: string
+    labelSuffix?: string
+    ariaLabelPrefix?: string
+    ariaLabelSuffix?: string
+    date: moment.Moment
+    onClick?: MouseEventHandler
+    color?: string
 }) {
+    labelPrefix = labelPrefix || ''
+    labelSuffix = labelSuffix || ''
+    ariaLabelPrefix = ariaLabelPrefix || ''
+    ariaLabelSuffix = ariaLabelPrefix || ''
 
-    labelPrefix = labelPrefix || "";
-    labelSuffix = labelSuffix || "";
-    ariaLabelPrefix = ariaLabelPrefix || "";
-    ariaLabelSuffix = ariaLabelPrefix || "";
-
-    const label = date.format(innerDateFormat);
+    const label = date.format(innerDateFormat)
 
     return (
         <IconTextBadge
@@ -46,4 +44,4 @@ function IconDateBadge({
     )
 }
 
-export default IconDateBadge;
+export default IconDateBadge

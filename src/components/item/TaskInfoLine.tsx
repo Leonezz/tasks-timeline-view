@@ -1,107 +1,126 @@
-import IconOnlyBadge from "./IconOnlyBadge";
-import TagBadge from "./TagBadge";
-import { Fragment, MouseEventHandler, useMemo } from "react";
-import { getFileTitle } from '../../util/string';
-import { iconMap } from "../asserts/icons";
-import IconDateBadge from "./IconDateBadge";
-import IconTextBadge from "./IconTextBadge";
-import { TaskItem } from "../../tasks/TaskItem";
-import React from "react";
+import IconOnlyBadge from './IconOnlyBadge'
+import TagBadge from './TagBadge'
+import { Fragment, MouseEventHandler, useMemo } from 'react'
+import { getFileTitle } from '../../util/string'
+import { iconMap } from '../asserts/icons'
+import IconDateBadge from './IconDateBadge'
+import IconTextBadge from './IconTextBadge'
+import { TaskItem } from '../../tasks/TaskItem'
+import React from 'react'
 
 function TaskInfoLine({
     item,
-    onModifyTask,
+    onModifyTask
 }: {
     item: TaskItem
-    onModifyTask?: MouseEventHandler,
+    onModifyTask?: MouseEventHandler
 }) {
-
-    const dates = item.dateTime;
+    const dates = item.dateTime
 
     const buildBadge = (
         date: moment.Moment | undefined,
         ariaLabelPrefix: string,
         icon: JSX.Element,
-        color?: string,
+        color?: string
     ) => {
-        if (!date) return <Fragment />;
-        return <IconDateBadge key={ariaLabelPrefix}
-            ariaLabelPrefix={ariaLabelPrefix}
-            date={date}
-            icon={icon}
-            color={color || "default"}
-        />;
-    };
+        if (!date) return <Fragment />
+        return (
+            <IconDateBadge
+                key={ariaLabelPrefix}
+                ariaLabelPrefix={ariaLabelPrefix}
+                date={date}
+                icon={icon}
+                color={color || 'default'}
+            />
+        )
+    }
 
     const createDateBadge = useMemo(
-        () => buildBadge(dates?.created, "create at ", iconMap.taskIcon),
+        () => buildBadge(dates?.created, 'create at ', iconMap.taskIcon),
         [dates?.created]
-    );
+    )
     const startDateBadge = useMemo(
-        () => buildBadge(dates?.start, "start at ", iconMap.startIcon),
+        () => buildBadge(dates?.start, 'start at ', iconMap.startIcon),
         [dates?.start]
-    );
+    )
     const scheduledDateBadge = useMemo(
-        () => buildBadge(dates?.scheduled, "scheduled to ", iconMap.scheduledIcon),
+        () =>
+            buildBadge(
+                dates?.scheduled,
+                'scheduled to ',
+                iconMap.scheduledIcon
+            ),
         [dates?.scheduled]
-    );
+    )
     const dueDateBadge = useMemo(
-        () => buildBadge(dates?.due, "due at ", iconMap.dueIcon),
+        () => buildBadge(dates?.due, 'due at ', iconMap.dueIcon),
         [dates?.due]
-    );
+    )
     const completeDateBadge = useMemo(
-        () => buildBadge(dates?.completion, "complete at ", iconMap.doneIcon, "text-success"),
+        () =>
+            buildBadge(
+                dates?.completion,
+                'complete at ',
+                iconMap.doneIcon,
+                'text-success'
+            ),
         [dates?.completion]
-    );
+    )
 
     return (
-        <div className="flex flex-col flex-wrap gap-1">
-            <div key="datetime" className="flex flex-wrap gap-1">
-                {onModifyTask &&
-                    <IconOnlyBadge key={1} onclick={onModifyTask} />}
+        <div className='flex flex-col flex-wrap gap-1'>
+            <div key='datetime' className='flex flex-wrap gap-1'>
+                {onModifyTask && (
+                    <IconOnlyBadge key={1} onclick={onModifyTask} />
+                )}
                 {createDateBadge}
                 {startDateBadge}
                 {scheduledDateBadge}
                 {dueDateBadge}
                 {completeDateBadge}
-                {item.recurrence &&
-                    <IconTextBadge key={7}
-                        ariaLabelPrefix="recurrent: "
+                {item.recurrence && (
+                    <IconTextBadge
+                        key={7}
+                        ariaLabelPrefix='recurrent: '
                         ariaLabel={item.recurrence}
                         label={item.recurrence}
                         icon={iconMap.repeatIcon}
-                    />}
-                {item.priority &&
-                    <IconTextBadge key={8}
-                        ariaLabelPrefix="priority: "
+                    />
+                )}
+                {item.priority && (
+                    <IconTextBadge
+                        key={8}
+                        ariaLabelPrefix='priority: '
                         ariaLabel={item.priority.toString()}
-                        label={item.priority.toString() + " Priority"}
+                        label={item.priority.toString() + ' Priority'}
                         icon={iconMap.priorityIcon}
-                    />}
-                <IconTextBadge key={9}
+                    />
+                )}
+                <IconTextBadge
+                    key={9}
                     ariaLabel={item.position.visual}
                     label={getFileTitle(item.position.visual)}
                     icon={iconMap.fileIcon}
                 />
             </div>
-            <div key="tags" className="flex flex-wrap gap-1">
-                {Array.from(item.tags).map(
-                    (t, i) => {
-                        return (
-                            // <TaskItemEventHandlersContext.Consumer key={i}>
-                            // {({ handleTagClick }) => (
-                            <TagBadge key={i}
-                                tag={t}
-                                tagPalette={{} as Map<string, string>}
+            <div key='tags' className='flex flex-wrap gap-1'>
+                {Array.from(item.tags).map((t, i) => {
+                    return (
+                        // <TaskItemEventHandlersContext.Consumer key={i}>
+                        // {({ handleTagClick }) => (
+                        <TagBadge
+                            key={i}
+                            tag={t}
+                            tagPalette={{} as Map<string, string>}
                             // onTagClick={handleTagClick}
-                            />
-                            // )}
-                            // </TaskItemEventHandlersContext.Consumer>
-                        )
-                    })}
+                        />
+                        // )}
+                        // </TaskItemEventHandlersContext.Consumer>
+                    )
+                })}
             </div>
         </div>
     )
 }
 
-export default TaskInfoLine;
+export default TaskInfoLine

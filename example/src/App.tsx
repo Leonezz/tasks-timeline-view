@@ -5,7 +5,7 @@ import 'tasks-timeline-view/dist/index.css'
 import { TodoList } from './taskList'
 
 const App = () => {
-  return <TimelineView taskList={TodoList} />
+    return <TimelineView taskList={TodoList} />
 }
 
 export default App

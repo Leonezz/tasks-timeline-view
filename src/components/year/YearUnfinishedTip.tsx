@@ -1,35 +1,31 @@
-import React from "react";
+import React from 'react'
 
 function YearUnfinishedTip({
     unfinishedTaskCnt,
-    unfinishedDayCnt,
+    unfinishedDayCnt
 }: {
-    unfinishedTaskCnt: number,
-    unfinishedDayCnt: number,
+    unfinishedTaskCnt: number
+    unfinishedDayCnt: number
 }) {
     if (unfinishedTaskCnt > 0) {
         return (
-            <span className="flex gap-1">
-                <a key={1} className="text-danger text-sm font-bold">
+            <span className='flex gap-1'>
+                <a key={1} className='text-sm font-bold text-danger'>
                     {unfinishedTaskCnt}
                 </a>
-                <a key={2} className="text-default text-sm">
-                    {"unfinished tasks in"}
+                <a key={2} className='text-sm text-default'>
+                    {'unfinished tasks in'}
                 </a>
-                <a key={3} className="text-danger text-sm font-bold">
+                <a key={3} className='text-sm font-bold text-danger'>
                     {unfinishedDayCnt}
                 </a>
-                <a key={4} className="text-default text-sm">
-                    {"days."}
+                <a key={4} className='text-sm text-default'>
+                    {'days.'}
                 </a>
             </span>
         )
     }
-    return (
-        <a className=" text-success text-sm font-bold">
-            All Finished! 👍
-        </a>
-    )
+    return <a className=' text-sm font-bold text-success'>All Finished! 👍</a>
 }
 
-export default YearUnfinishedTip;
+export default YearUnfinishedTip

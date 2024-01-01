@@ -24,7 +24,7 @@ function YearAccordion({
 }) {
     const dates: string[] = Array.from(dateTaskMap.keys()).sort((a, b) => {
         return a < b ? -1 : a === b ? 0 : 1
-    });
+    })
     const itemClasses = {
         base:
             'py-0 px-0 w-full shadow-none ' +
@@ -36,25 +36,29 @@ function YearAccordion({
         content: 'text-small px-2'
     }
     const totalTaskCnt = Array.from(dateTaskMap.entries()).reduce(
-        (result, entry) => result + ((entry && entry[1]) ? entry[1].length : 0),
+        (result, entry) => result + (entry && entry[1] ? entry[1].length : 0),
         0
     )
 
     const completeCntOfThisYear = Array.from(dateTaskMap.entries()).reduce(
         (result, entry) =>
-            result + ((entry && entry[1]) ?
-                entry[1].reduce(
-                    (completeCntInADay, item) =>
-                        completeCntInADay +
-                        (item.status === BasicTaskItemStatus.Done ? 1 : 0),
-                    0
-                ) : 0),
+            result +
+            (entry && entry[1]
+                ? entry[1].reduce(
+                      (completeCntInADay, item) =>
+                          completeCntInADay +
+                          (item.status === BasicTaskItemStatus.Done ? 1 : 0),
+                      0
+                  )
+                : 0),
         0
     )
     const daysWithUnfinishedTasks = [...dateTaskMap.entries()].reduce(
         (result, entry) =>
             result +
-            (entry && entry[1] && entry[1].some((item) => item.status !== BasicTaskItemStatus.Done)
+            (entry &&
+            entry[1] &&
+            entry[1].some((item) => item.status !== BasicTaskItemStatus.Done)
                 ? 1
                 : 0),
         0
@@ -69,7 +73,7 @@ function YearAccordion({
             }}
         >
             <CardHeader className='flex-col items-center'>
-                <span className='font-bold text-3xl'>{year.toString()}</span>
+                <span className='text-3xl font-bold'>{year.toString()}</span>
                 <YearUnfinishedTip
                     unfinishedTaskCnt={unfinishedTaskCntOfThisYear}
                     unfinishedDayCnt={daysWithUnfinishedTasks}
@@ -83,80 +87,99 @@ function YearAccordion({
                 <Accordion
                     selectionMode='multiple'
                     aria-label=''
-                    className='p-0 shadow-none border-none outline-none'
+                    className='border-none p-0 shadow-none outline-none'
                     variant='splitted'
                     itemClasses={itemClasses}
                     showDivider={false}
                 >
-                    {dates.map(
-                        (d: string, i: number) => {
-                            const taskList = dateTaskMap.get(d) || []
-                            const formattedDate = moment(d, innerDateFormat).format(visualDateFormat)
-                            const overdueCnt = taskList.reduce(
-                                (result, item) =>
-                                    result + item.status === BasicTaskItemStatus.Overdue ? 1 : 0,
-                                0
-                            )
-                            const unplannedCnt = taskList.reduce(
-                                (result, item) =>
-                                    result + item.status === BasicTaskItemStatus.Unplanned ? 1 : 0,
-                                0
-                            )
-                            const completeCnt = taskList.reduce(
-                                (result, item) =>
-                                    result + item.status === BasicTaskItemStatus.Done ? 1 : 0,
-                                0
-                            )
-                            const doingCnt = taskList.reduce(
-                                (result, item) =>
-                                    result + item.status === BasicTaskItemStatus.Todo ? 1 : 0,
-                                0
-                            )
-                            const unStartCnt = taskList.reduce(
-                                (result, item) =>
-                                    result + item.status === BasicTaskItemStatus.Scheduled ? 1 : 0,
-                                0
-                            )
-                            const cancelledCnt = taskList.reduce(
-                                (result, item) =>
-                                    result + item.status === BasicTaskItemStatus.Cancelled ? 1 : 0,
-                                0
-                            )
-                            const todoCnt =
-                                taskList.length -
-                                overdueCnt -
-                                unplannedCnt -
-                                completeCnt -
-                                doingCnt -
-                                cancelledCnt
-                            return (
-                                <AccordionItem
-                                    key={i}
-                                    aria-label={formattedDate}
-                                    title={formattedDate}
-                                    subtitle={
-                                        <DateTaskStatisticsLine
-                                            overdueCnt={overdueCnt}
-                                            scheduledCnt={unStartCnt}
-                                            todoCnt={todoCnt}
-                                            doingCnt={doingCnt}
-                                            unplannedCnt={unplannedCnt}
-                                            completeCnt={completeCnt}
-                                        />
-                                    }
-                                    indicator={
-                                        <DateCalendarIcon
-                                            mode='weekdayicon'
-                                            date={moment(d, innerDateFormat)}
-                                        />
-                                    }
-                                >
-                                    {taskList.map((t, i) => (
-                                        <TaskItemCheckbox key={i} item={t} />
-                                    ))}
-                                </AccordionItem>
-                            )
-                        })}
+                    {dates.map((d: string, i: number) => {
+                        const taskList = dateTaskMap.get(d) || []
+                        const formattedDate = moment(d, innerDateFormat).format(
+                            visualDateFormat
+                        )
+                        const overdueCnt = taskList.reduce(
+                            (result, item) =>
+                                result + item.status ===
+                                BasicTaskItemStatus.Overdue
+                                    ? 1
+                                    : 0,
+                            0
+                        )
+                        const unplannedCnt = taskList.reduce(
+                            (result, item) =>
+                                result + item.status ===
+                                BasicTaskItemStatus.Unplanned
+                                    ? 1
+                                    : 0,
+                            0
+                        )
+                        const completeCnt = taskList.reduce(
+                            (result, item) =>
+                                result + item.status ===
+                                BasicTaskItemStatus.Done
+                                    ? 1
+                                    : 0,
+                            0
+                        )
+                        const doingCnt = taskList.reduce(
+                            (result, item) =>
+                                result + item.status ===
+                                BasicTaskItemStatus.Todo
+                                    ? 1
+                                    : 0,
+                            0
+                        )
+                        const unStartCnt = taskList.reduce(
+                            (result, item) =>
+                                result + item.status ===
+                                BasicTaskItemStatus.Scheduled
+                                    ? 1
+                                    : 0,
+                            0
+                        )
+                        const cancelledCnt = taskList.reduce(
+                            (result, item) =>
+                                result + item.status ===
+                                BasicTaskItemStatus.Cancelled
+                                    ? 1
+                                    : 0,
+                            0
+                        )
+                        const todoCnt =
+                            taskList.length -
+                            overdueCnt -
+                            unplannedCnt -
+                            completeCnt -
+                            doingCnt -
+                            cancelledCnt
+                        return (
+                            <AccordionItem
+                                key={i}
+                                aria-label={formattedDate}
+                                title={formattedDate}
+                                subtitle={
+                                    <DateTaskStatisticsLine
+                                        overdueCnt={overdueCnt}
+                                        scheduledCnt={unStartCnt}
+                                        todoCnt={todoCnt}
+                                        doingCnt={doingCnt}
+                                        unplannedCnt={unplannedCnt}
+                                        completeCnt={completeCnt}
+                                    />
+                                }
+                                indicator={
+                                    <DateCalendarIcon
+                                        mode='weekdayicon'
+                                        date={moment(d, innerDateFormat)}
+                                    />
+                                }
+                            >
+                                {taskList.map((t, i) => (
+                                    <TaskItemCheckbox key={i} item={t} />
+                                ))}
+                            </AccordionItem>
+                        )
+                    })}
                 </Accordion>
             </CardBody>
         </Card>

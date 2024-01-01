@@ -1,2 +1,2 @@
-export * from './tasks/TaskItem';
-export { TimelineView } from './components/TimelineView';
+export * from './tasks/TaskItem'
+export { TimelineView } from './components/TimelineView'

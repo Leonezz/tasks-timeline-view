@@ -44,7 +44,7 @@ export namespace TaskItemFilter {
 }
 
 export namespace TaskItemSort {
-    type TaskItemSortCmp = (a: TaskItem, b: TaskItem) => number;
+    // type TaskItemSortCmp = (a: TaskItem, b: TaskItem) => number;
     function sortText(a: TaskItem, b: TaskItem): number {
         return a.content.visual < b.content.visual ? -1 :
             a.content.visual === b.content.visual ? 0 : 1;
