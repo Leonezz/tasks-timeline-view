@@ -84,7 +84,7 @@ function TaskInfoLine({
                     icon={iconMap.fileIcon}
                 />
             </div>
-            <div key="tags" className="flex-wrap">
+            <div key="tags" className="flex flex-wrap gap-1">
                 {Array.from(item.tags).map(
                     (t, i) => {
                         return (
