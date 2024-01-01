@@ -75,7 +75,7 @@ function TaskInfoLine({
                     <IconTextBadge key={8}
                         ariaLabelPrefix="priority: "
                         ariaLabel={item.priority.toString()}
-                        label={item.priority.toString().length > 0 ? item.priority + " Priority" : "No Priority"}
+                        label={item.priority.toString() + " Priority"}
                         icon={iconMap.priorityIcon}
                     />}
                 <IconTextBadge key={9}
