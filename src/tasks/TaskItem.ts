@@ -32,6 +32,12 @@ interface TaskItemPosition {
     filePos?: Pos,
 }
 
+interface TaskItemContent {
+    rawText: string,
+    visual: string,
+    description?: string,
+}
+
 export enum BasicTaskItemStatus {
     "Done", // tasks that are completed
     "Scheduled", // tasks that are not yet started
@@ -65,14 +71,8 @@ export interface TaskItem {
      * Task item priority
      */
     priority: BasicTaskItemPriority;
-    /**
-     * Raw text of a task item
-     */
-    text: string;
-    /**
-     * Task item visualization text
-     */
-    visual: string;
+    content: TaskItemContent;
+    location?: string;
     /**
      * Tags
      */

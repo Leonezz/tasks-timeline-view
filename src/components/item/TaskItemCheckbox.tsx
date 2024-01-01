@@ -8,7 +8,7 @@ function TaskItemCheckbox({
 }: {
     item: TaskItem,
 }) {
-    const taskItemContent = item.visual || "";
+    const taskItemContent = item.content.visual || "";
     return (
         <Fragment>
             <div className="flex flex-row justify-between">

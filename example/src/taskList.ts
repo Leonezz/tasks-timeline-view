@@ -5,9 +5,11 @@ export const TodoList: TaskItem[] = [
     {
         status: BasicTaskItemStatus.Done,
         priority: BasicTaskItemPriority.High,
-        text: "- [x] Unchecked ✅ 2023-11-14",
-        visual: "Unchecked",
-        tags: new Set(["tag1"]),
+        content: {
+            rawText: "- [x] Unchecked ✅ 2023-11-14",
+            visual: "Unchecked",
+        },
+        tags: new Set(["#TODO", "#Inbox"]),
         dateTime: {
             completion: moment("2023-11-14", "YYYY-MM-DD"),
             misc: new Map()
@@ -19,8 +21,10 @@ export const TodoList: TaskItem[] = [
     }, {
         status: BasicTaskItemStatus.Done,
         priority: BasicTaskItemPriority.Medium,
-        text: "- [x] Checked",
-        visual: "Checked",
+        content: {
+            rawText: "- [x] Checked",
+            visual: "Checked",
+        },
         tags: new Set(["tag2"]),
         dateTime: {
             created: moment("2023-12-14", "YYYY-MM-DD"),
@@ -33,8 +37,10 @@ export const TodoList: TaskItem[] = [
     }, {
         status: BasicTaskItemStatus.Overdue,
         priority: BasicTaskItemPriority.Low,
-        text: "- [>] Rescheduled",
-        visual: "Rescheduled",
+        content: {
+            rawText: "- [>] Rescheduled",
+            visual: "Rescheduled",
+        },
         dateTime: {
             due: moment(),
             misc: new Map()
