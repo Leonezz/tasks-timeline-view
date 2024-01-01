@@ -72,7 +72,7 @@ function FilterSelectorList({
     );
 
     return (
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 px-2 flex-wrap">
             {TagFilterSelector}
             {FileFilterSelector}
             {PriorityFilterSelector}
