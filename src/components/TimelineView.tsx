@@ -9,6 +9,7 @@ import { TaskItem } from "../tasks/TaskItem";
 import { TaskItemInfo, TaskItemDateFilter } from "../tasks/TaskItemUtil";
 import '../extension/array.extension'
 import { innerDateFormat } from "../util/defs";
+import TodayCard from "./today/TodayCard";
 
 interface Props {
     taskList: TaskItem[]
@@ -95,6 +96,7 @@ export const TimelineView = ({
     return (
         <NextUIProvider>
             <div className="gap-2 flex flex-col">
+                <TodayCard unfinishedCnt={10} />
                 <InputPanel
                     newItemDestinationOptions={["a", "b", "ccc"]}
                 />
