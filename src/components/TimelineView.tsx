@@ -6,7 +6,7 @@ import InputPanel from "./input/InputPanel";
 import FilterSelectorList from './filter_sort/FilterSortSelectorList';
 import { FilterSortOptions, SelectedFilterSortOptions } from "./filter_sort/types";
 import { TaskItem } from "../tasks/TaskItem";
-import { TaskItemInfo, TaskItemFilter } from "../tasks/TaskItemUtil";
+import { TaskItemInfo, TaskItemFilter, TaskItemSort } from "../tasks/TaskItemUtil";
 import '../extension/array.extension'
 import { innerDateFormat } from "../util/defs";
 import TodayCard from "./today/TodayCard";
@@ -25,7 +25,7 @@ export const TimelineView = ({
         files: [],
         priorities: [],
         status: [],
-        sortCmp: "aaa",
+        sortCmp: "",
         reversed: false,
     } as SelectedFilterSortOptions);
 
@@ -34,10 +34,15 @@ export const TimelineView = ({
     const priorities = taskList.map(item => item.priority.toString()).unique();
     const status = taskList.map(item => item.status.toString()).unique();
 
+    const sortCmpMethod = TaskItemSort.TaskItemSortMap[selectedFilters.sortCmp as keyof typeof TaskItemSort.TaskItemSortMap];
     let filteredTaskList = taskList
         .filter(TaskItemFilter.filterTags(selectedFilters.tags))
         .filter(TaskItemFilter.filterPriorities(selectedFilters.priorities))
-        .filter(TaskItemFilter.filterStatus(selectedFilters.status));
+        .filter(TaskItemFilter.filterStatus(selectedFilters.status))
+        .sort(sortCmpMethod);
+    if (selectedFilters.reversed) {
+        filteredTaskList = filteredTaskList.reverse();
+    }
 
     filteredTaskList = filteredTaskList.map((t) => {
         if (!t.dateTime?.misc) t.dateTime.misc = new Map();
@@ -89,7 +94,7 @@ export const TimelineView = ({
                 files: files,
                 priorities: priorities,
                 status: status,
-                sortCmp: ["aaa", "vvv", "ccc"],
+                sortCmp: Object.keys(TaskItemSort.TaskItemSortMap),
                 reversed: false,
             } as FilterSortOptions}
             selectedFilters={selectedFilters}

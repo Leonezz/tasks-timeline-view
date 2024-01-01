@@ -43,6 +43,24 @@ export namespace TaskItemFilter {
     }
 }
 
+export namespace TaskItemSort {
+    type TaskItemSortCmp = (a: TaskItem, b: TaskItem) => number;
+    function sortText(a: TaskItem, b: TaskItem): number {
+        return a.content.visual < b.content.visual ? -1 :
+            a.content.visual === b.content.visual ? 0 : 1;
+    }
+
+    function sortDueDate(a: TaskItem, b: TaskItem): number {
+        if (!a.dateTime.due || !b.dateTime.due) return 0;
+        return a.dateTime.due.isBefore(b.dateTime.due) ? -1 :
+            a.dateTime.due.isAfter(b.dateTime.due) ? 1 : 0;
+    }
+    export const TaskItemSortMap = {
+        "Text": sortText,
+        "Due Date": sortDueDate,
+    }
+}
+
 export namespace TaskItemInfo {
     export function getTaskDateList(item: TaskItem) {
         if (!item.dateTime) return [];
