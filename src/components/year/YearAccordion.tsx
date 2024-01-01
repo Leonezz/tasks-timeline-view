@@ -39,7 +39,7 @@ function YearAccordion({
         (result, entry) => result + ((entry && entry[1]) ? entry[1].length : 0),
         0
     )
-    
+
     const completeCntOfThisYear = Array.from(dateTaskMap.entries()).reduce(
         (result, entry) =>
             result + ((entry && entry[1]) ?
@@ -69,7 +69,7 @@ function YearAccordion({
             }}
         >
             <CardHeader className='flex-col items-center'>
-                <label className='font-bold text-3xl'>{year.toString()}</label>
+                <span className='font-bold text-3xl'>{year.toString()}</span>
                 <YearUnfinishedTip
                     unfinishedTaskCnt={unfinishedTaskCntOfThisYear}
                     unfinishedDayCnt={daysWithUnfinishedTasks}
