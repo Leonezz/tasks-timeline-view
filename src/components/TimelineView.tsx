@@ -5,8 +5,8 @@ import YearAccordion from "./year/YearAccordion";
 import InputPanel from "./input/InputPanel";
 import FilterSelectorList from './filter_sort/FilterSortSelectorList';
 import { FilterSortOptions, SelectedFilterSortOptions } from "./filter_sort/types";
-import getTaskDateList, { TaskItem } from "../tasks/TaskItem";
-import * as TaskItemDateFilter from "../tasks/TaskItemUtil";
+import { TaskItem } from "../tasks/TaskItem";
+import { TaskItemInfo, TaskItemDateFilter } from "../tasks/TaskItemUtil";
 import '../extension/array.extension'
 import { innerDateFormat } from "../util/defs";
 
@@ -30,7 +30,7 @@ export const TimelineView = ({
     })
 
     const sortedInvolvedDates = taskList.flatMap((t) => {
-        return getTaskDateList(t).unique()
+        return TaskItemInfo.getTaskDateList(t).unique()
     })
         .unique()
         .sort((a, b) => {

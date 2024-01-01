@@ -86,16 +86,3 @@ export interface TaskItem {
      */
     meta: Record<string, string>;
 }
-
-export default function getTaskDateList(item: TaskItem) {
-    if (!item.dateTime) return [];
-    const dateTime = item.dateTime;
-    const dates = [];
-    dateTime.created && dates.push(dateTime.created);
-    dateTime.start && dates.push(dateTime.start);
-    dateTime.scheduled && dates.push(dateTime.scheduled);
-    dateTime.completion && dates.push(dateTime.completion);
-    dateTime.due && dates.push(dateTime.due);
-    dateTime.misc && dates.concat([...dateTime.misc.values()]);
-    return dates;
-}
