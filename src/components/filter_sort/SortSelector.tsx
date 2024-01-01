@@ -18,18 +18,24 @@ function SortOptionSelector({
     setReversed: (r: boolean) => void,
 }) {
 
-    const [sortCmp, setSortCmp] = useState(new Set([selectedOption]));
+    const [sortCmp, setSortCmp] = useState<Selection>(new Set([selectedOption]));
 
     useEffect(
         () => {
-            if (sortCmp.size > 0) {
-                setSelectedOption(Array.from(sortCmp)[0]);
+            if (sortCmp === 'all') return; // this is a dummy branch to avoid tslint error
+            if (sortCmp.size === 0) {
+                setSelectedOption("");
+                return;
             }
+            const selectedValue = Array.from(sortCmp)[0];
+            setSelectedOption(selectedValue.valueOf().toString())
         },
         [sortCmp]
     );
 
-    console.debug("sort selector re-redener");
+    const isActive = selectedOption.length > 0 || reversed;
+
+    console.debug("sort selector re-redener", selectedOption);
 
     return (
         <Dropdown
@@ -41,7 +47,7 @@ function SortOptionSelector({
             <DropdownTrigger>
                 <Chip
                     size="sm"
-                    color={selectedOption.length > 0 ? "primary" : "default"}
+                    color={isActive ? "primary" : "default"}
                     aria-label={label}
                 >
                     {label}
@@ -50,7 +56,7 @@ function SortOptionSelector({
             <DropdownMenu
                 selectionMode="single"
                 selectedKeys={sortCmp}
-                onSelectionChange={setSortCmp as React.Dispatch<React.SetStateAction<Selection>>}
+                onSelectionChange={setSortCmp}
                 classNames={{
                     base: "w-fit"
                 }}
