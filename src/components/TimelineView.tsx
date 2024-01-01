@@ -6,7 +6,7 @@ import InputPanel from "./input/InputPanel";
 import FilterSelectorList from './filter_sort/FilterSortSelectorList';
 import { FilterSortOptions, SelectedFilterSortOptions } from "./filter_sort/types";
 import { TaskItem } from "../tasks/TaskItem";
-import { TaskItemInfo, TaskItemDateFilter } from "../tasks/TaskItemUtil";
+import { TaskItemInfo, TaskItemFilter } from "../tasks/TaskItemUtil";
 import '../extension/array.extension'
 import { innerDateFormat } from "../util/defs";
 import TodayCard from "./today/TodayCard";
@@ -19,18 +19,33 @@ export const TimelineView = ({
     taskList,
 }: Props) => {
     console.log("TimeLine item list: ", taskList)
+
+    const [selectedFilters, setSelectedFilters] = useState({
+        tags: [],
+        files: [],
+        priorities: [],
+        status: [],
+        sortCmp: "aaa",
+        reversed: false,
+    } as SelectedFilterSortOptions);
+
     const tags = taskList.flatMap(item => Array.from(item.tags)).unique();
     const files = taskList.map(item => item.position.visual).unique();
     const priorities = taskList.map(item => item.priority.toString()).unique();
     const status = taskList.map(item => item.status.toString()).unique();
 
-    taskList = taskList.map((t) => {
+    let filteredTaskList = taskList
+        .filter(TaskItemFilter.filterTags(selectedFilters.tags))
+        .filter(TaskItemFilter.filterPriorities(selectedFilters.priorities))
+        .filter(TaskItemFilter.filterStatus(selectedFilters.status));
+
+    filteredTaskList = filteredTaskList.map((t) => {
         if (!t.dateTime?.misc) t.dateTime.misc = new Map();
         t.dateTime.misc.set("today", moment());
         return t;
     })
 
-    const sortedInvolvedDates = taskList.flatMap((t) => {
+    const sortedInvolvedDates = filteredTaskList.flatMap((t) => {
         return TaskItemInfo.getTaskDateList(t).unique()
     })
         .unique()
@@ -58,7 +73,7 @@ export const TimelineView = ({
                             .map((d) => {
                                 return {
                                     key: d.format(innerDateFormat),
-                                    value: taskList.filter(TaskItemDateFilter.filterDate(d))
+                                    value: filteredTaskList.filter(TaskItemFilter.filterDate(d))
                                 }
                             })
                             .map(e => [e.key, e.value])
@@ -66,16 +81,6 @@ export const TimelineView = ({
                 };
             }).map(e => [e.key, e.value])
         );
-
-    const [selectedFilters, setSelectedFilters] = useState(
-        {
-            tags: [],
-            files: [],
-            priorities: [],
-            status: [],
-            sortCmp: "aaa",
-            reversed: false,
-        } as SelectedFilterSortOptions);
 
     const FilterSortSelectorListCached = useMemo(
         () => <FilterSelectorList

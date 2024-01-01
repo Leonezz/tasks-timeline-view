@@ -1,6 +1,6 @@
 import { TaskItem } from "./TaskItem";
 
-export namespace TaskItemDateFilter {
+export namespace TaskItemFilter {
     export function filterDate(date: moment.Moment) {
         return filterByDateTime(date, "date");
     }
@@ -27,6 +27,19 @@ export namespace TaskItemDateFilter {
             if (!dates) return false;
             return dates.some((d) => d.isBetween(from, to, by));
         }
+    }
+
+    function hasTag(tag: string) {
+        return (item: TaskItem) => item.tags.has(tag);
+    }
+    export function filterTags(tags: string[]) {
+        return (item: TaskItem) => tags.length === 0 || tags.some(tag => hasTag(tag)(item));
+    }
+    export function filterPriorities(priorities: string[]) {
+        return (item: TaskItem) => priorities.length === 0 || priorities.includes(item.priority);
+    }
+    export function filterStatus(status: string[]) {
+        return (item: TaskItem) => status.length === 0 || status.includes(item.status);
     }
 }
 

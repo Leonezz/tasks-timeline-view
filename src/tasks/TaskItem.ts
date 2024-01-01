@@ -66,11 +66,11 @@ export interface TaskItem {
     /**
      * Task item status
      */
-    status: BasicTaskItemStatus;
+    status: string;
     /**
      * Task item priority
      */
-    priority: BasicTaskItemPriority;
+    priority: string;
     content: TaskItemContent;
     location?: string;
     /**

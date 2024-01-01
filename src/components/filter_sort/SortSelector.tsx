@@ -29,7 +29,7 @@ function SortOptionSelector({
         [sortCmp]
     );
 
-    console.log("sort selector re-redener");
+    console.debug("sort selector re-redener");
 
     return (
         <Dropdown
