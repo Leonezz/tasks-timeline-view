@@ -117,7 +117,7 @@ export namespace TaskStatusUtil {
     export function getStatusIcon(status: string) {
         const statusIcons = {
             [BasicTaskItemStatus.Done.toString()]: iconMap.doneIcon,
-            [BasicTaskItemStatus.Overdue.toString()]: iconMap.alearIcon,
+            [BasicTaskItemStatus.Overdue.toString()]: iconMap.alertIcon,
             [BasicTaskItemStatus.Cancelled.toString()]: iconMap.cancelledIcon,
             [BasicTaskItemStatus.Todo.toString()]: iconMap.processIcon,
             [BasicTaskItemStatus.Scheduled.toString()]: iconMap.scheduledIcon,
