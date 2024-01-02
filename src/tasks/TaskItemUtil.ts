@@ -13,7 +13,7 @@ export namespace TaskItemFilter {
         return (item: TaskItem) => {
             const dates = TaskItemInfo.getTaskDateList(item).unique();
             if (!dates) return false;
-            return dates.some((d) => d.isSame(d, by));
+            return dates.some((d) => d.isSame(date, by));
         }
     }
 
