@@ -1,3 +1,3 @@
 interface Array<T> {
-    unique(): T[];
+    unique(): T[]
 }
