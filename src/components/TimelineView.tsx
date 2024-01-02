@@ -63,11 +63,11 @@ export const TimelineView = ({ taskList }: Props) => {
 
     const { forwardUnfinishedTasks } = useGlobalOption()
     if (forwardUnfinishedTasks) {
-    filteredTaskList = filteredTaskList.map((t) => {
-        if (!t.dateTime?.misc) t.dateTime.misc = new Map()
-        t.dateTime.misc.set('today', moment())
-        return t
-    })
+        filteredTaskList = filteredTaskList.map((t) => {
+            if (!t.dateTime?.misc) t.dateTime.misc = new Map()
+            t.dateTime.misc.set('today', moment())
+            return t
+        })
     }
 
     const sortedInvolvedDates = filteredTaskList
@@ -154,8 +154,10 @@ export const TimelineView = ({ taskList }: Props) => {
                     key={y}
                     year={y}
                     dateTaskMap={
-                        yearDateTaskMap.get(y) ||
-                        ({} as Map<string, TaskItem[]>)
+                        (yearDateTaskMap.get(y) || {}) as Map<
+                            string,
+                            TaskItem[]
+                        >
                     }
                 />
             ))}
