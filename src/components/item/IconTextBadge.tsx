@@ -11,7 +11,7 @@ function IconTextBadge({
     ariaLabel,
     ariaLabelSuffix,
     onClick,
-    color: iconColor
+    color
 }: {
     icon: JSX.Element
     labelPrefix?: string
@@ -35,7 +35,7 @@ function IconTextBadge({
             label={labelPrefix + label + labelSuffix}
             ariaLabel={'' + ariaLabelPrefix + ariaLabel + labelSuffix}
             onClick={onClick}
-            className={iconColor}
+            iconColor={color}
         />
     )
 }

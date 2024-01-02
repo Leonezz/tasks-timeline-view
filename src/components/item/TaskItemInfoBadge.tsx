@@ -35,7 +35,7 @@ function TaskItemInfoBadge({
     color,
     isIconOnly,
     className,
-    iconColor: iconStyle
+    iconColor
 }: {
     label?: string
     ariaLabel?: string
@@ -59,17 +59,18 @@ function TaskItemInfoBadge({
     }
     return (
         <Chip
-            startContent={icon || ''}
+            avatar={icon || ''}
+            // startContent={}
             aria-label={ariaLabel || ''}
             onClick={onClick}
             variant='flat'
             color={color || 'default'}
             className={className}
             classNames={{
-                base: 'h-15 w-full pt-0.5 pb-0.5 pl-1 pr-1 border-opacity-50 hover:border-opacity-100',
+                base: 'w-full h-5 pt-0.5 pb-0.5 pl-1 pr-1 border-opacity-50 hover:border-opacity-100',
                 content:
                     'text-md pr-0 align-middle font-mono ' + contentPaddingLeft,
-                avatar: iconStyle
+                avatar: 'h-4 w-4 ' + iconColor
             }}
         >
             {label}

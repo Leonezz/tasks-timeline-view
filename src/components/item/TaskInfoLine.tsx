@@ -1,7 +1,7 @@
 import IconOnlyBadge from './IconOnlyBadge'
 import TagBadge from './TagBadge'
 import { Fragment, MouseEventHandler, useMemo } from 'react'
-import { getFileTitle } from '../../util/string'
+// import { getFileTitle } from '../../util/string'
 import { iconMap } from '../asserts/icons'
 import IconDateBadge from './IconDateBadge'
 import IconTextBadge from './IconTextBadge'
@@ -17,7 +17,7 @@ function TaskInfoLine({
 }) {
     const dates = item.dateTime
 
-    const buildBadge = (
+    const buildDateBadge = (
         date: moment.Moment | undefined,
         ariaLabelPrefix: string,
         icon: JSX.Element,
@@ -36,16 +36,16 @@ function TaskInfoLine({
     }
 
     const createDateBadge = useMemo(
-        () => buildBadge(dates?.created, 'create at ', iconMap.taskIcon),
+        () => buildDateBadge(dates?.created, 'create at ', iconMap.taskIcon),
         [dates?.created]
     )
     const startDateBadge = useMemo(
-        () => buildBadge(dates?.start, 'start at ', iconMap.startIcon),
+        () => buildDateBadge(dates?.start, 'start at ', iconMap.startIcon),
         [dates?.start]
     )
     const scheduledDateBadge = useMemo(
         () =>
-            buildBadge(
+            buildDateBadge(
                 dates?.scheduled,
                 'scheduled to ',
                 iconMap.scheduledIcon
@@ -53,18 +53,73 @@ function TaskInfoLine({
         [dates?.scheduled]
     )
     const dueDateBadge = useMemo(
-        () => buildBadge(dates?.due, 'due at ', iconMap.dueIcon),
+        () => buildDateBadge(dates?.due, 'due at ', iconMap.dueIcon),
         [dates?.due]
     )
     const completeDateBadge = useMemo(
         () =>
-            buildBadge(
+            buildDateBadge(
                 dates?.completion,
                 'complete at ',
                 iconMap.doneIcon,
                 'text-success'
             ),
         [dates?.completion]
+    )
+
+    const buildIconTextBadge = (
+        icon: JSX.Element,
+        label?: string,
+        ariaLabelPrefix?: string,
+        ariaLabel?: string,
+        color?: string
+    ) => {
+        if (!label) return <Fragment />
+        return (
+            <IconTextBadge
+                key={label}
+                label={label}
+                ariaLabelPrefix={ariaLabelPrefix}
+                ariaLabel={ariaLabel}
+                icon={icon}
+                color={color}
+            />
+        )
+    }
+
+    const recurrenceBadge = useMemo(
+        () =>
+            buildIconTextBadge(
+                iconMap.repeatIcon,
+                item.recurrence || '',
+                'recurrent: ',
+                item.recurrence
+            ),
+        [item.recurrence]
+    )
+    const priorityBadge = useMemo(
+        () =>
+            buildIconTextBadge(
+                iconMap.priorityIcon,
+                item.priority,
+                'priority: ',
+                item.priority,
+                item.priority === 'High'
+                    ? 'text-warning'
+                    : item.priority === 'Medium'
+                      ? 'text-secondary'
+                      : ''
+            ),
+        [item.priority]
+    )
+    const positionBadge = useMemo(
+        () =>
+            buildIconTextBadge(
+                iconMap.fileIcon,
+                item.position.visual,
+                item.position.visual
+            ),
+        [item.position.visual]
     )
 
     return (
@@ -78,30 +133,9 @@ function TaskInfoLine({
                 {scheduledDateBadge}
                 {dueDateBadge}
                 {completeDateBadge}
-                {item.recurrence && (
-                    <IconTextBadge
-                        key={7}
-                        ariaLabelPrefix='recurrent: '
-                        ariaLabel={item.recurrence}
-                        label={item.recurrence}
-                        icon={iconMap.repeatIcon}
-                    />
-                )}
-                {item.priority && (
-                    <IconTextBadge
-                        key={8}
-                        ariaLabelPrefix='priority: '
-                        ariaLabel={item.priority.toString()}
-                        label={item.priority.toString() + ' Priority'}
-                        icon={iconMap.priorityIcon}
-                    />
-                )}
-                <IconTextBadge
-                    key={9}
-                    ariaLabel={item.position.visual}
-                    label={getFileTitle(item.position.visual)}
-                    icon={iconMap.fileIcon}
-                />
+                {recurrenceBadge}
+                {priorityBadge}
+                {positionBadge}
             </div>
             <div key='tags' className='flex flex-wrap gap-1'>
                 {Array.from(item.tags).map((t, i) => {
