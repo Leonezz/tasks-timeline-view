@@ -17,6 +17,7 @@ import {
 import '../extension/array.extension'
 import { innerDateFormat } from '../util/defs'
 import TodayCard from './today/TodayCard'
+import useGlobalOption from './options/GlobalOption'
 
 interface Props {
     taskList: TaskItem[]
@@ -52,11 +53,14 @@ export const TimelineView = ({ taskList }: Props) => {
         filteredTaskList = filteredTaskList.reverse()
     }
 
+    const { forwardUnfinishedTasks } = useGlobalOption()
+    if (forwardUnfinishedTasks) {
     filteredTaskList = filteredTaskList.map((t) => {
         if (!t.dateTime?.misc) t.dateTime.misc = new Map()
         t.dateTime.misc.set('today', moment())
         return t
     })
+    }
 
     const sortedInvolvedDates = filteredTaskList
         .flatMap((t) => {
