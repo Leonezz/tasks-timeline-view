@@ -22,7 +22,15 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
                         wrapper: 'align-top before:hidden after:hidden'
                     }}
                 >
-                    <a className='pl-1'>{taskItemContent}</a>
+                    <a
+                        className={
+                            'pl-1 ' + TaskStatusUtil.isStatusDone(itemStatus)
+                                ? 'text-' + statusColor
+                                : ''
+                        }
+                    >
+                        {taskItemContent}
+                    </a>
                 </Checkbox>
                 <div className='text-nowrap pt-1 align-top font-mono text-sm text-default-500'>
                     {item.dateTime?.due
