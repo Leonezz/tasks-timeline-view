@@ -169,7 +169,6 @@ function YearAccordion({
                                 }
                                 indicator={
                                     <DateCalendarIcon
-                                        mode='weekdayicon'
                                         date={moment(d, innerDateFormat)}
                                     />
                                 }

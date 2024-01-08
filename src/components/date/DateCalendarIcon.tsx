@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
     Card,
     CardFooter,
@@ -7,33 +7,30 @@ import {
     Avatar
 } from '@nextui-org/react'
 import moment from 'moment'
+import useGlobalOption from '../options/GlobalOption'
 
-function DateCalendarIcon({
-    date,
-    mode
-}: {
-    date: moment.Moment
-    mode: 'monthday' | 'weekday' | 'weekdayicon'
-}) {
+function DateCalendarIcon({ date }: { date: moment.Moment }) {
     const month = date.format('MMM')
     const day = date.format('DD')
     const weekday = date.format('ddd')
-    switch (mode) {
+    const { dateIconStyle } = useGlobalOption()
+    switch (dateIconStyle) {
         case 'monthday':
         case 'weekday': {
             const weekendClassNames = date.weekday() > 4 ? 'bg-pink-200' : ''
             return (
                 <Card
                     className={
-                        'h-12 w-12 items-center gap-0 ' + weekendClassNames
+                        'h-12 w-12 items-center gap-0 border-small shadow-none ' +
+                        weekendClassNames
                     }
                     radius='sm'
                 >
                     <CardHeader className='justify-center px-1 py-0 text-center font-extrabold text-red-500'>
-                        {mode === 'monthday' ? month : weekday}
+                        {dateIconStyle === 'monthday' ? month : weekday}
                     </CardHeader>
                     <Divider />
-                    <CardFooter className='justify-center px-1 py-0 text-center text-lg font-extrabold'>
+                    <CardFooter className='justify-center px-1 py-0 text-center text-xl font-extrabold'>
                         {day}
                     </CardFooter>
                 </Card>
@@ -51,6 +48,8 @@ function DateCalendarIcon({
                     radius='sm'
                 />
             )
+        default:
+            return <Fragment />
     }
 }
 
