@@ -10,7 +10,7 @@ import {
     Switch
 } from '@nextui-org/react'
 import { settingsIcon } from '../asserts/icons'
-import useGlobalOption from './GlobalOption'
+import useGeneralOption from './GlobalOption'
 import { DateIconStyles } from './OptionDef'
 
 function OptionsPanel() {
@@ -19,7 +19,7 @@ function OptionsPanel() {
         setForwardUnfinishedTasks,
         dateIconStyle,
         setDateIconStyle
-    } = useGlobalOption()
+    } = useGeneralOption()
     console.log(dateIconStyle)
     const dateIconStyles = ['monthday', 'weekday', 'weekdayicon']
     return (

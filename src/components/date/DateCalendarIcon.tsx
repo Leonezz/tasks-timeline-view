@@ -7,13 +7,13 @@ import {
     Avatar
 } from '@nextui-org/react'
 import moment from 'moment'
-import useGlobalOption from '../options/GlobalOption'
+import useGeneralOption from '../options/GlobalOption'
 
 function DateCalendarIcon({ date }: { date: moment.Moment }) {
     const month = date.format('MMM')
     const day = date.format('DD')
     const weekday = date.format('ddd')
-    const { dateIconStyle } = useGlobalOption()
+    const { dateIconStyle } = useGeneralOption()
     switch (dateIconStyle) {
         case 'monthday':
         case 'weekday': {

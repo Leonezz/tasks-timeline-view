@@ -6,7 +6,7 @@ type Actions = {
     setDateIconStyle: (style: typeof TimelineOption.dateIconStyle) => void
 }
 
-const useGlobalOption = create<TimelineOptionType & Actions>((set) => ({
+const useGeneralOption = create<TimelineOptionType & Actions>((set) => ({
     forwardUnfinishedTasks: TimelineOption.forwardUnfinishedTasks,
     setForwardUnfinishedTasks: (forward: boolean) =>
         set(() => ({ forwardUnfinishedTasks: forward })),
@@ -14,4 +14,4 @@ const useGlobalOption = create<TimelineOptionType & Actions>((set) => ({
     setDateIconStyle: (style) => set(() => ({ dateIconStyle: style }))
 }))
 
-export default useGlobalOption
+export default useGeneralOption
