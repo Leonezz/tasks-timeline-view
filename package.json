@@ -34,6 +34,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "latest",
     "@babel/plugin-proposal-private-property-in-object": "latest",
+    "@babel/plugin-proposal-unicode-property-regex": "latest",
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
     "@nextui-org/react": "latest",
