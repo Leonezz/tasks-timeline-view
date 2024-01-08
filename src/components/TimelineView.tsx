@@ -37,8 +37,6 @@ export const TimelineView = ({ taskList }: Props) => {
         reversed: false
     } as SelectedFilterSortOptions)
 
-    const [isTodayFocusActive, setTodayFocusActive] = useState(false)
-
     const tags = taskList.flatMap((item) => Array.from(item.tags)).unique()
     const files = taskList.map((item) => item.position.visual).unique()
     const priorities = taskList.map((item) => item.priority.toString()).unique()
@@ -49,12 +47,7 @@ export const TimelineView = ({ taskList }: Props) => {
             selectedFilters.sortCmp as keyof typeof TaskItemSort.TaskItemSortMap
         ]
 
-    let filteredTaskList = useMemo(() => {
-        if (!isTodayFocusActive) return taskList
-        return taskList.filter(TaskItemFilter.filterDate(moment()))
-    }, [isTodayFocusActive])
-
-    filteredTaskList = filteredTaskList
+    var filteredTaskList = taskList
         .filter(TaskItemFilter.filterTags(selectedFilters.tags))
         .filter(TaskItemFilter.filterPriorities(selectedFilters.priorities))
         .filter(TaskItemFilter.filterStatus(selectedFilters.status))
@@ -152,8 +145,6 @@ export const TimelineView = ({ taskList }: Props) => {
                 <OptionsPanel />
                 <TodayCard
                     unfinishedCnt={10}
-                    isTodayActive={isTodayFocusActive}
-                    setTodayActive={setTodayFocusActive}
                 />
                 <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} />
                 {FilterSortSelectorListCached}

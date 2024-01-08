@@ -12,6 +12,7 @@ import { create } from 'zustand'
 type GeneralOptionActions = {
     setForwardUnfinishedTasks: (forward: boolean) => void
     setDateIconStyle: (style: typeof TimelineOption.dateIconStyle) => void
+    setTodayFocus: (focus: boolean) => void
 }
 
 export const useGeneralOption = create<
@@ -21,7 +22,10 @@ export const useGeneralOption = create<
     setForwardUnfinishedTasks: (forward: boolean) =>
         set(() => ({ forwardUnfinishedTasks: forward })),
     dateIconStyle: TimelineOption.dateIconStyle,
-    setDateIconStyle: (style) => set(() => ({ dateIconStyle: style }))
+    setDateIconStyle: (style) => set(() => ({ dateIconStyle: style })),
+
+    todayFocus: TimelineOption.todayFocus,
+    setTodayFocus: (focus) => set(() => ({ todayFocus: focus }))
 }))
 
 type TaskStatusConfigActions = {

@@ -4,7 +4,8 @@ export type DateIconStyles = 'monthday' | 'weekday' | 'weekdayicon'
 
 export const TimelineOption = {
     forwardUnfinishedTasks: false as boolean,
-    dateIconStyle: 'monthday' as DateIconStyles
+    dateIconStyle: 'monthday' as DateIconStyles,
+    todayFocus: false as boolean
 }
 
 export type TimelineOptionType = typeof TimelineOption

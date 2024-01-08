@@ -2,15 +2,9 @@ import { Card, CardHeader, Chip } from '@nextui-org/react'
 import moment from 'moment'
 import React from 'react'
 import { visualDateFormat } from '../../util/defs'
-function TodayCard({
-    unfinishedCnt,
-    isTodayActive,
-    setTodayActive
-}: {
-    unfinishedCnt: number
-    isTodayActive: boolean
-    setTodayActive: (s: boolean) => void
-}) {
+import { useGeneralOption } from '../options/GlobalOption'
+function TodayCard({ unfinishedCnt }: { unfinishedCnt: number }) {
+    const { todayFocus, setTodayFocus } = useGeneralOption()
     return (
         <Card
             classNames={{
@@ -23,9 +17,9 @@ function TodayCard({
                         base: 'shadow-none bg-transparent',
                         content:
                             'text-3xl font-bold ' +
-                            (isTodayActive ? 'text-primary' : 'text-black')
+                            (todayFocus ? 'text-primary' : 'text-black')
                     }}
-                    onClick={() => setTodayActive(!isTodayActive)}
+                    onClick={() => setTodayFocus(!todayFocus)}
                 >
                     Today
                 </Chip>

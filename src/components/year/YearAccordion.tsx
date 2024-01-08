@@ -16,7 +16,7 @@ import YearHeaderProgress from './YearHeaderProgress'
 import YearUnfinishedTip from './YearUnfinishedTip'
 import { TaskItem } from '../../tasks/TaskItem'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
-import { useTaskStatusOption } from '../options/GlobalOption'
+import { useGeneralOption, useTaskStatusOption } from '../options/GlobalOption'
 
 function YearAccordion({
     year,
@@ -70,14 +70,25 @@ function YearAccordion({
     )
     const unfinishedTaskCntOfThisYear = totalTaskCnt - completeCntOfThisYear
 
+    // hide other year when todayFocus activated
+    const { todayFocus } = useGeneralOption()
+    const hideAll = todayFocus && moment().year() !== year
+    const hideHead = (date: string) =>
+        todayFocus && date !== moment().format(innerDateFormat)
     return (
         <Card
             fullWidth
             classNames={{
-                base: 'shadow-none bg-origin-content bg-transparent tasktimeline-yearcard'
+                base:
+                    'shadow-none bg-origin-content bg-transparent tasktimeline-yearcard ' +
+                    (hideAll ? 'hidden' : '')
             }}
         >
-            <CardHeader className='flex-col items-center'>
+            <CardHeader
+                className={
+                    'flex-col items-center ' + (todayFocus ? 'hidden' : '')
+                }
+            >
                 <span className='text-3xl font-bold'>{year.toString()}</span>
                 <YearUnfinishedTip
                     unfinishedTaskCnt={unfinishedTaskCntOfThisYear}
@@ -134,6 +145,7 @@ function YearAccordion({
                                         date={moment(d, innerDateFormat)}
                                     />
                                 }
+                                className={hideHead(d) ? 'hidden' : ''}
                             >
                                 {taskList.map((t, i) => (
                                     <TaskItemCheckbox key={i} item={t} />
