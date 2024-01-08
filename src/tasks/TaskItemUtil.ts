@@ -88,7 +88,7 @@ export namespace TaskItemInfo {
         dateTime.scheduled && dates.push(dateTime.scheduled)
         dateTime.completion && dates.push(dateTime.completion)
         dateTime.due && dates.push(dateTime.due)
-        dateTime.misc && dates.concat([...dateTime.misc.values()])
+        dateTime.misc && dates.push(...dateTime.misc.values())
         return dates
     }
 }
