@@ -18,13 +18,15 @@ import '../extension/array.extension'
 import { innerDateFormat } from '../util/defs'
 import TodayCard from './today/TodayCard'
 import useGlobalOption from './options/GlobalOption'
+import OptionsPanel from './options/OptionsPanel'
+import { TimelineOptionType } from './options/OptionDef'
 
 interface Props {
     taskList: TaskItem[]
 }
 
 export const TimelineView = ({ taskList }: Props) => {
-    console.log('TimeLine item list: ', taskList)
+    console.debug('raw item list: ', taskList)
 
     const [selectedFilters, setSelectedFilters] = useState({
         tags: [],
@@ -61,11 +63,21 @@ export const TimelineView = ({ taskList }: Props) => {
         filteredTaskList = filteredTaskList.reverse()
     }
 
-    const { forwardUnfinishedTasks } = useGlobalOption()
+    const forwardUnfinishedTasks = useGlobalOption(
+        (state: TimelineOptionType) => state.forwardUnfinishedTasks
+    )
     if (forwardUnfinishedTasks) {
         filteredTaskList = filteredTaskList.map((t) => {
             if (!t.dateTime?.misc) t.dateTime.misc = new Map()
-            t.dateTime.misc.set('today', moment())
+            t.dateTime.misc.set('forward', moment())
+            console.debug('add today to task')
+            return t
+        })
+    } else {
+        filteredTaskList = filteredTaskList.map((t) => {
+            if (!t.dateTime?.misc) return t
+            if (!t.dateTime.misc.has('forward')) return t
+            t.dateTime.misc.delete('forward')
             return t
         })
     }
@@ -88,7 +100,8 @@ export const TimelineView = ({ taskList }: Props) => {
         .unique()
         .sort((a, b) => a - b)
 
-    console.log('years: ', sortedInvolvedYears, sortedInvolvedDates)
+    console.debug('filtered item list: ', filteredTaskList)
+    console.debug('years: ', sortedInvolvedYears, sortedInvolvedDates)
     const yearDateTaskMap: Map<number, Map<string, TaskItem[]>> = new Map(
         sortedInvolvedYears
             .map((y) => {
@@ -112,6 +125,7 @@ export const TimelineView = ({ taskList }: Props) => {
             .map((e) => [e.key, e.value])
     )
 
+    console.debug('data to render: ', yearDateTaskMap)
     const FilterSortSelectorListCached = useMemo(
         () => (
             <FilterSelectorList
@@ -135,6 +149,7 @@ export const TimelineView = ({ taskList }: Props) => {
     return (
         <NextUIProvider>
             <div className='flex flex-col gap-2'>
+                <OptionsPanel />
                 <TodayCard
                     unfinishedCnt={10}
                     isTodayActive={isTodayFocusActive}
@@ -142,6 +157,7 @@ export const TimelineView = ({ taskList }: Props) => {
                 />
                 <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} />
                 {FilterSortSelectorListCached}
+                {forwardUnfinishedTasks}
                 <div>
                     {selectedFilters.files}
                     {selectedFilters.priorities}
@@ -149,18 +165,20 @@ export const TimelineView = ({ taskList }: Props) => {
                     {selectedFilters.tags}
                 </div>
             </div>
-            {sortedInvolvedYears.map((y) => (
-                <YearAccordion
-                    key={y}
-                    year={y}
-                    dateTaskMap={
-                        (yearDateTaskMap.get(y) || {}) as Map<
-                            string,
-                            TaskItem[]
-                        >
-                    }
-                />
-            ))}
+            {sortedInvolvedYears.map((y) => {
+                return (
+                    <YearAccordion
+                        key={y}
+                        year={y}
+                        dateTaskMap={
+                            (yearDateTaskMap.get(y) || {}) as Map<
+                                string,
+                                TaskItem[]
+                            >
+                        }
+                    />
+                )
+            })}
         </NextUIProvider>
     )
 }
