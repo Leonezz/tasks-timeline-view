@@ -5,6 +5,7 @@ import {
     Divider,
     Listbox,
     ListboxItem,
+    ListboxItemProps,
     Popover,
     PopoverContent,
     PopoverTrigger
@@ -13,14 +14,9 @@ import TaskInfoLine from './TaskInfoLine'
 import { TaskItem } from '../../tasks/TaskItem'
 import { useTaskStatusOption } from '../options/GlobalOption'
 
-function CheckboxIcon({
-    status,
-    options
-}: {
-    status: string
-    options: string[]
-}) {
-    const { getStatusColor, getIconFromStatus } = useTaskStatusOption()
+function CheckboxIcon({ status }: { status: string }) {
+    const { statusConfigs, getStatusColor, getIconFromStatus } =
+        useTaskStatusOption()
     const statusColor = getStatusColor(status)
     return (
         <Popover placement='right'>
@@ -40,8 +36,14 @@ function CheckboxIcon({
                 <p className='text-lg font-bold'>Mark as:</p>
                 <Divider />
                 <Listbox>
-                    {options.map((option) => (
-                        <ListboxItem key={option}>{option}</ListboxItem>
+                    {statusConfigs.map((option: (typeof statusConfigs)[0]) => (
+                        <ListboxItem
+                            startContent={getIconFromStatus(option.label)}
+                            key={option.label}
+                            color={option.color as ListboxItemProps['color']}
+                        >
+                            {option.label}
+                        </ListboxItem>
                     ))}
                 </Listbox>
             </PopoverContent>
@@ -61,12 +63,7 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
         <Fragment>
             <div className='flex flex-row justify-between'>
                 <Checkbox
-                    icon={
-                        <CheckboxIcon
-                            status={itemStatus}
-                            options={['a', 'b']}
-                        />
-                    }
+                    icon={<CheckboxIcon status={itemStatus} />}
                     isSelected={isStatusDoneType(itemStatus)}
                     lineThrough
                     classNames={{
