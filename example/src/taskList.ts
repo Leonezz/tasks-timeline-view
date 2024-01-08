@@ -1,13 +1,9 @@
 import moment from 'moment'
-import {
-    BasicTaskItemPriority,
-    BasicTaskItemStatus,
-    TaskItem
-} from 'tasks-timeline-view'
+import { BasicTaskItemPriority, TaskItem } from 'tasks-timeline-view'
 
 export const TodoList: TaskItem[] = [
     {
-        status: BasicTaskItemStatus.Done,
+        status: 'Done',
         priority: BasicTaskItemPriority.High,
         content: {
             rawText: '- [x] Unchecked ✅ 2023-11-14',
@@ -24,7 +20,7 @@ export const TodoList: TaskItem[] = [
         meta: {}
     },
     {
-        status: BasicTaskItemStatus.Cancelled,
+        status: 'Cancelled',
         priority: BasicTaskItemPriority.High,
         content: {
             rawText: '- [x] Unchecked ✅ 2023-11-14',
@@ -41,7 +37,7 @@ export const TodoList: TaskItem[] = [
         meta: {}
     },
     {
-        status: BasicTaskItemStatus.Done,
+        status: 'Done',
         priority: BasicTaskItemPriority.Medium,
         content: {
             rawText: '- [x] Checked',
@@ -58,7 +54,7 @@ export const TodoList: TaskItem[] = [
         meta: {}
     },
     {
-        status: BasicTaskItemStatus.Overdue,
+        status: 'Overdue',
         priority: BasicTaskItemPriority.Low,
         content: {
             rawText: '- [>] Rescheduled',
@@ -75,7 +71,7 @@ export const TodoList: TaskItem[] = [
         meta: {}
     },
     {
-        status: BasicTaskItemStatus.Todo,
+        status: 'Todo',
         priority: BasicTaskItemPriority.Low,
         content: {
             rawText: '- [>] Rescheduled',
@@ -92,7 +88,7 @@ export const TodoList: TaskItem[] = [
         meta: {}
     },
     {
-        status: BasicTaskItemStatus.Unplanned,
+        status: 'Unplanned',
         priority: BasicTaskItemPriority.Low,
         content: {
             rawText: '- [>] Rescheduled',
@@ -109,7 +105,7 @@ export const TodoList: TaskItem[] = [
         meta: {}
     },
     {
-        status: BasicTaskItemStatus.Scheduled,
+        status: 'Scheduled',
         priority: BasicTaskItemPriority.Low,
         content: {
             rawText: '- [>] Rescheduled',

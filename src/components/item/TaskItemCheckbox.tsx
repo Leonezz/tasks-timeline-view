@@ -1,30 +1,83 @@
 import React, { Fragment } from 'react'
-import { Checkbox } from '@nextui-org/react'
+import {
+    Button,
+    Checkbox,
+    Divider,
+    Listbox,
+    ListboxItem,
+    Popover,
+    PopoverContent,
+    PopoverTrigger
+} from '@nextui-org/react'
 import TaskInfoLine from './TaskInfoLine'
 import { TaskItem } from '../../tasks/TaskItem'
-import { TaskStatusUtil } from '../../tasks/TaskItemUtil'
+import { useTaskStatusOption } from '../options/GlobalOption'
+
+function CheckboxIcon({
+    status,
+    options
+}: {
+    status: string
+    options: string[]
+}) {
+    const { getStatusColor, getIconFromStatus } = useTaskStatusOption()
+    const statusColor = getStatusColor(status)
+    return (
+        <Popover placement='right'>
+            <PopoverTrigger className='p-0'>
+                <Button
+                    isIconOnly
+                    className={
+                        'h-5 scale-125 bg-transparent p-0 opacity-100' +
+                        ' text-' +
+                        statusColor
+                    }
+                >
+                    {getIconFromStatus(status)}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className='p-1'>
+                <p className='text-lg font-bold'>Mark as:</p>
+                <Divider />
+                <Listbox>
+                    {options.map((option) => (
+                        <ListboxItem key={option}>{option}</ListboxItem>
+                    ))}
+                </Listbox>
+            </PopoverContent>
+        </Popover>
+    )
+}
 
 function TaskItemCheckbox({ item }: { item: TaskItem }) {
     const taskItemContent = item.content.visual || ''
     const itemStatus = item.status
-    const checkboxIcon = TaskStatusUtil.getStatusIcon(itemStatus)
-    const statusColor = TaskStatusUtil.getStatusColor(itemStatus)
+    // const checkboxIcon = TaskStatusUtil.getStatusIcon(itemStatus)
+
+    const { getStatusColor, isStatusDoneType } = useTaskStatusOption()
+    const statusColor = getStatusColor(itemStatus)
 
     return (
         <Fragment>
             <div className='flex flex-row justify-between'>
                 <Checkbox
-                    icon={checkboxIcon}
-                    isSelected={TaskStatusUtil.isStatusDone(itemStatus)}
+                    icon={
+                        <CheckboxIcon
+                            status={itemStatus}
+                            options={['a', 'b']}
+                        />
+                    }
+                    isSelected={isStatusDoneType(itemStatus)}
                     lineThrough
                     classNames={{
-                        icon: 'opacity-100 h-4 ' + 'text-' + statusColor,
                         wrapper: 'align-top before:hidden after:hidden'
                     }}
+                    onAuxClick={(e) => e.stopPropagation()}
+                    onAuxClickCapture={(e) => e.stopPropagation()}
                 >
                     <a
                         className={
-                            'pl-1 ' + TaskStatusUtil.isStatusDone(itemStatus)
+                            'pl-1 ' + isStatusDoneType(itemStatus)
                                 ? 'text-' + statusColor
                                 : ''
                         }

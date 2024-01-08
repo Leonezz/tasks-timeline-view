@@ -7,7 +7,7 @@ import {
     Avatar
 } from '@nextui-org/react'
 import moment from 'moment'
-import useGeneralOption from '../options/GlobalOption'
+import { useGeneralOption } from '../options/GlobalOption'
 
 function DateCalendarIcon({ date }: { date: moment.Moment }) {
     const month = date.format('MMM')

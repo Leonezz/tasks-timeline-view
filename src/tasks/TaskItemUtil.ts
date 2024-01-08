@@ -1,5 +1,4 @@
-import { iconMap } from '../components/asserts/icons'
-import { BasicTaskItemStatus, TaskItem } from './TaskItem'
+import { TaskItem } from './TaskItem'
 
 export namespace TaskItemFilter {
     export function filterDate(date: moment.Moment) {
@@ -90,39 +89,5 @@ export namespace TaskItemInfo {
         dateTime.due && dates.push(dateTime.due)
         dateTime.misc && dates.push(...dateTime.misc.values())
         return dates
-    }
-}
-
-export namespace TaskStatusUtil {
-    export function isStatusDone(status: string) {
-        const doneStatus = [
-            BasicTaskItemStatus.Done,
-            BasicTaskItemStatus.Cancelled
-        ]
-        return doneStatus.some((d) => d.toString() === status)
-    }
-
-    export function getStatusColor(status: string) {
-        const statusPalette = {
-            [BasicTaskItemStatus.Done.toString()]: 'success',
-            [BasicTaskItemStatus.Overdue.toString()]: 'danger',
-            [BasicTaskItemStatus.Cancelled.toString()]: 'secondary',
-            [BasicTaskItemStatus.Todo.toString()]: 'warning',
-            [BasicTaskItemStatus.Scheduled.toString()]: 'primary',
-            [BasicTaskItemStatus.Unplanned.toString()]: 'default'
-        }
-        return statusPalette[status]
-    }
-
-    export function getStatusIcon(status: string) {
-        const statusIcons = {
-            [BasicTaskItemStatus.Done.toString()]: iconMap.doneIcon,
-            [BasicTaskItemStatus.Overdue.toString()]: iconMap.alertIcon,
-            [BasicTaskItemStatus.Cancelled.toString()]: iconMap.cancelledIcon,
-            [BasicTaskItemStatus.Todo.toString()]: iconMap.processIcon,
-            [BasicTaskItemStatus.Scheduled.toString()]: iconMap.scheduledIcon,
-            [BasicTaskItemStatus.Unplanned.toString()]: iconMap.unplannedIcon
-        }
-        return statusIcons[status]
     }
 }

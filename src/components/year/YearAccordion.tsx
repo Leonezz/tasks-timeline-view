@@ -8,12 +8,15 @@ import {
 import React from 'react'
 import moment from 'moment'
 import TaskItemCheckbox from '../item/TaskItemCheckbox'
-import DateTaskStatisticsLine from '../date/DateTaskStatisticsLine'
+import DateTaskStatisticsLine, {
+    CounterType
+} from '../date/DateTaskStatisticsLine'
 import DateCalendarIcon from '../date/DateCalendarIcon'
 import YearHeaderProgress from './YearHeaderProgress'
 import YearUnfinishedTip from './YearUnfinishedTip'
-import { TaskItem, BasicTaskItemStatus } from '../../tasks/TaskItem'
+import { TaskItem } from '../../tasks/TaskItem'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
+import { useTaskStatusOption } from '../options/GlobalOption'
 
 function YearAccordion({
     year,
@@ -40,6 +43,8 @@ function YearAccordion({
         0
     )
 
+    const { statusConfigs, isStatusDoneType } = useTaskStatusOption()
+
     const completeCntOfThisYear = Array.from(dateTaskMap.entries()).reduce(
         (result, entry) =>
             result +
@@ -47,7 +52,7 @@ function YearAccordion({
                 ? entry[1].reduce(
                       (completeCntInADay, item) =>
                           completeCntInADay +
-                          (item.status === BasicTaskItemStatus.Done ? 1 : 0),
+                          (isStatusDoneType(item.status) ? 1 : 0),
                       0
                   )
                 : 0),
@@ -58,7 +63,7 @@ function YearAccordion({
             result +
             (entry &&
             entry[1] &&
-            entry[1].some((item) => item.status !== BasicTaskItemStatus.Done)
+            entry[1].some((item) => isStatusDoneType(item.status))
                 ? 1
                 : 0),
         0
@@ -97,61 +102,23 @@ function YearAccordion({
                         const formattedDate = moment(d, innerDateFormat).format(
                             visualDateFormat
                         )
-                        const overdueCnt = taskList.reduce(
-                            (result, item) =>
-                                result + item.status ===
-                                BasicTaskItemStatus.Overdue
-                                    ? 1
-                                    : 0,
-                            0
+                        const counters = statusConfigs.map(
+                            (config: (typeof statusConfigs)[0]) => {
+                                return {
+                                    label: config.label,
+                                    color: config.color,
+                                    isDoneType: config.isDoneType,
+                                    cnt: taskList.reduce(
+                                        (result, item) =>
+                                            result + item.status ===
+                                            config.label
+                                                ? 1
+                                                : 0,
+                                        0
+                                    )
+                                } as CounterType
+                            }
                         )
-                        const unplannedCnt = taskList.reduce(
-                            (result, item) =>
-                                result + item.status ===
-                                BasicTaskItemStatus.Unplanned
-                                    ? 1
-                                    : 0,
-                            0
-                        )
-                        const completeCnt = taskList.reduce(
-                            (result, item) =>
-                                result + item.status ===
-                                BasicTaskItemStatus.Done
-                                    ? 1
-                                    : 0,
-                            0
-                        )
-                        const doingCnt = taskList.reduce(
-                            (result, item) =>
-                                result + item.status ===
-                                BasicTaskItemStatus.Todo
-                                    ? 1
-                                    : 0,
-                            0
-                        )
-                        const unStartCnt = taskList.reduce(
-                            (result, item) =>
-                                result + item.status ===
-                                BasicTaskItemStatus.Scheduled
-                                    ? 1
-                                    : 0,
-                            0
-                        )
-                        const cancelledCnt = taskList.reduce(
-                            (result, item) =>
-                                result + item.status ===
-                                BasicTaskItemStatus.Cancelled
-                                    ? 1
-                                    : 0,
-                            0
-                        )
-                        const todoCnt =
-                            taskList.length -
-                            overdueCnt -
-                            unplannedCnt -
-                            completeCnt -
-                            doingCnt -
-                            cancelledCnt
                         return (
                             <AccordionItem
                                 key={i}
@@ -159,12 +126,7 @@ function YearAccordion({
                                 title={formattedDate}
                                 subtitle={
                                     <DateTaskStatisticsLine
-                                        overdueCnt={overdueCnt}
-                                        scheduledCnt={unStartCnt}
-                                        todoCnt={todoCnt}
-                                        doingCnt={doingCnt}
-                                        unplannedCnt={unplannedCnt}
-                                        completeCnt={completeCnt}
+                                        counters={counters}
                                     />
                                 }
                                 indicator={

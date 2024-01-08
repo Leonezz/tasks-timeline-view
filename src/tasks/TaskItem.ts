@@ -36,15 +36,6 @@ interface TaskItemContent {
     description?: string
 }
 
-export enum BasicTaskItemStatus {
-    Done = 'Done', // tasks that are completed
-    Scheduled = 'Scheduled', // tasks that are not yet started
-    Todo = 'Todo', // tasks that are not completed but already started
-    Overdue = 'Overdue', // tasks that are not completed after the due date
-    Cancelled = 'Cancelled', // tasks that are not completed and cancelled
-    Unplanned = 'Unplanned' // tasks that have no dates assigned
-}
-
 export enum BasicTaskItemPriority {
     High = 'High',
     Medium = 'Medium',

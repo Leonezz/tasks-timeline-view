@@ -10,7 +10,7 @@ import {
     Switch
 } from '@nextui-org/react'
 import { settingsIcon } from '../asserts/icons'
-import useGeneralOption from './GlobalOption'
+import { useGeneralOption } from './GlobalOption'
 import { DateIconStyles } from './OptionDef'
 
 function OptionsPanel() {

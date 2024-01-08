@@ -17,7 +17,7 @@ import {
 import '../extension/array.extension'
 import { innerDateFormat } from '../util/defs'
 import TodayCard from './today/TodayCard'
-import useGeneralOption from './options/GlobalOption'
+import { useGeneralOption } from './options/GlobalOption'
 import OptionsPanel from './options/OptionsPanel'
 import { TimelineOptionType } from './options/OptionDef'
 
