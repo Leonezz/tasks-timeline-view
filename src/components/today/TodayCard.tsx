@@ -20,6 +20,9 @@ function TodayCard({ unfinishedCnt }: { unfinishedCnt: number }) {
                             (todayFocus ? 'text-primary' : 'text-black')
                     }}
                     onClick={() => setTodayFocus(!todayFocus)}
+                    style={{
+                        cursor: 'pointer'
+                    }}
                 >
                     Today
                 </Chip>
