@@ -74,4 +74,21 @@ export interface TaskItem {
      * MISC metadate
      */
     meta: Record<string, string>
+    uuid: string
 }
+
+export const GlobalEmptyItem = {
+    dateTime: {} as TaskItemDateTime,
+    status: '',
+    priority: '',
+    content: {
+        rawText: '',
+        visual: ''
+    } as TaskItemContent,
+    tags: new Set(),
+    position: {
+        visual: ''
+    } as TaskItemPosition,
+    meta: {},
+    uuid: ''
+} as TaskItem

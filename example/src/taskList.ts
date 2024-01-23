@@ -17,7 +17,8 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     },
     {
         status: 'Cancelled',
@@ -34,7 +35,8 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     },
     {
         status: 'Done',
@@ -51,7 +53,8 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     },
     {
         status: 'Overdue',
@@ -68,7 +71,8 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     },
     {
         status: 'Todo',
@@ -85,7 +89,8 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     },
     {
         status: 'Unplanned',
@@ -102,7 +107,8 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     },
     {
         status: 'Scheduled',
@@ -119,6 +125,7 @@ export const TodoList: TaskItem[] = [
         position: {
             visual: 'test theme-defined markers.md'
         },
-        meta: {}
+        meta: {},
+        uuid: ''
     }
 ]

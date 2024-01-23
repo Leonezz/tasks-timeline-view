@@ -1,44 +1,33 @@
-import React, { useMemo, useState } from 'react'
-import { Input } from '@nextui-org/react'
+import React, { useCallback, useState } from 'react'
+import { Button, Input, Selection } from '@nextui-org/react'
 import TrivialSingleSelect from './TrivialSingleSelect'
-import { iconMap } from '../asserts/icons'
-import DatePickerListPopover, {
-    TaskItemDateInfo
-} from './DatePickerListPopover'
-import { TaskItem } from '../../tasks/TaskItem'
+import { enterIcon, iconMap } from '../asserts/icons'
+import DatePickerListPopover from './DatePickerListPopover'
+import { GlobalEmptyItem, TaskItem } from '../../tasks/TaskItem'
+import { BUS } from '../../datastore/todoStoreEventBus'
+import { EVENTS } from '../../datastore/todoStoreEvents'
+import { TaskItemParser } from '../../tasks/TaskItemUtil'
 
 function InputPanel({
     newItemDestinationOptions,
-    priorityOptions,
-    onCreateNewItem
+    priorityOptions
 }: {
     newItemDestinationOptions: string[]
     priorityOptions?: string[]
-    onCreateNewItem?: (item: TaskItem) => void
 }) {
-    const [selectedTarget, setSelectedTarget] = useState(new Set(['']))
-    const taskTargetLabel = useMemo(
-        () => Array.from(selectedTarget)[0],
-        [selectedTarget]
-    )
+    const [taskItem, setTaskItem] = useState<TaskItem>(GlobalEmptyItem)
+    const summitTaskItem = useCallback(() => {
+        BUS.emit(EVENTS.AddTaskItem, taskItem)
+    }, [taskItem])
+
+    taskItem.content.rawText = TaskItemParser.generateTaskItemRawText(taskItem)
 
     priorityOptions = priorityOptions || ['No', 'Low', 'Mid', 'High']
-    const [selectedPriority, setSelectedPriority] = useState(new Set(['']))
 
-    const [dates, setDates] = useState({} as TaskItemDateInfo)
     return (
         <Input
             id='task-input'
-            label={
-                'create in: ' +
-                taskTargetLabel +
-                ' start: ' +
-                dates.start +
-                ' due: ' +
-                dates.due +
-                ' priority: ' +
-                selectedPriority
-            }
+            label={taskItem.content.rawText}
             labelPlacement='outside'
             size='sm'
             classNames={{
@@ -48,6 +37,18 @@ function InputPanel({
                 innerWrapper: 'justify-end p-0 border-none',
                 inputWrapper: 'p-0 h-fit'
             }}
+            value={taskItem?.content.visual}
+            onValueChange={(v) => {
+                setTaskItem(
+                    (prev) =>
+                        ({
+                            ...prev,
+                            content: {
+                                visual: v
+                            }
+                        }) as TaskItem
+                )
+            }}
             placeholder='new tasks'
             endContent={
                 <div className='relative flex items-center gap-0 border-0 bg-transparent outline-none'>
@@ -56,18 +57,63 @@ function InputPanel({
                         icon={iconMap.fileIcon}
                         ariaLabel='List'
                         options={newItemDestinationOptions}
-                        selectedKeys={selectedTarget}
-                        setSelectedKeys={setSelectedTarget}
+                        selectedKeys={new Set(taskItem?.position.visual)}
+                        setSelectedKeys={(v: Selection) => {
+                            // this is a dummy branch
+                            if (v === 'all') return
+                            setTaskItem(
+                                (prev) =>
+                                    ({
+                                        ...prev,
+                                        position: {
+                                            visual: Array.from(v)[0]
+                                                .valueOf()
+                                                .toString()
+                                        }
+                                    }) as TaskItem
+                            )
+                        }}
                     />
                     <TrivialSingleSelect
                         key={'priorities'}
                         ariaLabel='Priority'
                         icon={iconMap.priorityIcon}
                         options={priorityOptions}
-                        selectedKeys={selectedPriority}
-                        setSelectedKeys={setSelectedPriority}
+                        selectedKeys={new Set(taskItem?.priority)}
+                        setSelectedKeys={(v: Selection) => {
+                            // this is a dummy branch
+                            if (v === 'all') return
+                            setTaskItem(
+                                (prev) =>
+                                    ({
+                                        ...prev,
+                                        priority: Array.from(v)[0]
+                                            .valueOf()
+                                            .toString()
+                                    }) as TaskItem
+                            )
+                        }}
                     />
-                    <DatePickerListPopover summitDates={setDates} />
+                    <DatePickerListPopover
+                        summitDates={(dates) => {
+                            setTaskItem(
+                                (prev) =>
+                                    ({
+                                        ...prev,
+                                        dateTime: {
+                                            ...dates
+                                        }
+                                    }) as TaskItem
+                            )
+                        }}
+                    />
+                    <Button
+                        isIconOnly
+                        variant='light'
+                        size='sm'
+                        startContent={enterIcon}
+                        onClick={summitTaskItem}
+                    />
                 </div>
             }
         />

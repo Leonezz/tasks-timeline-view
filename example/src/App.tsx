@@ -1,11 +1,12 @@
 import React from 'react'
 
-import { TimelineView } from 'tasks-timeline-view'
+import { TimelineView, todoStore } from 'tasks-timeline-view'
 import 'tasks-timeline-view/dist/index.css'
 import { TodoList } from './taskList'
 
 const App = () => {
-    return <TimelineView taskList={TodoList} />
+    todoStore.initTodos(TodoList)
+    return <TimelineView />
 }
 
 export default App

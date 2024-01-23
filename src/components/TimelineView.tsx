@@ -20,12 +20,10 @@ import TodayCard from './today/TodayCard'
 import { useGeneralOption } from './options/GlobalOption'
 import OptionsPanel from './options/OptionsPanel'
 import { TimelineOptionType } from './options/OptionDef'
+import { useTodoStore } from '../datastore/useTodoStore'
 
-interface Props {
-    taskList: TaskItem[]
-}
-
-export const TimelineView = ({ taskList }: Props) => {
+export const TimelineView = () => {
+    const taskList = useTodoStore()
     console.debug('raw item list: ', taskList)
 
     const [selectedFilters, setSelectedFilters] = useState({
@@ -143,9 +141,7 @@ export const TimelineView = ({ taskList }: Props) => {
         <NextUIProvider>
             <div className='flex flex-col gap-2'>
                 <OptionsPanel />
-                <TodayCard
-                    unfinishedCnt={10}
-                />
+                <TodayCard unfinishedCnt={10} />
                 <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} />
                 {FilterSortSelectorListCached}
                 {forwardUnfinishedTasks}

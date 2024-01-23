@@ -13,11 +13,22 @@ import {
 import TaskInfoLine from './TaskInfoLine'
 import { TaskItem } from '../../tasks/TaskItem'
 import { useTaskStatusOption } from '../options/GlobalOption'
+import { BUS } from '../../datastore/todoStoreEventBus'
+import { ChangeTaskStautsParam, EVENTS } from '../../datastore/todoStoreEvents'
 
-function CheckboxIcon({ status }: { status: string }) {
+function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
     const { statusConfigs, getStatusColor, getIconFromStatus } =
         useTaskStatusOption()
     const statusColor = getStatusColor(status)
+
+    const onStatusChange = (newStatus: string) => {
+        if (newStatus === status) return
+        BUS.emit(EVENTS.ChangeTaskStauts, {
+            uuid: itemId,
+            newStatus: newStatus
+        } as ChangeTaskStautsParam)
+    }
+
     return (
         <Popover placement='right'>
             <PopoverTrigger className='p-0'>
@@ -41,6 +52,7 @@ function CheckboxIcon({ status }: { status: string }) {
                             startContent={getIconFromStatus(option.label)}
                             key={option.label}
                             color={option.color as ListboxItemProps['color']}
+                            onClick={() => onStatusChange(option.label)}
                         >
                             {option.label}
                         </ListboxItem>
@@ -63,7 +75,9 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
         <Fragment>
             <div className='flex flex-row justify-between'>
                 <Checkbox
-                    icon={<CheckboxIcon status={itemStatus} />}
+                    icon={
+                        <CheckboxIcon status={itemStatus} itemId={item.uuid} />
+                    }
                     isSelected={isStatusDoneType(itemStatus)}
                     lineThrough
                     classNames={{

@@ -1,4 +1,6 @@
+import moment from 'moment'
 import { TaskItem } from './TaskItem'
+import { innerDateTimeFormat } from '../util/defs'
 
 export namespace TaskItemFilter {
     export function filterDate(date: moment.Moment) {
@@ -57,10 +59,10 @@ export namespace TaskItemSort {
     // type TaskItemSortCmp = (a: TaskItem, b: TaskItem) => number;
     function sortText(a: TaskItem, b: TaskItem): number {
         return a.content.visual < b.content.visual
-            ? -1
+            ? 1
             : a.content.visual === b.content.visual
               ? 0
-              : 1
+              : -1
     }
 
     function sortDueDate(a: TaskItem, b: TaskItem): number {
@@ -89,5 +91,30 @@ export namespace TaskItemInfo {
         dateTime.due && dates.push(dateTime.due)
         dateTime.misc && dates.push(...dateTime.misc.values())
         return dates
+    }
+}
+
+export namespace TaskItemParser {
+    export function generateTaskItemRawText(item: TaskItem): string {
+        const metaDateArr = []
+        if (item.status.length > 0) {
+            metaDateArr.push(`[[status::${item.status}]]`)
+        }
+        if (item.priority.length > 0) {
+            metaDateArr.push(`[[priority::${item.priority}]]`)
+        }
+        if (item.recurrence) {
+            metaDateArr.push(`[[recurrence::${item.recurrence}]]`)
+        }
+        for (const [k, v] of Object.entries(item.dateTime)) {
+            const date: moment.Moment = v
+            if (!date.isValid()) continue
+            metaDateArr.push(`[[${k}::${date.format(innerDateTimeFormat)}]]`)
+        }
+        for (const t of item.tags) {
+            metaDateArr.push(`#${t}`)
+        }
+        const metaDataStr = metaDateArr.join(' ') || ''
+        return item.content.visual + ' ' + metaDataStr
     }
 }

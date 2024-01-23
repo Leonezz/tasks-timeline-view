@@ -45,6 +45,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
     "commitlint": "latest",
@@ -68,7 +69,7 @@
     "react": "latest",
     "react-dom": "latest",
     "react-scripts": "latest",
-    "tailwindcss": "latest",
+    "tailwindcss": "^3.4.1",
     "tslib": "latest",
     "typescript": "latest"
   },
@@ -76,6 +77,7 @@
     "dist"
   ],
   "dependencies": {
+    "uuid": "^9.0.1",
     "zustand": "^4.4.7"
   }
 }
