@@ -9,11 +9,9 @@ import { iconMap } from '../asserts/icons'
 // import { innerDateFormat } from "../../util/defs";
 import { useEffect, useState } from 'react'
 import React from 'react'
-
-export interface TaskItemDateInfo {
-    due: string
-    start: string
-}
+import { TaskItemDateTime } from '../../tasks/TaskItem'
+import moment from 'moment'
+import { innerDateFormat, innerTimeFormat } from '../../util/defs'
 
 function DatePickerItem({
     labelPrefix,
@@ -21,12 +19,13 @@ function DatePickerItem({
     setDate
 }: {
     labelPrefix: string
-    date: string
-    setDate: (d: string) => void
+    date: moment.Moment
+    setDate: (d: moment.Moment) => void
 }) {
+    const innerDateTimeFormat = innerDateFormat + ' ' + innerTimeFormat
     return (
         <Input
-            type='date'
+            type='datetime-local'
             size='sm'
             classNames={{
                 base: 'p-0 h-fit',
@@ -36,8 +35,10 @@ function DatePickerItem({
                 inputWrapper: 'p-0 h-fit'
             }}
             label={labelPrefix}
-            value={date}
-            onValueChange={setDate}
+            value={date.format(innerDateTimeFormat)}
+            onValueChange={(v) => {
+                setDate(moment(v, innerDateTimeFormat))
+            }}
             // startContent={iconMap.startIcon}
             labelPlacement='outside-left'
         />
@@ -47,16 +48,16 @@ function DatePickerItem({
 function DatePickerListPopover({
     summitDates
 }: {
-    summitDates: (dates: TaskItemDateInfo) => void
+    summitDates: (dates: TaskItemDateTime) => void
 }) {
     // const todayDateString = moment().format(innerDateFormat);
-    const [dueDate, setDueDate] = useState('')
-    const [startDate, setStartDate] = useState('')
+    const [dueDate, setDueDate] = useState(moment())
+    const [startDate, setStartDate] = useState(moment())
     useEffect(() => {
         const dates = {
             due: dueDate,
             start: startDate
-        }
+        } as TaskItemDateTime
         summitDates(dates)
     }, [dueDate, startDate])
 
