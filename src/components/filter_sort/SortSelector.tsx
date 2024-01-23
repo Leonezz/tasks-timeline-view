@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
     Dropdown,
     DropdownMenu,
@@ -27,15 +27,12 @@ function SortOptionSelector({
 }) {
     const [sortCmp, setSortCmp] = useState<Selection>(new Set([selectedOption]))
 
-    useEffect(() => {
-        if (sortCmp === 'all') return // this is a dummy branch to avoid tslint error
-        if (sortCmp.size === 0) {
-            setSelectedOption('')
-            return
-        }
+    if (sortCmp === 'all' || sortCmp.size === 0) {
+        setSelectedOption('')
+    } else {
         const selectedValue = Array.from(sortCmp)[0]
         setSelectedOption(selectedValue.valueOf().toString())
-    }, [sortCmp])
+    }
 
     const isActive = selectedOption.length > 0 || reversed
 
