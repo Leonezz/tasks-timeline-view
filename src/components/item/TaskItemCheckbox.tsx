@@ -2,19 +2,19 @@ import React, { Fragment } from 'react'
 import {
     Button,
     Checkbox,
-    Divider,
-    Listbox,
-    ListboxItem,
-    ListboxItemProps,
-    Popover,
-    PopoverContent,
-    PopoverTrigger
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownSection,
+    DropdownTrigger,
+    useDisclosure
 } from '@nextui-org/react'
 import TaskInfoLine from './TaskInfoLine'
 import { TaskItem } from '../../tasks/TaskItem'
 import { useTaskStatusOption } from '../options/GlobalOption'
 import { BUS } from '../../datastore/todoStoreEventBus'
 import { ChangeTaskStautsParam, EVENTS } from '../../datastore/todoStoreEvents'
+import TaskItemEditModal from './EditItemModal'
 
 function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
     const { statusConfigs, getStatusColor, getIconFromStatus } =
@@ -29,37 +29,52 @@ function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
         } as ChangeTaskStautsParam)
     }
 
+    const editItemModelDisclosure = useDisclosure()
+
     return (
-        <Popover placement='right'>
-            <PopoverTrigger className='p-0'>
-                <Button
-                    isIconOnly
-                    className={
-                        'h-5 scale-125 bg-transparent p-0 opacity-100' +
-                        ' text-' +
-                        statusColor
-                    }
-                >
-                    {getIconFromStatus(status)}
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className='p-1'>
-                <p className='text-lg font-bold'>Mark as:</p>
-                <Divider />
-                <Listbox>
-                    {statusConfigs.map((option: (typeof statusConfigs)[0]) => (
-                        <ListboxItem
-                            startContent={getIconFromStatus(option.label)}
-                            key={option.label}
-                            color={option.color as ListboxItemProps['color']}
-                            onClick={() => onStatusChange(option.label)}
-                        >
-                            {option.label}
-                        </ListboxItem>
-                    ))}
-                </Listbox>
-            </PopoverContent>
-        </Popover>
+        <Fragment>
+            <Dropdown placement='right'>
+                <DropdownTrigger className='p-0'>
+                    <Button
+                        isIconOnly
+                        className={
+                            'h-5 scale-125 bg-transparent p-0 opacity-100' +
+                            ' text-' +
+                            statusColor
+                        }
+                    >
+                        {getIconFromStatus(status)}
+                    </Button>
+                </DropdownTrigger>
+                <DropdownMenu className='relative z-10 p-1' title='Mark as'>
+                    <DropdownSection>
+                        {statusConfigs.map(
+                            (option: (typeof statusConfigs)[0]) => (
+                                <DropdownItem
+                                    startContent={getIconFromStatus(
+                                        option.label
+                                    )}
+                                    key={option.label}
+                                    color={option.color}
+                                    onClick={() => onStatusChange(option.label)}
+                                >
+                                    {option.label}
+                                </DropdownItem>
+                            )
+                        )}
+                    </DropdownSection>
+                    <DropdownSection>
+                        <DropdownItem onClick={editItemModelDisclosure.onOpen}>
+                            Edit
+                        </DropdownItem>
+                    </DropdownSection>
+                </DropdownMenu>
+            </Dropdown>
+            <TaskItemEditModal
+                id={itemId}
+                disclosure={editItemModelDisclosure}
+            />
+        </Fragment>
     )
 }
 

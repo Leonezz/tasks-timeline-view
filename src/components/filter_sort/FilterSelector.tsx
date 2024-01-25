@@ -65,7 +65,11 @@ function FilterSelector({
                     onValueChange={setSelectedOptions}
                 >
                     {options.map((option, i) => (
-                        <ChipStyleCheckbox key={i} value={option}>
+                        <ChipStyleCheckbox
+                            showicon={true}
+                            key={i}
+                            value={option}
+                        >
                             {option}
                         </ChipStyleCheckbox>
                     ))}

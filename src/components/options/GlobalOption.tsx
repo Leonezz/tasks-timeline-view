@@ -52,7 +52,7 @@ export const useTaskStatusOption = create<
         const configs: TaskStatusDef[] = get().statusConfigs
         const config = configs.filter((item) => item.label === status)
         if (config.length === 0) return 'default'
-        return config[0].color
+        return config[0].color || ''
     },
     isStatusDoneType: (status: string) => {
         const configs: TaskStatusDef[] = get().statusConfigs

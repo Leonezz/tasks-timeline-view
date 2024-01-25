@@ -13,7 +13,14 @@ export type TimelineOptionType = typeof TimelineOption
 export type TaskStatusDef = {
     label: string
     icon: JSX.Element | string
-    color: string
+    color:
+        | 'success'
+        | 'secondary'
+        | 'warning'
+        | 'danger'
+        | 'default'
+        | 'primary'
+        | undefined
     isDoneType: boolean
     isAlertType: boolean
     marker?: string

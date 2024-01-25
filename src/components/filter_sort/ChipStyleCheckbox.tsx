@@ -45,7 +45,11 @@ const checkbox = tv({
     }
 })
 
-export const ChipStyleCheckbox = (props: CheckboxProps) => {
+interface ChipStyleCheckboxProps extends CheckboxProps {
+    showicon: boolean
+}
+
+export const ChipStyleCheckbox = (props: ChipStyleCheckboxProps) => {
     const {
         children,
         isSelected,
@@ -69,9 +73,12 @@ export const ChipStyleCheckbox = (props: CheckboxProps) => {
                     base: styles.base(),
                     content: styles.content()
                 }}
-                color='primary'
+                radius={props.radius}
+                color={props.color}
                 startContent={
-                    isSelected ? <CheckIcon className='ml-1' /> : null
+                    isSelected && props.showicon ? (
+                        <CheckIcon className='ml-1' />
+                    ) : null
                 }
                 variant='faded'
                 {...getLabelProps()}
