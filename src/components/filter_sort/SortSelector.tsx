@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Dropdown,
     DropdownMenu,
@@ -27,12 +27,14 @@ function SortOptionSelector({
 }) {
     const [sortCmp, setSortCmp] = useState<Selection>(new Set([selectedOption]))
 
-    if (sortCmp === 'all' || sortCmp.size === 0) {
-        setSelectedOption('')
-    } else {
-        const selectedValue = Array.from(sortCmp)[0]
-        setSelectedOption(selectedValue.valueOf().toString())
-    }
+    useEffect(() => {
+        if (sortCmp === 'all' || sortCmp.size === 0) {
+            setSelectedOption('')
+        } else {
+            const selectedValue = Array.from(sortCmp)[0]
+            setSelectedOption(selectedValue.valueOf().toString())
+        }
+    }, [sortCmp])
 
     const isActive = selectedOption.length > 0 || reversed
 
