@@ -23,6 +23,8 @@ import { fileIcon, tagIcon } from '../asserts/icons'
 import { useTaskStatusOption } from '../options/GlobalOption'
 import { TaskStatusDef } from '../options/OptionDef'
 import TaskRecurrenceModal from './TaskRecurrence'
+import { RRule } from 'rrule'
+import moment from 'moment'
 
 const TaskItemEditModal = ({
     id,
@@ -269,7 +271,10 @@ const TaskItemEditModal = ({
                     )}
                 </ModalContent>
             </Modal>
-            <TaskRecurrenceModal disclosure={editTaskRecurrenceDisclosure} />
+            <TaskRecurrenceModal
+                disclosure={editTaskRecurrenceDisclosure}
+                options={new RRule({ tzid: moment().zoneName() }).origOptions}
+            />
         </Fragment>
     )
 }
