@@ -24,7 +24,6 @@ import { useTaskStatusOption } from '../options/GlobalOption'
 import { TaskStatusDef } from '../options/OptionDef'
 import TaskRecurrenceModal from './TaskRecurrence'
 import { RRule } from 'rrule'
-import moment from 'moment'
 
 const TaskItemEditModal = ({
     id,
@@ -273,7 +272,7 @@ const TaskItemEditModal = ({
             </Modal>
             <TaskRecurrenceModal
                 disclosure={editTaskRecurrenceDisclosure}
-                options={new RRule({ tzid: moment().zoneName() }).origOptions}
+                options={new RRule().origOptions}
             />
         </Fragment>
     )

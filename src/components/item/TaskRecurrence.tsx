@@ -115,22 +115,27 @@ const RecurrenceIntervalModeTabs = ({
 
     // repeat mode
     const [repeatBy, setRepeatBy] = useState(
-        initialOptions.freq || Frequency.DAILY
+        initialOptions.freq !== undefined
+            ? initialOptions.freq
+            : Frequency.DAILY
     )
 
     // repeat interval
     const [dailyInterval, setDailyInterval] = useState(
-        initialOptions.freq && initialOptions.freq === Frequency.DAILY
+        initialOptions.freq !== undefined &&
+            initialOptions.freq === Frequency.DAILY
             ? initialOptions.interval || 1
             : 1
     )
     const [weeklyInterval, setWeeklyInterval] = useState(
-        initialOptions.freq && initialOptions.freq === Frequency.WEEKLY
+        initialOptions.freq !== undefined &&
+            initialOptions.freq === Frequency.WEEKLY
             ? initialOptions.interval || 1
             : 1
     )
     const [monthlyInterval, setMonthlyInterval] = useState(
-        initialOptions.freq && initialOptions.freq === Frequency.MONTHLY
+        initialOptions.freq !== undefined &&
+            initialOptions.freq === Frequency.MONTHLY
             ? initialOptions.interval || 1
             : 1
     )
@@ -415,9 +420,10 @@ const RecurrenceRangeEdit = ({
     useEffect(() => {
         onValueChange({
             ...ruleOption,
-            dtstart: moment(startDate).utc().toDate(),
+            dtstart: moment(startDate).utc(true).toDate(),
             count: endMode === 'cnt' ? repeatCnt : null,
-            until: endMode === 'util' ? moment(endDate).utc().toDate() : null
+            until:
+                endMode === 'util' ? moment(endDate).utc(true).toDate() : null
         })
     }, [startDate, endMode, repeatCnt, endDate])
 
@@ -494,13 +500,15 @@ const RecurrencePreview = ({
 
     const dates = rule
         .between(
-            previewMonth.startOf('month').toDate(),
-            previewMonth.endOf('month').toDate(),
+            previewMonth.utc(true).startOf('month').toDate(),
+            previewMonth.utc(true).endOf('month').toDate(),
             true
         )
         .map((d) => {
-            return moment(d).utc().format(innerDateFormat)
+            return moment(d).utc(false).format(innerDateFormat)
         })
+    console.log(dates)
+    console.log(rule)
     const tileContent = useCallback(
         (date: Date, view: string) => {
             if (view !== 'month') return null
