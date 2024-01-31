@@ -344,13 +344,18 @@ const RecurrenceIntervalModeTabs = ({
                                     )}
                                     onSelectionChange={(k) => {
                                         if (k === 'all') return
-                                        setRepeatWeekdays([
-                                            Number(
-                                                Array.from(k)[0]
-                                                    .valueOf()
-                                                    .toString()
-                                            )
-                                        ])
+                                        const selectedWeekDays = Array.from(k)
+                                        if (selectedWeekDays.length === 0) {
+                                            setRepeatWeekdays([])
+                                        } else {
+                                            setRepeatWeekdays([
+                                                Number(
+                                                    selectedWeekDays[0]
+                                                        .valueOf()
+                                                        .toString()
+                                                )
+                                            ])
+                                        }
                                     }}
                                     key='weekday'
                                     aria-label='which weekday'
