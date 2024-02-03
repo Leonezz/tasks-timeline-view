@@ -1,4 +1,4 @@
-import React, { Fragment, ReactElement, useState } from 'react'
+import React, { Fragment, Key, ReactElement, useState } from 'react'
 import {
     Chip,
     Button,
@@ -18,7 +18,9 @@ import {
     Tabs,
     Textarea,
     UseDisclosureProps,
-    useDisclosure
+    useDisclosure,
+    Autocomplete,
+    AutocompleteItem
 } from '@nextui-org/react'
 import { todoStore } from '../../datastore/useTodoStore'
 import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
@@ -111,6 +113,41 @@ const TagsSelect = ({
     )
 }
 
+const CategoryListSelect = ({
+    initialCategory
+}: {
+    initialCategory: string
+}) => {
+    const [selectedCategory, setSelectedCategory] = useState(initialCategory)
+    const options = new Set(['test1', 'test2'])
+    return (
+        <Autocomplete
+            items={options}
+            label='Category'
+            multiple={true}
+            startContent={fileIcon}
+            labelPlacement='outside'
+            inputMode='text'
+            menuTrigger='input'
+            inputValue={selectedCategory}
+            onInputChange={(v) => setSelectedCategory(v)}
+            allowsCustomValue
+            selectedKey={selectedCategory}
+            onSelectionChange={(k: Key) => {
+                if (typeof k === 'string') {
+                    setSelectedCategory(k)
+                }
+            }}
+        >
+            {[...options].map((option) => (
+                <AutocompleteItem key={option.toString()}>
+                    {option}
+                </AutocompleteItem>
+            ))}
+        </Autocomplete>
+    )
+}
+
 const TaskItemEditModal = ({
     id,
     disclosure
@@ -185,15 +222,7 @@ const TaskItemEditModal = ({
                                             label='Content'
                                             labelPlacement='outside'
                                         />
-                                        <Select
-                                            label='Category'
-                                            startContent={fileIcon}
-                                            labelPlacement='outside'
-                                        >
-                                            <SelectItem key={'test'}>
-                                                test
-                                            </SelectItem>
-                                        </Select>
+                                        <CategoryListSelect initialCategory='' />
                                         <TagsSelect
                                             initTags={
                                                 taskItem?.tags || new Set()
