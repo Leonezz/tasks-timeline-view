@@ -71,7 +71,6 @@ const TagsSelect = ({
             selectionMode='multiple'
             value={Array.from(selectedTags)}
             onSelectionChange={(keys: Selection) => {
-                console.log(keys)
                 if (keys === 'all') {
                     return
                 }
