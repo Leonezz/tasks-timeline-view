@@ -87,6 +87,18 @@ And the result:
 
 ![](imgs/1.png)
 
+Status change popup:
+
+![](imgs/2.png)
+
+Task item edit:
+
+![](imgs/3.png)
+
+Recurrence mode edit:
+
+![](imgs/4.png)
+
 ## License
 
 MIT © [Leonezz](https://github.com/Leonezz)
