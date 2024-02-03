@@ -1,5 +1,6 @@
 import React, { Fragment, ReactElement, useState } from 'react'
 import {
+    Chip,
     Button,
     Checkbox,
     Divider,
@@ -12,6 +13,7 @@ import {
     Select,
     SelectItem,
     SelectSection,
+    Selection,
     Tab,
     Tabs,
     Textarea,
@@ -19,11 +21,95 @@ import {
     useDisclosure
 } from '@nextui-org/react'
 import { todoStore } from '../../datastore/useTodoStore'
-import { fileIcon, tagIcon } from '../asserts/icons'
+import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
 import { useTaskStatusOption } from '../options/GlobalOption'
 import { TaskStatusDef } from '../options/OptionDef'
 import TaskRecurrenceModal from './TaskRecurrence'
 import { RRule } from 'rrule'
+import { innerDateTimeFormat } from '../../util/defs'
+import moment from 'moment'
+
+const TagsSelect = ({
+    initTags,
+    selectedTags,
+    onSelectTags
+}: {
+    initTags: Set<string>
+    selectedTags: Set<string>
+    onSelectTags: (value: React.SetStateAction<Set<string>>) => void
+}) => {
+    const renderTagsRow = (tag: string) => {
+        return (
+            <Chip size='sm' variant='flat' key={tag}>
+                {tag}
+            </Chip>
+        )
+    }
+    const NewTagInputConfirmButton = () => {
+        return (
+            <Button
+                isIconOnly={true}
+                variant='light'
+                onClick={() => {
+                    // this is not working... why?
+                    onSelectTags((prev) => new Set([newTagContent, ...prev]))
+                    setTagOptions((prev) => new Set([newTagContent, ...prev]))
+                    setNewTagContent('')
+                }}
+            >
+                {enterIcon}
+            </Button>
+        )
+    }
+    const [newTagContent, setNewTagContent] = useState('')
+    const [tagOptions, setTagOptions] = useState(initTags)
+    return (
+        <Select
+            items={tagOptions}
+            selectionMode='multiple'
+            value={Array.from(selectedTags)}
+            onSelectionChange={(keys: Selection) => {
+                console.log(keys)
+                if (keys === 'all') {
+                    return
+                }
+                onSelectTags(
+                    new Set(
+                        [...keys.values()].map((k) => k.valueOf().toString())
+                    )
+                )
+            }}
+            label='Tags'
+            startContent={tagIcon}
+            labelPlacement='outside'
+            renderValue={(items) =>
+                items.map((v) => renderTagsRow(v.textValue || '-'))
+            }
+        >
+            <SelectSection
+                key={1}
+                classNames={{
+                    heading: 'flex w-full sticky z-20 top-1 '
+                }}
+                title={
+                    (
+                        <Input
+                            size='sm'
+                            value={newTagContent}
+                            onValueChange={setNewTagContent}
+                            startContent={'New Tag'}
+                            endContent={<NewTagInputConfirmButton />}
+                        />
+                    ) as ReactElement & string
+                }
+            >
+                {Array.from(tagOptions).map((t) => (
+                    <SelectItem key={t}>{t}</SelectItem>
+                ))}
+            </SelectSection>
+        </Select>
+    )
+}
 
 const TaskItemEditModal = ({
     id,
@@ -49,6 +135,8 @@ const TaskItemEditModal = ({
         taskItem?.dateTime.completion?.format(innerDateTimeFormat) ||
             moment().format(innerDateTimeFormat)
     )
+
+    const [selectedTags, setSelectedTags] = useState(new Set<string>())
 
     const { statusConfigs, getIconFromStatus } = useTaskStatusOption()
 
@@ -106,49 +194,13 @@ const TaskItemEditModal = ({
                                                 test
                                             </SelectItem>
                                         </Select>
-                                        <Select
-                                            multiple
-                                            label='Tags'
-                                            startContent={tagIcon}
-                                            labelPlacement='outside'
-                                        >
-                                            <SelectSection
-                                                key={1}
-                                                classNames={{
-                                                    heading:
-                                                        'flex w-full sticky z-20 top-1 '
-                                                }}
-                                                title={
-                                                    (
-                                                        <Input
-                                                            size='sm'
-                                                            startContent={
-                                                                tagIcon
-                                                            }
-                                                        />
-                                                    ) as ReactElement & string
-                                                }
-                                            >
-                                                <SelectItem key={2}>
-                                                    1
-                                                </SelectItem>
-                                                <SelectItem key={3}>
-                                                    2
-                                                </SelectItem>
-                                                <SelectItem key={4}>
-                                                    1
-                                                </SelectItem>
-                                                <SelectItem key={5}>
-                                                    2
-                                                </SelectItem>
-                                                <SelectItem key={6}>
-                                                    1
-                                                </SelectItem>
-                                                <SelectItem key={7}>
-                                                    2
-                                                </SelectItem>
-                                            </SelectSection>
-                                        </Select>
+                                        <TagsSelect
+                                            initTags={
+                                                taskItem?.tags || new Set()
+                                            }
+                                            selectedTags={selectedTags}
+                                            onSelectTags={setSelectedTags}
+                                        />
                                     </Tab>
                                     <Tab
                                         title='Dates and Status'
