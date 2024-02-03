@@ -35,8 +35,20 @@ const TaskItemEditModal = ({
     const taskItem = todoStore.getItemById(id)
 
     const [isStartDateEnabled, setStartDateEnabled] = useState(true)
+    const [startDate, setStartDate] = useState(
+        taskItem?.dateTime.start?.format(innerDateTimeFormat) ||
+            moment().format(innerDateTimeFormat)
+    )
     const [isDueDateEnabled, setDueDateEnabled] = useState(true)
-    const [isDoneDateEnabled, setDoneDateEnabled] = useState(true)
+    const [dueDate, setDueDate] = useState(
+        taskItem?.dateTime.due?.format(innerDateTimeFormat) ||
+            moment().format(innerDateTimeFormat)
+    )
+    const [isDoneDateEnabled, setDoneDateEnabled] = useState(false)
+    const [doneDate, setDoneDate] = useState(
+        taskItem?.dateTime.completion?.format(innerDateTimeFormat) ||
+            moment().format(innerDateTimeFormat)
+    )
 
     const { statusConfigs, getIconFromStatus } = useTaskStatusOption()
 
@@ -148,6 +160,8 @@ const TaskItemEditModal = ({
                                                 label='Start At'
                                                 type='datetime-local'
                                                 labelPlacement='inside'
+                                                value={startDate}
+                                                onValueChange={setStartDate}
                                             />
                                             <Checkbox
                                                 isSelected={isStartDateEnabled}
@@ -162,6 +176,8 @@ const TaskItemEditModal = ({
                                                 label='Due At'
                                                 type='datetime-local'
                                                 labelPlacement='inside'
+                                                value={dueDate}
+                                                onValueChange={setDueDate}
                                             />
                                             <Checkbox
                                                 isSelected={isDueDateEnabled}
@@ -203,6 +219,8 @@ const TaskItemEditModal = ({
                                                 label='Due At'
                                                 type='datetime-local'
                                                 labelPlacement='inside'
+                                                value={doneDate}
+                                                onValueChange={setDoneDate}
                                             />
                                             <Checkbox
                                                 isSelected={isDoneDateEnabled}
