@@ -32,11 +32,9 @@ import { innerDateTimeFormat } from '../../util/defs'
 import moment from 'moment'
 
 const TagsSelect = ({
-    initTags,
     selectedTags,
     onSelectTags
 }: {
-    initTags: Set<string>
     selectedTags: Set<string>
     onSelectTags: (value: React.SetStateAction<Set<string>>) => void
 }) => {
@@ -64,7 +62,9 @@ const TagsSelect = ({
         )
     }
     const [newTagContent, setNewTagContent] = useState('')
-    const [tagOptions, setTagOptions] = useState(initTags)
+    const [tagOptions, setTagOptions] = useState(
+        new Set([...selectedTags, 'test1', 'test2'])
+    )
     return (
         <Select
             items={tagOptions}
@@ -173,7 +173,9 @@ const TaskItemEditModal = ({
             moment().format(innerDateTimeFormat)
     )
 
-    const [selectedTags, setSelectedTags] = useState(new Set<string>())
+    const [selectedTags, setSelectedTags] = useState(
+        taskItem?.tags || new Set<string>()
+    )
 
     const { statusConfigs, getIconFromStatus } = useTaskStatusOption()
 
@@ -224,9 +226,6 @@ const TaskItemEditModal = ({
                                         />
                                         <CategoryListSelect initialCategory='' />
                                         <TagsSelect
-                                            initTags={
-                                                taskItem?.tags || new Set()
-                                            }
                                             selectedTags={selectedTags}
                                             onSelectTags={setSelectedTags}
                                         />
