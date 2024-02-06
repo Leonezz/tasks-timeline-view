@@ -1,5 +1,7 @@
+import { TaskItem } from "../tasks/TaskItem"
+
 export enum EVENTS {
-    ChangeTaskStauts = 'changeTaskStatus',
+    ChangeTaskProperty = 'changeTaskStatus',
     AddTaskItem = 'addTaskItem'
 }
 
@@ -7,6 +9,6 @@ interface TaskItemEventParam {
     uuid: string
 }
 
-export interface ChangeTaskStautsParam extends TaskItemEventParam {
-    newStatus: string
+export interface ChangeTaskPropertyParam extends TaskItemEventParam {
+    change: Partial<TaskItem>
 }

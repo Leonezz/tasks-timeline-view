@@ -13,7 +13,10 @@ import TaskInfoLine from './TaskInfoLine'
 import { TaskItem } from '../../tasks/TaskItem'
 import { useTaskStatusOption } from '../options/GlobalOption'
 import { BUS } from '../../datastore/todoStoreEventBus'
-import { ChangeTaskStautsParam, EVENTS } from '../../datastore/todoStoreEvents'
+import {
+    ChangeTaskPropertyParam,
+    EVENTS
+} from '../../datastore/todoStoreEvents'
 import TaskItemEditModal from './EditItemModal'
 
 function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
@@ -23,10 +26,10 @@ function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
 
     const onStatusChange = (newStatus: string) => {
         if (newStatus === status) return
-        BUS.emit(EVENTS.ChangeTaskStauts, {
+        BUS.emit(EVENTS.ChangeTaskProperty, {
             uuid: itemId,
-            newStatus: newStatus
-        } as ChangeTaskStautsParam)
+            change: { status: newStatus }
+        } as ChangeTaskPropertyParam)
     }
 
     const editItemModelDisclosure = useDisclosure()

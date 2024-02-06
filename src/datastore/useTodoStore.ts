@@ -2,7 +2,7 @@ import { useEffect, useSyncExternalStore } from 'react'
 import { TaskItem } from '../tasks/TaskItem'
 import { v4 as uuidv4 } from 'uuid'
 import { BUS } from './todoStoreEventBus'
-import { ChangeTaskStautsParam, EVENTS } from './todoStoreEvents'
+import { ChangeTaskPropertyParam, EVENTS } from './todoStoreEvents'
 
 let _todos = [] as TaskItem[]
 let listeners = [] as (() => any)[]
@@ -18,6 +18,13 @@ export const todoStore = {
     addTodo(todo: TaskItem) {
         todo.uuid = uuidv4()
         _todos = [..._todos, todo]
+        emitChange()
+    },
+    changeTodo(uuid: string, newItem: Partial<TaskItem>) {
+        _todos = _todos.map((v) => {
+            if(v.uuid !== uuid) return v;
+            return Object.assign(v, newItem)
+        })
         emitChange()
     },
     deleteTodo(id: string) {
@@ -54,11 +61,11 @@ export const useTodoStore = () => {
     )
 
     useEffect(() => {
-        BUS.on(EVENTS.ChangeTaskStauts, changeTodoItemStauts)
+        BUS.on(EVENTS.ChangeTaskProperty, changeTodoItemProperty)
         BUS.on(EVENTS.AddTaskItem, addTodoItem)
 
         return () => {
-            BUS.off(EVENTS.ChangeTaskStauts, changeTodoItemStauts)
+            BUS.off(EVENTS.ChangeTaskProperty, changeTodoItemProperty)
             BUS.off(EVENTS.AddTaskItem, addTodoItem)
         }
     }, [])
@@ -66,13 +73,9 @@ export const useTodoStore = () => {
     return todos
 }
 
-const changeTodoItemStauts = (param: ChangeTaskStautsParam) => {
-    const { uuid, newStatus } = param
-    const item = todoStore.getItemById(uuid)
-    if (item === null) return
-    item.status = newStatus
-    todoStore.deleteTodo(uuid)
-    todoStore.addTodo(item)
+const changeTodoItemProperty = (param: ChangeTaskPropertyParam) => {
+    const { uuid, change } = param
+    todoStore.changeTodo(uuid, change)
 }
 
 const addTodoItem = (param: TaskItem) => {
