@@ -1,3 +1,5 @@
+import { RRule } from "rrule"
+
 export interface TaskItemDateTime {
     /** If present, then the time that this task was created. */
     created?: moment.Moment
@@ -51,7 +53,7 @@ export interface TaskItem {
     /**
      * recurrence
      */
-    recurrence?: string
+    recurrence?: RRule
     /**
      * Task item status
      */
