@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { NextUIProvider } from '@nextui-org/react'
+import { NextUIProvider, ScrollShadow } from '@nextui-org/react'
 import moment from 'moment'
 import YearAccordion from './year/YearAccordion'
 import InputPanel from './input/InputPanel'
@@ -137,35 +137,44 @@ export const TimelineView = () => {
         [tags, files, priorities, status]
     )
 
+    //TODO: background color need to adjust according to the theme
     return (
         <NextUIProvider>
-            <div className='flex flex-col gap-2'>
-                <OptionsPanel />
-                <TodayCard unfinishedCnt={10} />
-                <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} />
-                {FilterSortSelectorListCached}
-                {forwardUnfinishedTasks}
-                <div>
-                    {selectedFilters.files}
-                    {selectedFilters.priorities}
-                    {selectedFilters.status}
-                    {selectedFilters.tags}
+            <ScrollShadow
+                hideScrollBar
+                visibility='bottom'
+                className='h-screen bg-white pb-5'
+            >
+                <div className='sticky top-0 z-50 flex min-h-max flex-col gap-2 bg-inherit bg-opacity-0'>
+                    <OptionsPanel />
+                    <TodayCard unfinishedCnt={10} />
+                    <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} />
+                    {FilterSortSelectorListCached}
+                    {forwardUnfinishedTasks}
+                    <div>
+                        {selectedFilters.files}
+                        {selectedFilters.priorities}
+                        {selectedFilters.status}
+                        {selectedFilters.tags}
+                    </div>
                 </div>
-            </div>
-            {sortedInvolvedYears.map((y) => {
-                return (
-                    <YearAccordion
-                        key={y}
-                        year={y}
-                        dateTaskMap={
-                            (yearDateTaskMap.get(y) || {}) as Map<
-                                string,
-                                TaskItem[]
-                            >
-                        }
-                    />
-                )
-            })}
+                <div className='relative z-40'>
+                    {sortedInvolvedYears.map((y) => {
+                        return (
+                            <YearAccordion
+                                key={y}
+                                year={y}
+                                dateTaskMap={
+                                    (yearDateTaskMap.get(y) || {}) as Map<
+                                        string,
+                                        TaskItem[]
+                                    >
+                                }
+                            />
+                        )
+                    })}
+                </div>
+            </ScrollShadow>
         </NextUIProvider>
     )
 }
