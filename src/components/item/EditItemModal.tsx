@@ -158,6 +158,34 @@ const CategoryListSelect = ({
     )
 }
 
+const PrioritySelect = ({
+    priority,
+    setPriority
+}: {
+    priority: string
+    setPriority: (p: string) => any
+}) => {
+    const priorityLabels = ['High', 'Medium', 'Low', 'No']
+    return (
+        <Select
+            items={priorityLabels}
+            selectedKeys={[priority]}
+            onSelectionChange={(keys) => {
+                if (keys === 'all') return
+                const selection = [...keys.keys()][0].valueOf().toString()
+                setPriority(selection)
+            }}
+            selectionMode='single'
+            label='Priority'
+            labelPlacement='outside'
+        >
+            {priorityLabels.map((l) => (
+                <SelectItem key={l}>{l}</SelectItem>
+            ))}
+        </Select>
+    )
+}
+
 const TaskItemEditModal = ({
     id,
     disclosure
@@ -190,6 +218,8 @@ const TaskItemEditModal = ({
     const [selectedTags, setSelectedTags] = useState(
         taskItem.tags || new Set<string>()
     )
+
+    const [priority, setPriority] = useState(taskItem.priority)
 
     const { statusConfigs, getIconFromStatus } = useTaskStatusOption()
     const [taskStatus, setTaskStatus] = useState(taskItem.status)
@@ -231,6 +261,7 @@ const TaskItemEditModal = ({
                         : null
                 },
                 tags: selectedTags,
+                priority: priority,
                 status: taskStatus
             }
         } as ChangeTaskPropertyParam)
@@ -244,6 +275,7 @@ const TaskItemEditModal = ({
         isDoneDateEnabled,
         doneDate,
         selectedTags,
+        priority,
         taskStatus
     ])
 
@@ -283,6 +315,10 @@ const TaskItemEditModal = ({
                                             labelPlacement='outside'
                                         />
                                         <CategoryListSelect initialCategory='' />
+                                        <PrioritySelect
+                                            priority={priority}
+                                            setPriority={setPriority}
+                                        />
                                         <TagsSelect
                                             selectedTags={selectedTags}
                                             onSelectTags={setSelectedTags}
