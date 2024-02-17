@@ -1,4 +1,10 @@
-import React, { Fragment, Key, ReactElement, useState } from 'react'
+import React, {
+    Fragment,
+    Key,
+    ReactElement,
+    useCallback,
+    useState
+} from 'react'
 import {
     Chip,
     Button,
@@ -27,9 +33,14 @@ import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
 import { useTaskStatusOption } from '../options/GlobalOption'
 import { TaskStatusDef } from '../options/OptionDef'
 import TaskRecurrenceModal from './TaskRecurrence'
-import { RRule } from 'rrule'
 import { innerDateTimeFormat } from '../../util/defs'
 import moment from 'moment'
+import {
+    ChangeTaskPropertyParam,
+    EVENTS
+} from '../../datastore/todoStoreEvents'
+import { BUS } from '../../datastore/todoStoreEventBus'
+import { TaskItem } from '../../tasks/TaskItem'
 
 const TagsSelect = ({
     selectedTags,
@@ -69,7 +80,7 @@ const TagsSelect = ({
         <Select
             items={tagOptions}
             selectionMode='multiple'
-            value={Array.from(selectedTags)}
+            selectedKeys={selectedTags}
             onSelectionChange={(keys: Selection) => {
                 if (keys === 'all') {
                     return
@@ -154,33 +165,41 @@ const TaskItemEditModal = ({
     id: string
     disclosure: UseDisclosureProps
 }) => {
-    const taskItem = todoStore.getItemById(id)
+    const taskItem = todoStore.getItemById(id) || ({} as TaskItem)
+
+    const [taskItemContentVisual, setTaskItemContentVisual] = useState(
+        taskItem.content.visual
+    )
 
     const [isStartDateEnabled, setStartDateEnabled] = useState(true)
     const [startDate, setStartDate] = useState(
-        taskItem?.dateTime.start?.format(innerDateTimeFormat) ||
+        taskItem.dateTime.start?.format(innerDateTimeFormat) ||
             moment().format(innerDateTimeFormat)
     )
     const [isDueDateEnabled, setDueDateEnabled] = useState(true)
     const [dueDate, setDueDate] = useState(
-        taskItem?.dateTime.due?.format(innerDateTimeFormat) ||
+        taskItem.dateTime.due?.format(innerDateTimeFormat) ||
             moment().format(innerDateTimeFormat)
     )
     const [isDoneDateEnabled, setDoneDateEnabled] = useState(false)
     const [doneDate, setDoneDate] = useState(
-        taskItem?.dateTime.completion?.format(innerDateTimeFormat) ||
+        taskItem.dateTime.completion?.format(innerDateTimeFormat) ||
             moment().format(innerDateTimeFormat)
     )
 
     const [selectedTags, setSelectedTags] = useState(
-        taskItem?.tags || new Set<string>()
+        taskItem.tags || new Set<string>()
     )
 
     const { statusConfigs, getIconFromStatus } = useTaskStatusOption()
+    const [taskStatus, setTaskStatus] = useState(taskItem.status)
 
     const renderStatusRow = (statusOption: TaskStatusDef) => {
         return (
-            <div className={`flex flex-row gap-2 text-${statusOption.color}`}>
+            <div
+                key={statusOption.label}
+                className={`flex flex-row gap-2 text-${statusOption.color}`}
+            >
                 <div className='self-center'>
                     {getIconFromStatus(statusOption.label)}
                 </div>
@@ -190,6 +209,43 @@ const TaskItemEditModal = ({
     }
 
     const editTaskRecurrenceDisclosure = useDisclosure()
+
+    const summitEdit = useCallback(() => {
+        BUS.emit(EVENTS.ChangeTaskProperty, {
+            uuid: id,
+            change: {
+                content: {
+                    ...taskItem.content,
+                    visual: taskItemContentVisual
+                },
+                dateTime: {
+                    ...taskItem.dateTime,
+                    start: isStartDateEnabled
+                        ? moment(startDate, innerDateTimeFormat)
+                        : null,
+                    due: isDueDateEnabled
+                        ? moment(dueDate, innerDateTimeFormat)
+                        : null,
+                    completion: isDoneDateEnabled
+                        ? moment(doneDate, innerDateTimeFormat)
+                        : null
+                },
+                tags: selectedTags,
+                status: taskStatus
+            }
+        } as ChangeTaskPropertyParam)
+    }, [
+        taskItem,
+        taskItemContentVisual,
+        isStartDateEnabled,
+        startDate,
+        isDueDateEnabled,
+        dueDate,
+        isDoneDateEnabled,
+        doneDate,
+        selectedTags,
+        taskStatus
+    ])
 
     return (
         <Fragment>
@@ -219,7 +275,10 @@ const TaskItemEditModal = ({
                                         className='flex flex-col gap-2'
                                     >
                                         <Textarea
-                                            value={taskItem?.content.visual}
+                                            value={taskItemContentVisual}
+                                            onValueChange={
+                                                setTaskItemContentVisual
+                                            }
                                             label='Content'
                                             labelPlacement='outside'
                                         />
@@ -267,6 +326,19 @@ const TaskItemEditModal = ({
                                         </div>
                                         <Select
                                             items={statusConfigs}
+                                            selectionMode='single'
+                                            selectedKeys={new Set([taskStatus])}
+                                            onSelectionChange={(s) => {
+                                                if (s === 'all') {
+                                                    return
+                                                }
+                                                const keys = Array.from(
+                                                    s.keys()
+                                                )
+                                                setTaskStatus(
+                                                    keys[0].valueOf().toString()
+                                                )
+                                            }}
                                             label='Status'
                                             labelPlacement='outside'
                                             renderValue={(items) => {
@@ -361,7 +433,15 @@ const TaskItemEditModal = ({
                                 <Button color='danger' onClick={onClose}>
                                     Discard
                                 </Button>
-                                <Button color='primary'>Save</Button>
+                                <Button
+                                    color='primary'
+                                    onClick={() => {
+                                        summitEdit()
+                                        onClose()
+                                    }}
+                                >
+                                    Save
+                                </Button>
                             </ModalFooter>
                         </Fragment>
                     )}
