@@ -1,6 +1,6 @@
 import IconOnlyBadge from './IconOnlyBadge'
 import TagBadge from './TagBadge'
-import { Fragment, MouseEventHandler, useMemo } from 'react'
+import { Fragment, MouseEventHandler } from 'react'
 // import { getFileTitle } from '../../util/string'
 import { iconMap } from '../asserts/icons'
 import IconDateBadge from './IconDateBadge'
@@ -35,36 +35,28 @@ function TaskInfoLine({
         )
     }
 
-    const createDateBadge = useMemo(
-        () => buildDateBadge(dates?.created, 'create at ', iconMap.taskIcon),
-        [dates?.created]
+    const createDateBadge = buildDateBadge(
+        dates?.created,
+        'create at ',
+        iconMap.taskIcon
     )
-    const startDateBadge = useMemo(
-        () => buildDateBadge(dates?.start, 'start at ', iconMap.startIcon),
-        [dates?.start]
+
+    const startDateBadge = buildDateBadge(
+        dates?.start,
+        'start at ',
+        iconMap.startIcon
     )
-    const scheduledDateBadge = useMemo(
-        () =>
-            buildDateBadge(
-                dates?.scheduled,
-                'scheduled to ',
-                iconMap.scheduledIcon
-            ),
-        [dates?.scheduled]
+    const scheduledDateBadge = buildDateBadge(
+        dates?.scheduled,
+        'scheduled to ',
+        iconMap.scheduledIcon
     )
-    const dueDateBadge = useMemo(
-        () => buildDateBadge(dates?.due, 'due at ', iconMap.dueIcon),
-        [dates?.due]
-    )
-    const completeDateBadge = useMemo(
-        () =>
-            buildDateBadge(
-                dates?.completion,
-                'complete at ',
-                iconMap.doneIcon,
-                'text-success'
-            ),
-        [dates?.completion]
+    const dueDateBadge = buildDateBadge(dates?.due, 'due at ', iconMap.dueIcon)
+    const completeDateBadge = buildDateBadge(
+        dates?.completion,
+        'complete at ',
+        iconMap.doneIcon,
+        'text-success'
     )
 
     const buildIconTextBadge = (
@@ -87,39 +79,29 @@ function TaskInfoLine({
         )
     }
 
-    const recurrenceBadge = useMemo(
-        () =>
-            buildIconTextBadge(
-                iconMap.repeatIcon,
-                item.recurrence || '',
-                'recurrent: ',
-                item.recurrence
-            ),
-        [item.recurrence]
+    const recurrenceLabel =
+        (item.recurrence && item.recurrence.toText()) || 'no repeat'
+    const recurrenceBadge = buildIconTextBadge(
+        iconMap.repeatIcon,
+        recurrenceLabel,
+        'recurrent: ',
+        recurrenceLabel
     )
-    const priorityBadge = useMemo(
-        () =>
-            buildIconTextBadge(
-                iconMap.priorityIcon,
-                item.priority,
-                'priority: ',
-                item.priority,
-                item.priority === 'High'
-                    ? 'text-warning'
-                    : item.priority === 'Medium'
-                      ? 'text-secondary'
-                      : ''
-            ),
-        [item.priority]
+    const priorityBadge = buildIconTextBadge(
+        iconMap.priorityIcon,
+        item.priority,
+        'priority: ',
+        item.priority,
+        item.priority === 'High'
+            ? 'text-warning'
+            : item.priority === 'Medium'
+              ? 'text-secondary'
+              : ''
     )
-    const positionBadge = useMemo(
-        () =>
-            buildIconTextBadge(
-                iconMap.fileIcon,
-                item.position.visual,
-                item.position.visual
-            ),
-        [item.position.visual]
+    const positionBadge = buildIconTextBadge(
+        iconMap.fileIcon,
+        item.position.visual,
+        item.position.visual
     )
 
     return (
