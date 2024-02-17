@@ -367,7 +367,7 @@ const TaskItemEditModal = ({
                                         <div className='flex flex-row gap-2'>
                                             <Input
                                                 isReadOnly={!isDoneDateEnabled}
-                                                label='Due At'
+                                                label='Done At'
                                                 type='datetime-local'
                                                 labelPlacement='inside'
                                                 value={doneDate}
