@@ -33,6 +33,12 @@ import {
     ByWeekday,
     Weekday
 } from 'rrule'
+import { todoStore } from '../../datastore/useTodoStore'
+import {
+    ChangeTaskPropertyParam,
+    EVENTS
+} from '../../datastore/todoStoreEvents'
+import { BUS } from '../../datastore/todoStoreEventBus'
 
 const RecurrenceNumInput = ({
     prefix,
@@ -552,13 +558,22 @@ const RecurrencePreview = ({
 
 const TaskRecurrenceModal = ({
     disclosure,
-    options
+    id
 }: {
     disclosure: UseDisclosureProps
-    options: Partial<RRuleOptions>
+    id: string
 }) => {
-    const [ruleOption, setRuleOption] = useState<Partial<RRuleOptions>>(options)
+    const initialRRuleOption = (
+        todoStore.getItemById(id)?.recurrence || new RRule()
+    ).origOptions
+    const [rruleOption, setRRuleOption] = useState(initialRRuleOption)
 
+    const summitRRuleOption = useCallback(() => {
+        BUS.emit(EVENTS.ChangeTaskProperty, {
+            uuid: id,
+            change: { recurrence: new RRule(rruleOption) }
+        } as ChangeTaskPropertyParam)
+    }, [rruleOption])
     return (
         <Modal
             isOpen={disclosure.isOpen}
@@ -575,16 +590,16 @@ const TaskRecurrenceModal = ({
                         <ModalBody>
                             <h1>Repeat Mode</h1>
                             <RecurrenceIntervalModeTabs
-                                initialOptions={ruleOption}
-                                onValueChange={setRuleOption}
+                                initialOptions={rruleOption}
+                                onValueChange={setRRuleOption}
                             />
 
                             <Divider />
 
                             <h1>Repeat Range</h1>
                             <RecurrenceRangeEdit
-                                ruleOption={ruleOption}
-                                onValueChange={setRuleOption}
+                                ruleOption={rruleOption}
+                                onValueChange={setRRuleOption}
                             />
                         </ModalBody>
 
@@ -593,13 +608,21 @@ const TaskRecurrenceModal = ({
                         <ModalFooter className='flex flex-col'>
                             <div className='flex flex-col'>
                                 <h1>Preview</h1>
-                                <RecurrencePreview rruleOptions={ruleOption} />
+                                <RecurrencePreview rruleOptions={rruleOption} />
                             </div>
                             <div className='flex flex-row gap-2 self-end'>
                                 <Button color='danger' onClick={onClose}>
                                     Discard
                                 </Button>
-                                <Button color='primary'>Save</Button>
+                                <Button
+                                    color='primary'
+                                    onClick={() => {
+                                        summitRRuleOption()
+                                        onClose()
+                                    }}
+                                >
+                                    Save
+                                </Button>
                             </div>
                         </ModalFooter>
                     </Fragment>

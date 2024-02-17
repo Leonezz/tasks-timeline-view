@@ -369,7 +369,7 @@ const TaskItemEditModal = ({
             </Modal>
             <TaskRecurrenceModal
                 disclosure={editTaskRecurrenceDisclosure}
-                options={new RRule().origOptions}
+                id={id}
             />
         </Fragment>
     )
