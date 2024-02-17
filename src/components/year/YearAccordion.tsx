@@ -1,11 +1,13 @@
 import {
     Accordion,
     AccordionItem,
+    Button,
     Card,
     CardBody,
-    CardHeader
+    CardHeader,
+    Textarea
 } from '@nextui-org/react'
-import React from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import TaskItemCheckbox from '../item/TaskItemCheckbox'
 import DateTaskStatisticsLine, {
@@ -17,6 +19,55 @@ import YearUnfinishedTip from './YearUnfinishedTip'
 import { TaskItem } from '../../tasks/TaskItem'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
 import { useGeneralOption, useTaskStatusOption } from '../options/GlobalOption'
+import { addIcon } from '../asserts/icons'
+import DatePickerListPopover from '../input/DatePickerListPopover'
+
+const AddTaskButton = () => {
+    const [isAdding, setIsAdding] = useState(false)
+    const [text, setText] = useState('')
+
+    const handleSubmitNewTask = () => {
+        if (text.trim().length === 0) return
+    }
+
+    return (
+        <div className='pt-2'>
+            {isAdding ? (
+                <div>
+                    <Textarea
+                        value={text}
+                        onValueChange={setText}
+                        autoFocus
+                        placeholder='Add a new task here'
+                        className='w-full text-medium'
+                    />
+                    <div className='mt-1.5 flex items-center justify-end gap-1.5'>
+                        <Button
+                            variant='light'
+                            color='danger'
+                            onClick={() => setIsAdding(false)}
+                        >
+                            Cancell
+                        </Button>
+                        <Button color='primary' onClick={handleSubmitNewTask}>
+                            Add
+                        </Button>
+                    </div>
+                </div>
+            ) : (
+                <Button
+                    onClick={() => setIsAdding(true)}
+                    variant='light'
+                    startContent={addIcon}
+                    className='trainsition-colors items-left flex w-fit 
+                    gap-1.5 px-0.5 py-0.5 align-middle text-sm text-neutral-400 hover:text-neutral-800'
+                >
+                    New Task
+                </Button>
+            )}
+        </div>
+    )
+}
 
 function YearAccordion({
     year,
@@ -34,7 +85,8 @@ function YearAccordion({
             'group-[.is-splitted]:shadow-none ' +
             'group-[.is-splitted]:px-0',
         title: 'font-bold text-medium',
-        trigger: 'px-2 py-2 w-full ' + 'shadow-none bg-opacity-0 ' + 'border-0', // "px - 2 py - 2 data - [hover = true]: bg -default -100 rounded - lg flex items - center",
+        trigger:
+            'px-2 py-0.5 w-full ' + 'shadow-none bg-opacity-0 ' + 'border-0', // "px - 2 py - 2 data - [hover = true]: bg -default -100 rounded - lg flex items - center",
         indicator: 'text-medium font-bold text-primary',
         content: 'text-small px-2'
     }
@@ -103,7 +155,7 @@ function YearAccordion({
                 <Accordion
                     selectionMode='multiple'
                     aria-label=''
-                    className='border-none p-0 shadow-none outline-none'
+                    className='gap-0 border-none p-0 shadow-none outline-none'
                     variant='splitted'
                     itemClasses={itemClasses}
                     showDivider={false}
@@ -150,6 +202,7 @@ function YearAccordion({
                                 {taskList.map((t, i) => (
                                     <TaskItemCheckbox key={i} item={t} />
                                 ))}
+                                <AddTaskButton />
                             </AccordionItem>
                         )
                     })}
