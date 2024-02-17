@@ -17,6 +17,7 @@ function InputPanel({
 }) {
     const [taskItem, setTaskItem] = useState<TaskItem>(GlobalEmptyItem)
     const summitTaskItem = useCallback(() => {
+        if (taskItem.content.rawText.trim().length === 0) return
         BUS.emit(EVENTS.AddTaskItem, taskItem)
     }, [taskItem])
 
