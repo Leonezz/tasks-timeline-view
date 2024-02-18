@@ -20,7 +20,6 @@ import { TaskItem } from '../../tasks/TaskItem'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
 import { useGeneralOption, useTaskStatusOption } from '../options/GlobalOption'
 import { addIcon } from '../asserts/icons'
-import DatePickerListPopover from '../input/DatePickerListPopover'
 
 const AddTaskButton = () => {
     const [isAdding, setIsAdding] = useState(false)
@@ -47,7 +46,7 @@ const AddTaskButton = () => {
                             color='danger'
                             onClick={() => setIsAdding(false)}
                         >
-                            Cancell
+                            Cancel
                         </Button>
                         <Button color='primary' onClick={handleSubmitNewTask}>
                             Add
