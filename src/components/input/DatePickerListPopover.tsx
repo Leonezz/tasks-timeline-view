@@ -46,13 +46,15 @@ function DatePickerItem({
 }
 
 function DatePickerListPopover({
+    initialDates,
     summitDates
 }: {
+    initialDates: TaskItemDateTime
     summitDates: (dates: TaskItemDateTime) => void
 }) {
     // const todayDateString = moment().format(innerDateFormat);
-    const [dueDate, setDueDate] = useState(moment())
-    const [startDate, setStartDate] = useState(moment())
+    const [dueDate, setDueDate] = useState(initialDates.due || moment())
+    const [startDate, setStartDate] = useState(initialDates.start || moment())
     useEffect(() => {
         const dates = {
             due: dueDate,
