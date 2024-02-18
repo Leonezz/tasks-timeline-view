@@ -34,7 +34,7 @@ type TaskStatusConfigActions = {
     isStatusDoneType: (status: string) => boolean
 }
 
-export const useTaskStatusOption = create<
+export const useTaskStatusConfig = create<
     TaskStatusConfigType & TaskStatusConfigActions
 >((set, get) => ({
     statusConfigs: TaskStatusConfig.statusConfigs,

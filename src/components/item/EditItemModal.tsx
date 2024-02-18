@@ -30,7 +30,7 @@ import {
 } from '@nextui-org/react'
 import { todoStore } from '../../datastore/useTodoStore'
 import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
-import { useTaskStatusOption } from '../options/GlobalOption'
+import { useTaskStatusConfig } from '../options/GlobalOption'
 import { TaskStatusDef } from '../options/OptionDef'
 import TaskRecurrenceModal from './TaskRecurrence'
 import { innerDateTimeFormat } from '../../util/defs'
@@ -221,7 +221,7 @@ const TaskItemEditModal = ({
 
     const [priority, setPriority] = useState(taskItem.priority)
 
-    const { statusConfigs, getIconFromStatus } = useTaskStatusOption()
+    const { statusConfigs, getIconFromStatus } = useTaskStatusConfig()
     const [taskStatus, setTaskStatus] = useState(taskItem.status)
 
     const renderStatusRow = (statusOption: TaskStatusDef) => {

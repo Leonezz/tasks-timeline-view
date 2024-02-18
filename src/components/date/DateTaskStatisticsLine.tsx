@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import IconTextBadge from '../item/IconTextBadge'
-import { useTaskStatusOption } from '../options/GlobalOption'
+import { useTaskStatusConfig } from '../options/GlobalOption'
 
 export type CounterType = {
     label: string
@@ -20,7 +20,7 @@ function DateTaskStatisticsLine({ counters }: { counters: CounterType[] }) {
     }
     const ariaLabelSuffix = 'tasks on this date.'
 
-    const { getIconFromStatus } = useTaskStatusOption()
+    const { getIconFromStatus } = useTaskStatusConfig()
     return (
         <div className='gap-2'>
             {counters.map((counter) => {

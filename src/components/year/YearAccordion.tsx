@@ -18,7 +18,7 @@ import YearHeaderProgress from './YearHeaderProgress'
 import YearUnfinishedTip from './YearUnfinishedTip'
 import { TaskItem } from '../../tasks/TaskItem'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
-import { useGeneralOption, useTaskStatusOption } from '../options/GlobalOption'
+import { useGeneralOption, useTaskStatusConfig } from '../options/GlobalOption'
 import { addIcon } from '../asserts/icons'
 
 const AddTaskButton = () => {
@@ -94,7 +94,7 @@ function YearAccordion({
         0
     )
 
-    const { statusConfigs, isStatusDoneType } = useTaskStatusOption()
+    const { statusConfigs, isStatusDoneType } = useTaskStatusConfig()
 
     const completeCntOfThisYear = Array.from(dateTaskMap.entries()).reduce(
         (result, entry) =>

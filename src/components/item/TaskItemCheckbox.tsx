@@ -11,7 +11,7 @@ import {
 } from '@nextui-org/react'
 import TaskInfoLine from './TaskInfoLine'
 import { TaskItem } from '../../tasks/TaskItem'
-import { useTaskStatusOption } from '../options/GlobalOption'
+import { useTaskStatusConfig } from '../options/GlobalOption'
 import { BUS } from '../../datastore/todoStoreEventBus'
 import {
     ChangeTaskPropertyParam,
@@ -21,7 +21,7 @@ import TaskItemEditModal from './EditItemModal'
 
 function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
     const { statusConfigs, getStatusColor, getIconFromStatus } =
-        useTaskStatusOption()
+        useTaskStatusConfig()
     const statusColor = getStatusColor(status)
 
     const onStatusChange = (newStatus: string) => {
@@ -86,7 +86,7 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
     const itemStatus = item.status
     // const checkboxIcon = TaskStatusUtil.getStatusIcon(itemStatus)
 
-    const { getStatusColor, isStatusDoneType } = useTaskStatusOption()
+    const { getStatusColor, isStatusDoneType } = useTaskStatusConfig()
     const statusColor = getStatusColor(itemStatus)
 
     return (
