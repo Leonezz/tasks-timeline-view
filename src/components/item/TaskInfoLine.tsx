@@ -7,6 +7,7 @@ import IconDateBadge from './IconDateBadge'
 import IconTextBadge from './IconTextBadge'
 import { TaskItem } from '../../tasks/TaskItem'
 import React from 'react'
+import { useTaskPriorityConfig } from '../options/GlobalOption'
 
 function TaskInfoLine({
     item,
@@ -87,16 +88,14 @@ function TaskInfoLine({
         'recurrent: ',
         recurrenceLabel
     )
+
+    const { getPriorityIcon, getPriorityColor } = useTaskPriorityConfig()
     const priorityBadge = buildIconTextBadge(
-        iconMap.priorityIcon,
+        getPriorityIcon(item.priority),
         item.priority,
         'priority: ',
         item.priority,
-        item.priority === 'High'
-            ? 'text-warning'
-            : item.priority === 'Medium'
-              ? 'text-secondary'
-              : ''
+        'text-' + getPriorityColor(item.priority)
     )
     const positionBadge = buildIconTextBadge(
         iconMap.fileIcon,
