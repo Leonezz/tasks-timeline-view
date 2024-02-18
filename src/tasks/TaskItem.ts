@@ -38,12 +38,12 @@ interface TaskItemContent {
     description?: string
 }
 
-export enum BasicTaskItemPriority {
-    High = 'High',
-    Medium = 'Medium',
-    No = 'No',
-    Low = 'Low'
-}
+// export enum BasicTaskItemPriority {
+//     High = 'High',
+//     Medium = 'Medium',
+//     No = 'No',
+//     Low = 'Low'
+// }
 
 export interface TaskItem {
     /**

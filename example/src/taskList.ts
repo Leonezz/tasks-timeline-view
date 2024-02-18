@@ -1,10 +1,10 @@
 import moment from 'moment'
-import { BasicTaskItemPriority, TaskItem } from 'tasks-timeline-view'
+import { TaskItem } from 'tasks-timeline-view'
 
 export const TodoList: TaskItem[] = [
     {
         status: 'Done',
-        priority: BasicTaskItemPriority.High,
+        priority: 'High',
         content: {
             rawText: '- [x] Unchecked ✅ 2023-11-14',
             visual: 'Unchecked'
@@ -22,7 +22,7 @@ export const TodoList: TaskItem[] = [
     },
     {
         status: 'Cancelled',
-        priority: BasicTaskItemPriority.High,
+        priority: 'High',
         content: {
             rawText: '- [x] Unchecked ✅ 2023-11-14',
             visual: 'Unchecked'
@@ -40,7 +40,7 @@ export const TodoList: TaskItem[] = [
     },
     {
         status: 'Done',
-        priority: BasicTaskItemPriority.Medium,
+        priority: 'Medium',
         content: {
             rawText: '- [x] Checked',
             visual: 'Checked'
@@ -58,7 +58,7 @@ export const TodoList: TaskItem[] = [
     },
     {
         status: 'Overdue',
-        priority: BasicTaskItemPriority.Low,
+        priority: 'Low',
         content: {
             rawText: '- [>] Rescheduled',
             visual: 'Rescheduled'
@@ -76,7 +76,7 @@ export const TodoList: TaskItem[] = [
     },
     {
         status: 'Todo',
-        priority: BasicTaskItemPriority.Low,
+        priority: 'Low',
         content: {
             rawText: '- [>] Rescheduled',
             visual: 'Rescheduled'
@@ -94,7 +94,7 @@ export const TodoList: TaskItem[] = [
     },
     {
         status: 'Unplanned',
-        priority: BasicTaskItemPriority.Low,
+        priority: 'Low',
         content: {
             rawText: '- [>] Rescheduled',
             visual: 'Rescheduled'
@@ -112,7 +112,7 @@ export const TodoList: TaskItem[] = [
     },
     {
         status: 'Scheduled',
-        priority: BasicTaskItemPriority.Low,
+        priority: 'Low',
         content: {
             rawText: '- [>] Rescheduled',
             visual: 'Rescheduled'
