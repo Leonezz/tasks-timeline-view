@@ -5,19 +5,18 @@ import {
     Avatar,
     DropdownMenu
 } from '@nextui-org/react'
-import { Selection } from '@nextui-org/react'
 import React from 'react'
 
 function TrivialSingleSelect({
     options,
     selectedKeys,
-    setSelectedKeys,
+    setSelectedKey,
     icon,
     ariaLabel
 }: {
     options: string[]
     selectedKeys: Set<string>
-    setSelectedKeys: React.Dispatch<React.SetStateAction<Selection>>
+    setSelectedKey: (key: string) => any
     icon: JSX.Element
     ariaLabel: string
 }) {
@@ -45,7 +44,11 @@ function TrivialSingleSelect({
                 selectionMode='single'
                 disallowEmptySelection
                 selectedKeys={selectedKeys}
-                onSelectionChange={setSelectedKeys}
+                onSelectionChange={(keys) => {
+                    if (keys === 'all') return
+                    const key = [...keys.keys()][0].valueOf().toString()
+                    return setSelectedKey(key)
+                }}
                 classNames={{
                     base: 'w-fit'
                 }}
