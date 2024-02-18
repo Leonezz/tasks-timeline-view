@@ -26,12 +26,16 @@ import {
     UseDisclosureProps,
     useDisclosure,
     Autocomplete,
-    AutocompleteItem
+    AutocompleteItem,
+    SelectItemProps
 } from '@nextui-org/react'
 import { todoStore } from '../../datastore/useTodoStore'
 import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
-import { useTaskStatusConfig } from '../options/GlobalOption'
-import { TaskStatusDef } from '../options/OptionDef'
+import {
+    useTaskPriorityConfig,
+    useTaskStatusConfig
+} from '../options/GlobalOption'
+import { TaskPriorityDef, TaskStatusDef } from '../options/OptionDef'
 import TaskRecurrenceModal from './TaskRecurrence'
 import { innerDateTimeFormat } from '../../util/defs'
 import moment from 'moment'
@@ -41,6 +45,23 @@ import {
 } from '../../datastore/todoStoreEvents'
 import { BUS } from '../../datastore/todoStoreEventBus'
 import { TaskItem } from '../../tasks/TaskItem'
+
+const selectRenderRowWithIconAndColor = ({
+    label,
+    icon,
+    color
+}: {
+    label: string
+    icon: JSX.Element
+    color: string
+}) => {
+    return (
+        <div key={label} className={`flex flex-row gap-2 text-${color}`}>
+            <div className='self-center'>{icon}</div>
+            <span>{label}</span>
+        </div>
+    )
+}
 
 const TagsSelect = ({
     selectedTags,
@@ -165,23 +186,47 @@ const PrioritySelect = ({
     priority: string
     setPriority: (p: string) => any
 }) => {
-    const priorityLabels = ['High', 'Medium', 'Low', 'No']
+    const { priorityConfigs, getPriorityIcon, getPriorityColor } =
+        useTaskPriorityConfig()
+    const renderPriorityRow = (priority: TaskPriorityDef) =>
+        selectRenderRowWithIconAndColor({
+            label: priority.label,
+            icon: getPriorityIcon(priority.label),
+            color: getPriorityColor(priority.label)
+        })
     return (
         <Select
-            items={priorityLabels}
             selectedKeys={[priority]}
             onSelectionChange={(keys) => {
-                if (keys === 'all') return
+                if (keys === 'all' || keys.size !== 1) return
                 const selection = [...keys.keys()][0].valueOf().toString()
                 setPriority(selection)
             }}
+            items={priorityConfigs}
+            renderValue={(items) =>
+                items.map(
+                    (item) =>
+                        item.data &&
+                        renderPriorityRow(item.data as TaskPriorityDef)
+                )
+            }
             selectionMode='single'
             label='Priority'
             labelPlacement='outside'
         >
-            {priorityLabels.map((l) => (
-                <SelectItem key={l}>{l}</SelectItem>
-            ))}
+            {(priority: TaskPriorityDef) => (
+                <SelectItem
+                    key={priority.label}
+                    startContent={getPriorityIcon(priority.label)}
+                    color={
+                        getPriorityColor(
+                            priority.label
+                        ) as SelectItemProps['color']
+                    }
+                >
+                    {priority.label}
+                </SelectItem>
+            )}
         </Select>
     )
 }
@@ -224,19 +269,12 @@ const TaskItemEditModal = ({
     const { statusConfigs, getIconFromStatus } = useTaskStatusConfig()
     const [taskStatus, setTaskStatus] = useState(taskItem.status)
 
-    const renderStatusRow = (statusOption: TaskStatusDef) => {
-        return (
-            <div
-                key={statusOption.label}
-                className={`flex flex-row gap-2 text-${statusOption.color}`}
-            >
-                <div className='self-center'>
-                    {getIconFromStatus(statusOption.label)}
-                </div>
-                <span>{statusOption.label}</span>
-            </div>
-        )
-    }
+    const renderStatusRow = (statusOption: TaskStatusDef) =>
+        selectRenderRowWithIconAndColor({
+            label: statusOption.label,
+            icon: getIconFromStatus(statusOption.label),
+            color: statusOption.color || 'default'
+        })
 
     const editTaskRecurrenceDisclosure = useDisclosure()
 
