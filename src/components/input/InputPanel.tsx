@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { Button, Input, Selection } from '@nextui-org/react'
+import { Button, Input } from '@nextui-org/react'
 import TrivialSingleSelect from './TrivialSingleSelect'
 import { enterIcon, iconMap } from '../asserts/icons'
 import DatePickerListPopover from './DatePickerListPopover'
@@ -7,6 +7,7 @@ import { GlobalEmptyItem, TaskItem } from '../../tasks/TaskItem'
 import { BUS } from '../../datastore/todoStoreEventBus'
 import { EVENTS } from '../../datastore/todoStoreEvents'
 import { TaskItemParser } from '../../tasks/TaskItemUtil'
+import moment from 'moment'
 
 function InputPanel({
     newItemDestinationOptions,
@@ -59,17 +60,13 @@ function InputPanel({
                         ariaLabel='List'
                         options={newItemDestinationOptions}
                         selectedKeys={new Set(taskItem?.position.visual)}
-                        setSelectedKeys={(v: Selection) => {
-                            // this is a dummy branch
-                            if (v === 'all') return
+                        setSelectedKey={(v: string) => {
                             setTaskItem(
                                 (prev) =>
                                     ({
                                         ...prev,
                                         position: {
-                                            visual: Array.from(v)[0]
-                                                .valueOf()
-                                                .toString()
+                                            visual: v
                                         }
                                     }) as TaskItem
                             )
@@ -81,21 +78,22 @@ function InputPanel({
                         icon={iconMap.priorityIcon}
                         options={priorityOptions}
                         selectedKeys={new Set(taskItem?.priority)}
-                        setSelectedKeys={(v: Selection) => {
-                            // this is a dummy branch
-                            if (v === 'all') return
+                        setSelectedKey={(v: string) => {
                             setTaskItem(
                                 (prev) =>
                                     ({
                                         ...prev,
-                                        priority: Array.from(v)[0]
-                                            .valueOf()
-                                            .toString()
+                                        priority: v
                                     }) as TaskItem
                             )
                         }}
                     />
                     <DatePickerListPopover
+                        initialDates={{
+                            start: moment(),
+                            due: moment(),
+                            misc: new Map()
+                        }}
                         summitDates={(dates) => {
                             setTaskItem(
                                 (prev) =>

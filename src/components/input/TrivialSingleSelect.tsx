@@ -3,9 +3,16 @@ import {
     DropdownItem,
     DropdownTrigger,
     Avatar,
-    DropdownMenu
+    DropdownMenu,
+    DropdownItemProps
 } from '@nextui-org/react'
 import React from 'react'
+
+export type DropdownStyleSingleSelectItem = {
+    label: string
+    icon: JSX.Element
+    color: string
+}
 
 function TrivialSingleSelect({
     options,
@@ -14,12 +21,19 @@ function TrivialSingleSelect({
     icon,
     ariaLabel
 }: {
-    options: string[]
+    options: (DropdownStyleSingleSelectItem | string)[]
     selectedKeys: Set<string>
     setSelectedKey: (key: string) => any
     icon: JSX.Element
     ariaLabel: string
 }) {
+    const getOptionLabel = (option: (typeof options)[number]) =>
+        typeof option === 'string' ? option : option.label
+    const labels = options.map((option) => getOptionLabel(option))
+    const getOptionIcon = (option: (typeof options)[number]) =>
+        typeof option === 'string' ? icon : option.icon
+    const getOptionColor = (option: (typeof options)[number]) =>
+        typeof option === 'string' ? 'default' : option.color
     return (
         <Dropdown
             aria-label={ariaLabel}
@@ -52,10 +66,18 @@ function TrivialSingleSelect({
                 classNames={{
                     base: 'w-fit'
                 }}
-                items={options}
+                items={labels}
             >
                 {options.map((option) => (
-                    <DropdownItem key={option}>{option}</DropdownItem>
+                    <DropdownItem
+                        key={getOptionLabel(option)}
+                        startContent={getOptionIcon(option)}
+                        color={
+                            getOptionColor(option) as DropdownItemProps['color']
+                        }
+                    >
+                        {getOptionLabel(option)}
+                    </DropdownItem>
                 ))}
             </DropdownMenu>
         </Dropdown>

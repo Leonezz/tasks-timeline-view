@@ -1,11 +1,16 @@
-import { iconMap } from '../asserts/icons'
+import { iconMap, priorityIcon } from '../asserts/icons'
 import React from 'react'
 import {
+    TaskPriorityConfig,
+    TaskPriorityConfigType,
+    TaskPriorityDef,
     TaskStatusConfig,
     TaskStatusConfigType,
     TaskStatusDef,
     TimelineOption,
-    TimelineOptionType
+    TimelineOptionType,
+    VaultConfig,
+    VaultConfigType
 } from './OptionDef'
 import { create } from 'zustand'
 
@@ -59,5 +64,59 @@ export const useTaskStatusConfig = create<
         const config = configs.filter((item) => item.label === status)
         if (config.length === 0) return false
         return config[0].isDoneType
+    }
+}))
+
+type VaultConfigActions = {
+    getAllCategories: () => string[]
+    setAllCategories: (c: string[]) => void
+}
+
+export const useVaultConfig = create<VaultConfigType & VaultConfigActions>(
+    (set, get) => ({
+        allCategories: VaultConfig.allCategories,
+        getAllCategories: () => {
+            return get().allCategories
+        },
+        setAllCategories: (categoryList: string[]) =>
+            set(() => ({ allCategories: categoryList }))
+    })
+)
+
+type TaskPriorityConfigActions = {
+    getTaskPriorityLabels: () => string[]
+    getPriorityIcon: (p: string) => JSX.Element
+    getPriorityColor: (p: string) => string
+    getPrioritySort: (p: string) => number
+}
+
+export const useTaskPriorityConfig = create<
+    TaskPriorityConfigType & TaskPriorityConfigActions
+>((set, get) => ({
+    priorityConfigs: TaskPriorityConfig.priorityConfigs,
+    getTaskPriorityLabels: () =>
+        get().priorityConfigs.map((config: TaskPriorityDef) => config.label),
+    getPriorityIcon: (p: string) => {
+        const config = get().priorityConfigs.filter(
+            (config: TaskPriorityDef) => config.label === p
+        )
+        if (config.length !== 1) return priorityIcon
+        if (typeof config[0].icon === 'string')
+            return <img src={config[0].icon} />
+        return config[0].icon
+    },
+    getPriorityColor: (p: string) => {
+        const config = get().priorityConfigs.filter(
+            (config: TaskPriorityDef) => config.label === p
+        )
+        if (config.length !== 1) return 'default'
+        return config[0].color || 'default'
+    },
+    getPrioritySort: (p: string) => {
+        const config = get().priorityConfigs.filter(
+            (config: TaskPriorityDef) => config.label === p
+        )
+        if (config.length !== 1) return 0
+        return config[0].sortBy
     }
 }))

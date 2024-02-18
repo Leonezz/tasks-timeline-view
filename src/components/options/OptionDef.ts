@@ -1,4 +1,10 @@
-import { iconMap } from '../asserts/icons'
+import {
+    highPriorityIcon,
+    iconMap,
+    lowPriorityIcon,
+    mediumPriorityIcon,
+    priorityIcon
+} from '../asserts/icons'
 
 export type DateIconStyles = 'monthday' | 'weekday' | 'weekdayicon'
 
@@ -80,3 +86,44 @@ export const TaskStatusConfig = {
 }
 
 export type TaskStatusConfigType = typeof TaskStatusConfig
+
+export const VaultConfig = {
+    allCategories: [] as string[]
+}
+
+export type VaultConfigType = typeof VaultConfig
+
+export type TaskPriorityDef = {
+    label: string
+    sortBy: number
+    icon: JSX.Element | string
+    color:
+        | 'success'
+        | 'secondary'
+        | 'warning'
+        | 'danger'
+        | 'default'
+        | 'primary'
+        | undefined
+}
+
+export const TaskPriorityConfig = {
+    priorityConfigs: [
+        {
+            label: 'High',
+            sortBy: 100,
+            icon: highPriorityIcon,
+            color: 'warning'
+        },
+        {
+            label: 'Medium',
+            sortBy: 70,
+            icon: mediumPriorityIcon,
+            color: 'secondary'
+        },
+        { label: 'No', sortBy: 40, icon: priorityIcon, color: 'default' },
+        { label: 'Low', sortBy: 10, icon: lowPriorityIcon, color: 'success' }
+    ] as TaskPriorityDef[]
+}
+
+export type TaskPriorityConfigType = typeof TaskPriorityConfig

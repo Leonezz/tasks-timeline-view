@@ -4,8 +4,7 @@ import {
     Button,
     Card,
     CardBody,
-    CardHeader,
-    Textarea
+    CardHeader
 } from '@nextui-org/react'
 import React, { useState } from 'react'
 import moment from 'moment'
@@ -20,39 +19,21 @@ import { TaskItem } from '../../tasks/TaskItem'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
 import { useGeneralOption, useTaskStatusConfig } from '../options/GlobalOption'
 import { addIcon } from '../asserts/icons'
+import NewTaskQuickInput from '../input/NewTaskQuickInput'
 
-const AddTaskButton = () => {
+const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
     const [isAdding, setIsAdding] = useState(false)
-    const [text, setText] = useState('')
 
-    const handleSubmitNewTask = () => {
-        if (text.trim().length === 0) return
-    }
+    const closeNewTaskQuickInput = () => setIsAdding(false)
 
     return (
         <div className='pt-2'>
             {isAdding ? (
-                <div>
-                    <Textarea
-                        value={text}
-                        onValueChange={setText}
-                        autoFocus
-                        placeholder='Add a new task here'
-                        className='w-full text-medium'
-                    />
-                    <div className='mt-1.5 flex items-center justify-end gap-1.5'>
-                        <Button
-                            variant='light'
-                            color='danger'
-                            onClick={() => setIsAdding(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button color='primary' onClick={handleSubmitNewTask}>
-                            Add
-                        </Button>
-                    </div>
-                </div>
+                <NewTaskQuickInput
+                    initialDate={moment(dateStr, innerDateFormat)}
+                    onCancel={closeNewTaskQuickInput}
+                    onAdd={closeNewTaskQuickInput}
+                />
             ) : (
                 <Button
                     onClick={() => setIsAdding(true)}
@@ -201,7 +182,7 @@ function YearAccordion({
                                 {taskList.map((t, i) => (
                                     <TaskItemCheckbox key={i} item={t} />
                                 ))}
-                                <AddTaskButton />
+                                <AddTaskButton dateStr={d} />
                             </AccordionItem>
                         )
                     })}
