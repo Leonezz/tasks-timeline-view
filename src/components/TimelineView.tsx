@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react'
 import { NextUIProvider, ScrollShadow } from '@nextui-org/react'
 import moment from 'moment'
 import YearAccordion from './year/YearAccordion'
-import InputPanel from './input/InputPanel'
 import FilterSelectorList from './filter_sort/FilterSortSelectorList'
 import {
     FilterSortOptions,
@@ -148,7 +147,7 @@ export const TimelineView = () => {
                 <div className='sticky top-0 z-50 flex min-h-max flex-col gap-2 bg-inherit bg-opacity-0'>
                     <OptionsPanel />
                     <TodayCard unfinishedCnt={10} />
-                    <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} />
+                    {/* <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} /> */}
                     {FilterSortSelectorListCached}
                     {forwardUnfinishedTasks}
                     <div>
