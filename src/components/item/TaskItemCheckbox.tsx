@@ -18,6 +18,7 @@ import {
     EVENTS
 } from '../../datastore/todoStoreEvents'
 import TaskItemEditModal from './EditItemModal'
+import moment from 'moment'
 
 function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
     const { statusConfigs, getStatusColor, getIconFromStatus } =
@@ -26,9 +27,13 @@ function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
 
     const onStatusChange = (newStatus: string) => {
         if (newStatus === status) return
+        const newItem = { status: newStatus } as Partial<TaskItem>
+        if (newStatus === 'Done') {
+            newItem.dateTime = { completion: moment(), misc: new Map() }
+        }
         BUS.emit(EVENTS.ChangeTaskProperty, {
             uuid: itemId,
-            change: { status: newStatus }
+            change: newItem
         } as ChangeTaskPropertyParam)
     }
 
