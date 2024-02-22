@@ -22,7 +22,7 @@ export const todoStore = {
     },
     changeTodo(uuid: string, newItem: Partial<TaskItem>) {
         _todos = _todos.map((v) => {
-            if(v.uuid !== uuid) return v;
+            if (v.uuid !== uuid) return v
             return Object.assign(v, newItem)
         })
         emitChange()
