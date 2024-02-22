@@ -23,7 +23,21 @@ export const todoStore = {
     changeTodo(uuid: string, newItem: Partial<TaskItem>) {
         _todos = _todos.map((v) => {
             if (v.uuid !== uuid) return v
-            return Object.assign(v, newItem)
+            for (const k in newItem) {
+                if (typeof newItem[k as keyof TaskItem] === 'object') {
+                    //@ts-ignore
+                    if (!v[k as keyof TaskItem]) v[k as keyof TaskItem] = {}
+                    //@ts-ignore
+                    v[k as keyof TaskItem] = Object.assign(
+                        v[k as keyof TaskItem] as Object,
+                        newItem[k as keyof TaskItem] as Object
+                    )
+                } else {
+                    //@ts-ignore
+                    v[k as keyof TaskItem] = newItem[k as keyof TaskItem]
+                }
+            }
+            return v
         })
         emitChange()
     },
