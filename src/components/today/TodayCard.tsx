@@ -11,7 +11,7 @@ function TodayCard({ unfinishedCnt }: { unfinishedCnt: number }) {
                 base: 'shadow-none bg-origin-content bg-transparent'
             }}
         >
-            <CardHeader className='flex flex-1 cursor-default select-none flex-col items-center py-1'>
+            <CardHeader className='flex flex-1 cursor-default select-none flex-col items-center gap-1 py-1'>
                 <Chip
                     classNames={{
                         base: 'shadow-none bg-transparent',
