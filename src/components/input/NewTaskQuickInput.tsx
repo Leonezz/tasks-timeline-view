@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Button, Textarea } from '@nextui-org/react'
 import { useState } from 'react'
 import moment from 'moment'
 import DatePickerListPopover from './DatePickerListPopover'
-import { TaskItemDateTime } from '../../tasks/TaskItem'
+import {
+    GlobalEmptyItem,
+    TaskItem,
+    TaskItemDateTime
+} from '../../tasks/TaskItem'
 import { useTaskPriorityConfig, useVaultConfig } from '../options/GlobalOption'
 import TrivialSingleSelect, {
     DropdownStyleSingleSelectItem
 } from './TrivialSingleSelect'
 import { fileIcon } from '../asserts/icons'
 import { TaskPriorityDef } from '../options/OptionDef'
+import { BUS } from '../../datastore/todoStoreEventBus'
+import { EVENTS } from '../../datastore/todoStoreEvents'
 
 const CategorySelect = ({
     initialCategory,
@@ -70,9 +76,6 @@ const NewTaskQuickInput = ({
     initialDate?: moment.Moment
 }) => {
     const [text, setText] = useState('')
-    const handleSubmitNewTask = () => {
-        if (text.trim().length === 0) return
-    }
 
     initialDate = initialDate || moment()
 
@@ -82,7 +85,27 @@ const NewTaskQuickInput = ({
     } as TaskItemDateTime)
 
     const [category, setCategory] = useState('')
-    const [priority, setPriority] = useState('')
+    const [priority, setPriority] = useState('No')
+
+    const handleSubmitNewTask = useCallback(() => {
+        if (text.trim().length === 0) return
+        const newItem = {
+            ...GlobalEmptyItem,
+            ...{
+                content: {
+                    rawText: text,
+                    visual: text
+                },
+                position: {
+                    visual: category
+                },
+                dateTime: dates,
+                priority: priority,
+                status: 'Todo'
+            }
+        } as TaskItem
+        BUS.emit(EVENTS.AddTaskItem, newItem)
+    }, [text, dates, category, priority])
 
     return (
         <div>
