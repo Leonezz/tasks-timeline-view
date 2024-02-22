@@ -412,9 +412,13 @@ const TaskItemEditModal = ({
                                                 const keys = Array.from(
                                                     s.keys()
                                                 )
-                                                setTaskStatus(
-                                                    keys[0].valueOf().toString()
+                                                const statusLabel = keys[0]
+                                                    .valueOf()
+                                                    .toString()
+                                                setDoneDateEnabled(
+                                                    statusLabel === 'Done'
                                                 )
+                                                setTaskStatus(statusLabel)
                                             }}
                                             label='Status'
                                             labelPlacement='outside'
