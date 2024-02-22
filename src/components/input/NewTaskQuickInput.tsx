@@ -99,7 +99,7 @@ const NewTaskQuickInput = ({
                 position: {
                     visual: category
                 },
-                dateTime: dates,
+                dateTime: { ...dates, created: moment() },
                 priority: priority,
                 status: 'Todo'
             }
