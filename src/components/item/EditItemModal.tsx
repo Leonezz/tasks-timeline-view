@@ -186,6 +186,9 @@ const PrioritySelect = ({
     priority: string
     setPriority: (p: string) => any
 }) => {
+    priority = priority.trim()
+    priority = priority === '' ? 'No' : priority
+
     const { priorityConfigs, getPriorityIcon, getPriorityColor } =
         useTaskPriorityConfig()
     const renderPriorityRow = (priority: TaskPriorityDef) =>
