@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 import { TaskItemDateTime } from '../../tasks/TaskItem'
 import moment from 'moment'
-import { innerDateFormat, innerTimeFormat } from '../../util/defs'
+import { innerDateTimeFormat } from '../../util/defs'
 
 function DatePickerItem({
     labelPrefix,
@@ -22,7 +22,6 @@ function DatePickerItem({
     date: moment.Moment
     setDate: (d: moment.Moment) => void
 }) {
-    const innerDateTimeFormat = innerDateFormat + ' ' + innerTimeFormat
     return (
         <Input
             type='datetime-local'
