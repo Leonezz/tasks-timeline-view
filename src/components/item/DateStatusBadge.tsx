@@ -26,7 +26,7 @@ function DateStatusBadge({
             ariaLabel={ariaLabel}
             icon={<CalenderIcon icon={icon}></CalenderIcon>}
             label={label}
-        ></TaskItemInfoBadge>
+        />
     )
 }
 

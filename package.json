@@ -5,24 +5,24 @@
   "author": "Leonezz",
   "license": "MIT",
   "repository": "Leonezz/tasks-timeline-view",
-  "main": "dist/index.js",
+  "main": "dist/index.modern.js",
+  "types": "dist/index.d.ts",
   "module": "dist/index.modern.js",
-  "source": "src/index.tsx",
+  "source": "src/index.ts",
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "microbundle-crl --no-compress --format modern,cjs",
+    "build": "tsc -skipLibCheck && node esbuild.config.mjs production",
     "build:tailwind": "npx tailwindcss -i ./src/styles.module.css -o ./dist/index.css --watch",
-    "start": "microbundle-crl watch --no-compress --format modern,cjs",
+    "start": "node esbuild.config.mjs",
     "prepare": "run-s build",
     "test": "run-s test:unit test:lint test:build",
     "test:build": "run-s build",
     "test:lint": "eslint .",
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom",
-    "predeploy": "cd example && yarn install && yarn run build",
-    "deploy": "gh-pages -d example/build"
+    "predeploy": "cd example && yarn install && yarn run build"
   },
   "peerDependencies": {
     "@nextui-org/react": "latest",
@@ -32,11 +32,8 @@
     "tailwindcss": "latest"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "latest",
-    "@babel/plugin-proposal-private-property-in-object": "latest",
-    "@babel/plugin-proposal-unicode-property-regex": "latest",
-    "@commitlint/cli": "^18.4.3",
-    "@commitlint/config-conventional": "^18.4.3",
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.3",
     "@nextui-org/react": "latest",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -50,6 +47,9 @@
     "@typescript-eslint/parser": "latest",
     "commitlint": "latest",
     "cross-env": "^7.0.2",
+    "esbuild": "^0.23.0",
+    "esbuild-node-externals": "^1.14.0",
+    "esbuild-plugin-tsc": "^0.4.0",
     "eslint": "latest",
     "eslint-config-prettier": "latest",
     "eslint-config-standard-react": "latest",
@@ -59,10 +59,9 @@
     "eslint-plugin-promise": "latest",
     "eslint-plugin-react": "latest",
     "framer-motion": "^10.16.16",
-    "gh-pages": "^2.2.0",
-    "husky": "^8.0.3",
-    "microbundle-crl": "^0.13.10",
+    "husky": "latest",
     "moment": "latest",
+    "npm-dts": "^1.3.12",
     "npm-run-all": "^4.1.5",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.10",
@@ -77,9 +76,8 @@
     "dist"
   ],
   "dependencies": {
-    "react-calendar": "^4.8.0",
+    "rrule": "latest",
     "uuid": "^9.0.1",
-    "zustand": "^4.4.7",
-    "rrule": "latest"
+    "zustand": "^4.4.7"
   }
 }

@@ -1,14 +1,11 @@
-import { TaskItem } from "../tasks/TaskItem"
+import EventEmitter from 'events'
+import { TaskItem } from '../tasks/TaskItem'
 
-export enum EVENTS {
-    ChangeTaskProperty = 'changeTaskStatus',
-    AddTaskItem = 'addTaskItem'
+export type EVENT_MAP = {
+  ChangeTaskProperty: [uuid: string, change: Partial<TaskItem>]
+  AddTaskItem: [item: TaskItem]
 }
 
-interface TaskItemEventParam {
-    uuid: string
-}
-
-export interface ChangeTaskPropertyParam extends TaskItemEventParam {
-    change: Partial<TaskItem>
-}
+export const BUS = new EventEmitter<EVENT_MAP>({
+  captureRejections: true
+})

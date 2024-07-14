@@ -23,9 +23,7 @@
     "tasks-timeline-view": "link:..",
     "typescript": "link:../node_modules/typescript"
   },
-  "devDependencies": {
-    "@babel/plugin-syntax-object-rest-spread": "latest"
-  },
+  "devDependencies": {},
   "eslintConfig": {
     "extends": "react-app"
   },
