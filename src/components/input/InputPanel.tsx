@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Button, Input } from '@nextui-org/react'
 import TrivialSingleSelect from './TrivialSingleSelect'
 import { enterIcon, iconMap } from '../asserts/icons'
@@ -6,7 +6,8 @@ import DatePickerListPopover from './DatePickerListPopover'
 import { GlobalEmptyItem, TaskItem } from '../../tasks/TaskItem'
 import { TaskItemParser } from '../../tasks/TaskItemUtil'
 import moment from 'moment'
-import { BUS } from '../../datastore/todoStoreEvents'
+import { useTodoItemStore } from '../../datastore/useTodoStore'
+// import { BUS } from '../../datastore/todoStoreEvents'
 
 function InputPanel({
   newItemDestinationOptions,
@@ -16,9 +17,11 @@ function InputPanel({
   priorityOptions?: string[]
 }) {
   const [taskItem, setTaskItem] = useState<TaskItem>(GlobalEmptyItem)
+  const { add } = useTodoItemStore()
   const summitTaskItem = useCallback(() => {
     if (taskItem.content.rawText.trim().length === 0) return
-    BUS.emit('AddTaskItem', taskItem)
+    add({ item: taskItem })
+    // BUS.emit('AddTaskItem', taskItem)
   }, [taskItem])
 
   taskItem.content.rawText = TaskItemParser.generateTaskItemRawText(taskItem)

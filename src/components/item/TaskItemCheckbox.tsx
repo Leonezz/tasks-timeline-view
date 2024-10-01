@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import {
   Button,
   Checkbox,
@@ -15,12 +15,15 @@ import { useTaskStatusConfig } from '../options/GlobalOption'
 
 import TaskItemEditModal from './EditItemModal'
 import moment from 'moment'
-import { BUS } from '../../datastore/todoStoreEvents'
+import { useTodoItemStore } from '../../datastore/useTodoStore'
+// import { BUS } from '../../datastore/todoStoreEvents'
 
-function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
+function CheckboxIcon({ status, item }: { status: string; item: TaskItem }) {
   const { statusConfigs, getStatusColor, getIconFromStatus } =
     useTaskStatusConfig()
   const statusColor = getStatusColor(status)
+
+  const { edit } = useTodoItemStore()
 
   const onStatusChange = (newStatus: string) => {
     if (newStatus === status) return
@@ -28,7 +31,8 @@ function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
     if (newStatus === 'Done') {
       newItem.dateTime = { completion: moment(), misc: new Map() }
     }
-    BUS.emit('ChangeTaskProperty', itemId, newItem)
+    edit({ id: item.uuid, value: newItem })
+    // BUS.emit('ChangeTaskProperty', itemId, newItem)
   }
 
   const editItemModelDisclosure = useDisclosure()
@@ -68,7 +72,7 @@ function CheckboxIcon({ status, itemId }: { status: string; itemId: string }) {
           </DropdownSection>
         </DropdownMenu>
       </Dropdown>
-      <TaskItemEditModal id={itemId} disclosure={editItemModelDisclosure} />
+      <TaskItemEditModal item={item} disclosure={editItemModelDisclosure} />
     </Fragment>
   )
 }
@@ -85,7 +89,7 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
     <Fragment>
       <div className='flex flex-row justify-between'>
         <Checkbox
-          icon={<CheckboxIcon status={itemStatus} itemId={item.uuid} />}
+          icon={<CheckboxIcon status={itemStatus} item={item} />}
           isSelected={isStatusDoneType(itemStatus)}
           lineThrough
           classNames={{
@@ -94,7 +98,7 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
           onAuxClick={(e) => e.stopPropagation()}
           onAuxClickCapture={(e) => e.stopPropagation()}
         >
-          <a
+          <p
             className={
               'pl-1 ' + isStatusDoneType(itemStatus)
                 ? 'text-' + statusColor
@@ -102,7 +106,7 @@ function TaskItemCheckbox({ item }: { item: TaskItem }) {
             }
           >
             {taskItemContent}
-          </a>
+          </p>
         </Checkbox>
         <div className='text-nowrap pt-1 align-top font-mono text-sm text-default-500'>
           {item.dateTime?.due ? item.dateTime.due.format('h:m, A') : ''}

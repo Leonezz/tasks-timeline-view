@@ -1,4 +1,4 @@
-import React, { ReactNode, SVGProps } from 'react'
+import { SVGProps } from 'react'
 import {
   useCheckbox,
   Chip,
@@ -80,15 +80,10 @@ export const ChipStyleCheckbox = (props: ChipStyleCheckboxProps) => {
         }
         variant='faded'
         {...getLabelProps()}
-        children={
-          (children
-            ? children
-            : isSelected
-              ? 'Enabled'
-              : 'Disabled') as ReactNode
-        }
         ref={undefined}
-      />
+      >
+        {children ? children : isSelected ? 'Enabled' : 'Disabled'}
+      </Chip>
     </label>
   )
 }

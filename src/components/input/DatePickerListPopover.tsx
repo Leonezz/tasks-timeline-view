@@ -9,7 +9,6 @@ import { CalendarDate } from '@internationalized/date'
 import { iconMap } from '../asserts/icons'
 // import { innerDateFormat } from "../../util/defs";
 import { useEffect, useState } from 'react'
-import React from 'react'
 import { TaskItemDateTime } from '../../tasks/TaskItem'
 import moment from 'moment'
 import { timeZone } from '../../util/defs'

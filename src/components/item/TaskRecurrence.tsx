@@ -24,7 +24,7 @@ import {
 } from '@nextui-org/react'
 import { today, startOfMonth, endOfMonth } from '@internationalized/date'
 import moment from 'moment'
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { innerDateFormat, timeZone } from '../../util/defs'
 import { ChipStyleCheckbox } from '../filter_sort/ChipStyleCheckbox'
 import {
@@ -34,8 +34,9 @@ import {
   ByWeekday,
   Weekday
 } from 'rrule'
-import { todoStore } from '../../datastore/useTodoStore'
-import { BUS } from '../../datastore/todoStoreEvents'
+
+// import { BUS } from '../../datastore/todoStoreEvents'
+import { useTodoItemStore } from '../../datastore/useTodoStore'
 
 const RecurrenceNumInput = ({
   prefix,
@@ -93,7 +94,7 @@ const RecurrenceIntervalModeTabs = ({
   onValueChange
 }: {
   initialOptions: Partial<RRuleOptions>
-  onValueChange: (option: Partial<RRuleOptions>) => any
+  onValueChange: (option: Partial<RRuleOptions>) => void
 }) => {
   const weekdays = [
     RRule.MO,
@@ -227,7 +228,7 @@ const RecurrenceIntervalModeTabs = ({
         tabList: 'w-full'
       }}
       selectedKey={repeatBy.toString()}
-      onSelectionChange={(k: number) => {
+      onSelectionChange={(k) => {
         setRepeatBy(Number(k))
       }}
     >
@@ -256,8 +257,10 @@ const RecurrenceIntervalModeTabs = ({
           }}
         />
         <div className='flex flex-row gap-2'>
-          <label className='min-w-max'>Weekday: </label>
-          <div className='flex flex-row flex-wrap gap-2'>
+          <label className='min-w-max' htmlFor='weekdays'>
+            Weekday:{' '}
+          </label>
+          <div className='flex flex-row flex-wrap gap-2' id='weekdays'>
             {weekdays.map((wd) => (
               <ChipStyleCheckbox
                 radius='sm'
@@ -325,7 +328,7 @@ const RecurrenceIntervalModeTabs = ({
                     </SelectItem>
                   ))}
                 </Select>
-                <h2 className='min-w-max self-center'>Week's</h2>
+                <h2 className='min-w-max self-center'>Weeks</h2>
                 <Select
                   size='sm'
                   selectionMode='single'
@@ -388,7 +391,7 @@ const RecurrenceRangeEdit = ({
   onValueChange
 }: {
   ruleOption: Partial<RRuleOptions>
-  onValueChange: (option: Partial<RRuleOptions>) => any
+  onValueChange: (option: Partial<RRuleOptions>) => void
 }) => {
   const todayStr = moment().format(innerDateFormat)
   const [startDate, setStartDate] = useState(todayStr)
@@ -508,19 +511,21 @@ const RecurrencePreview = ({
 
 const TaskRecurrenceModal = ({
   disclosure,
+  recurrence,
   id
 }: {
   disclosure: UseDisclosureProps
+  recurrence: RRule
   id: string
 }) => {
-  const initialRRuleOption = (
-    todoStore.getItemById(id)?.recurrence || new RRule()
-  ).origOptions
-  const [rruleOption, setRRuleOption] = useState(initialRRuleOption)
+  const { edit } = useTodoItemStore()
+
+  const [rruleOption, setRRuleOption] = useState(recurrence.origOptions)
 
   const summitRRuleOption = useCallback(() => {
-    BUS.emit('ChangeTaskProperty', id, { recurrence: new RRule(rruleOption) })
-  }, [rruleOption])
+    edit({ id: id, value: { recurrence: new RRule(rruleOption) } })
+    // BUS.emit('ChangeTaskProperty', id, { recurrence: new RRule(rruleOption) })
+  }, [rruleOption, id, edit])
   return (
     <Modal
       isOpen={disclosure.isOpen}

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { Button, Textarea } from '@nextui-org/react'
 import { useState } from 'react'
 import moment from 'moment'
@@ -14,7 +14,8 @@ import TrivialSingleSelect, {
 } from './TrivialSingleSelect'
 import { fileIcon } from '../asserts/icons'
 import { TaskPriorityDef } from '../options/OptionDef'
-import { BUS } from '../../datastore/todoStoreEvents'
+import { useTodoItemStore } from '../../datastore/useTodoStore'
+// import { BUS } from '../../datastore/todoStoreEvents'
 
 const CategorySelect = ({
   initialCategory,
@@ -86,6 +87,8 @@ const NewTaskQuickInput = ({
   const [category, setCategory] = useState('')
   const [priority, setPriority] = useState('No')
 
+  const { add } = useTodoItemStore()
+
   const handleSubmitNewTask = useCallback(() => {
     if (text.trim().length === 0) return
     const newItem = {
@@ -103,7 +106,8 @@ const NewTaskQuickInput = ({
         status: 'Todo'
       }
     } as TaskItem
-    BUS.emit('AddTaskItem', newItem)
+    add({ item: newItem })
+    // BUS.emit('AddTaskItem', newItem)
   }, [text, dates, category, priority])
 
   return (
@@ -111,7 +115,6 @@ const NewTaskQuickInput = ({
       <Textarea
         value={text}
         onValueChange={setText}
-        autoFocus
         placeholder='Add a new task here'
         className='w-full text-medium'
       />

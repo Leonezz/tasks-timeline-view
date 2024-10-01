@@ -29,7 +29,6 @@ import {
   AutocompleteItem,
   SelectItemProps
 } from '@nextui-org/react'
-import { todoStore } from '../../datastore/useTodoStore'
 import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
 import {
   useTaskPriorityConfig,
@@ -41,7 +40,9 @@ import { innerDateTimeFormat } from '../../util/defs'
 import moment from 'moment'
 
 import { TaskItem } from '../../tasks/TaskItem'
-import { BUS } from '../../datastore/todoStoreEvents'
+// import { BUS } from '../../datastore/todoStoreEvents'
+import { useTodoItemStore } from '../../datastore/useTodoStore'
+import { RRule } from 'rrule'
 
 const selectRenderRowWithIconAndColor = ({
   label,
@@ -177,7 +178,7 @@ const PrioritySelect = ({
   setPriority
 }: {
   priority: string
-  setPriority: (p: string) => any
+  setPriority: (p: string) => void
 }) => {
   priority = priority.trim()
   priority = priority === '' ? 'No' : priority
@@ -222,42 +223,40 @@ const PrioritySelect = ({
 }
 
 const TaskItemEditModal = ({
-  id,
+  item,
   disclosure
 }: {
-  id: string
+  item: TaskItem
   disclosure: UseDisclosureProps
 }) => {
-  const taskItem = todoStore.getItemById(id) || ({} as TaskItem)
+  const { edit } = useTodoItemStore()
 
   const [taskItemContentVisual, setTaskItemContentVisual] = useState(
-    taskItem.content.visual
+    item.content.visual
   )
 
   const [isStartDateEnabled, setStartDateEnabled] = useState(true)
   const [startDate, setStartDate] = useState(
-    taskItem.dateTime.start?.format(innerDateTimeFormat) ||
+    item.dateTime.start?.format(innerDateTimeFormat) ||
       moment().format(innerDateTimeFormat)
   )
   const [isDueDateEnabled, setDueDateEnabled] = useState(true)
   const [dueDate, setDueDate] = useState(
-    taskItem.dateTime.due?.format(innerDateTimeFormat) ||
+    item.dateTime.due?.format(innerDateTimeFormat) ||
       moment().format(innerDateTimeFormat)
   )
   const [isDoneDateEnabled, setDoneDateEnabled] = useState(false)
   const [doneDate, setDoneDate] = useState(
-    taskItem.dateTime.completion?.format(innerDateTimeFormat) ||
+    item.dateTime.completion?.format(innerDateTimeFormat) ||
       moment().format(innerDateTimeFormat)
   )
 
-  const [selectedTags, setSelectedTags] = useState(
-    taskItem.tags || new Set<string>()
-  )
+  const [selectedTags, setSelectedTags] = useState(item.tags)
 
-  const [priority, setPriority] = useState(taskItem.priority)
+  const [priority, setPriority] = useState(item.priority)
 
   const { statusConfigs, getIconFromStatus } = useTaskStatusConfig()
-  const [taskStatus, setTaskStatus] = useState(taskItem.status)
+  const [taskStatus, setTaskStatus] = useState(item.status)
 
   const renderStatusRow = (statusOption: TaskStatusDef) =>
     selectRenderRowWithIconAndColor({
@@ -269,29 +268,32 @@ const TaskItemEditModal = ({
   const editTaskRecurrenceDisclosure = useDisclosure()
 
   const summitEdit = useCallback(() => {
-    BUS.emit('ChangeTaskProperty', id, {
-      content: {
-        ...taskItem.content,
-        visual: taskItemContentVisual
-      },
-      dateTime: {
-        ...taskItem.dateTime,
-        start: isStartDateEnabled
-          ? moment(startDate, innerDateTimeFormat)
-          : undefined,
-        due: isDueDateEnabled
-          ? moment(dueDate, innerDateTimeFormat)
-          : undefined,
-        completion: isDoneDateEnabled
-          ? moment(doneDate, innerDateTimeFormat)
-          : undefined
-      },
-      tags: selectedTags,
-      priority: priority,
-      status: taskStatus
+    edit({
+      id: item.uuid,
+      value: {
+        content: {
+          ...item.content,
+          visual: taskItemContentVisual
+        },
+        dateTime: {
+          ...item.dateTime,
+          start: isStartDateEnabled
+            ? moment(startDate, innerDateTimeFormat)
+            : undefined,
+          due: isDueDateEnabled
+            ? moment(dueDate, innerDateTimeFormat)
+            : undefined,
+          completion: isDoneDateEnabled
+            ? moment(doneDate, innerDateTimeFormat)
+            : undefined
+        },
+        tags: selectedTags,
+        priority: priority,
+        status: taskStatus
+      }
     })
   }, [
-    taskItem,
+    item,
     taskItemContentVisual,
     isStartDateEnabled,
     startDate,
@@ -301,7 +303,8 @@ const TaskItemEditModal = ({
     doneDate,
     selectedTags,
     priority,
-    taskStatus
+    taskStatus,
+    edit
   ])
 
   return (
@@ -467,7 +470,11 @@ const TaskItemEditModal = ({
           )}
         </ModalContent>
       </Modal>
-      <TaskRecurrenceModal disclosure={editTaskRecurrenceDisclosure} id={id} />
+      <TaskRecurrenceModal
+        disclosure={editTaskRecurrenceDisclosure}
+        recurrence={item.recurrence || new RRule()}
+        id={item.uuid}
+      />
     </Fragment>
   )
 }

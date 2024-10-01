@@ -6,7 +6,6 @@ import {
   DropdownMenu,
   DropdownItemProps
 } from '@nextui-org/react'
-import React from 'react'
 
 export type DropdownStyleSingleSelectItem = {
   label: string

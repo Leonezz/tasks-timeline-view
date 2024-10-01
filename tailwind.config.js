@@ -1,13 +1,12 @@
+import { nextui } from '@nextui-org/react'
 /** @type {import('tailwindcss').Config} */
-import { nextui } from "@nextui-org/react";
-module.exports = {
+export default {
   content: [
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-    "./src/**/*.{tsx,html,css}"
-  ],
+    './src/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {}
   },
-  plugins: [nextui()],
+  plugins: [nextui()]
 }
 

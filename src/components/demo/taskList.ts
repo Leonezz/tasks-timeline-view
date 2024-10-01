@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { TaskItem } from 'tasks-timeline-view'
+import { TaskItem } from '../../tasks/TaskItem'
 
 export const TodoList: TaskItem[] = [
   {
