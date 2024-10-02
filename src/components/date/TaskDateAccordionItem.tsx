@@ -1,16 +1,16 @@
 import { AccordionItem } from '@nextui-org/react'
 import moment from 'moment'
-import TaskItemCheckbox from '../item/TaskItemCheckbox'
+import { TaskItemCheckbox } from '../item/TaskItemCheckbox'
 import { innerDateFormat } from '../../util/defs'
-import { TaskItem } from '../../tasks/TaskItem'
+import { TaskItem } from '../../@types/task-item'
 
-function TaskDateAccordionItem({
+export const TaskDateAccordionItem = ({
   date,
   taskList
 }: {
   date: moment.Moment
   taskList: TaskItem[]
-}) {
+}) => {
   const formattedDate = date.format(innerDateFormat)
   return (
     <AccordionItem
@@ -27,5 +27,3 @@ function TaskDateAccordionItem({
     </AccordionItem>
   )
 }
-
-export default TaskDateAccordionItem

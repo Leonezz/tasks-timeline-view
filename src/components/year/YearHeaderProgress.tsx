@@ -1,26 +1,27 @@
 import { Progress } from '@nextui-org/react'
 
-function YearHeaderProgress({
+export const YearHeaderProgress = ({
   finished,
   total
 }: {
   finished: number
   total: number
-}) {
+}) => {
   return (
     <Progress
-      label='Progress of this year.'
+      label={<span className='font-mono text-sm'>progress of this year</span>}
       value={finished}
       maxValue={total}
       showValueLabel={true}
-      valueLabel={finished.toString() + ' / ' + total.toString()}
+      valueLabel={
+        <span className='font-mono text-sm'>{`${finished.toString()} / ${total.toString()}`}</span>
+      }
       size='sm'
+      className='gap-0'
       classNames={{
-        base: 'pt-2',
+        base: 'pt-1',
         label: 'text-sm'
       }}
     />
   )
 }
-
-export default YearHeaderProgress

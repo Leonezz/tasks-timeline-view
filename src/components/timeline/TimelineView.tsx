@@ -1,56 +1,54 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { NextUIProvider, ScrollShadow } from '@nextui-org/react'
 import moment from 'moment'
-import YearAccordion from '../year/YearAccordion'
-import FilterSelectorList from '../filter_sort/FilterSortSelectorList'
-import {
-  FilterSortOptions,
-  SelectedFilterSortOptions
-} from '../filter_sort/types'
-import { TaskItem } from '../../tasks/TaskItem'
-import {
-  TaskItemInfo,
-  TaskItemFilter,
-  TaskItemSort
-} from '../../tasks/TaskItemUtil'
+import { YearAccordion } from '../year/YearAccordion'
+import { FilterSelectorList } from '../filter_sort/FilterSortSelectorList'
+import { SelectedFilterSortOptions } from '../filter_sort/types'
+
 import '../../extension/array.extension'
 import { innerDateFormat } from '../../util/defs'
 import TodayCard from '../today/TodayCard'
 import { useGeneralOption } from '../options/GlobalOption'
-import OptionsPanel from '../options/OptionsPanel'
+import { OptionsPanel } from '../options/OptionsPanel'
 import { TimelineOptionType } from '../options/OptionDef'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
+import {
+  makeDateFilter,
+  makePrioritiesFilter,
+  makeStatusFilter,
+  makeTagsFilter
+} from '../../util/task-item/filter'
+import { makeSortCmp, SortOptions } from '../../util/task-item/sort'
+import { getTaskDateList } from '../../util/task-item/info'
+import { TaskItem } from '../../@types/task-item'
 
 export const TimelineView = () => {
-  const { getAll } = useTodoItemStore()
+  const { getAll, getTagsList, getStatusList, getPrioritisList } =
+    useTodoItemStore()
 
   const taskList = getAll()
   console.debug('raw item list: ', taskList)
 
-  const [selectedFilters, setSelectedFilters] = useState({
-    tags: [],
-    files: [],
-    priorities: [],
-    status: [],
-    sortCmp: '',
-    reversed: false
-  } as SelectedFilterSortOptions)
+  const [selectedFilters, setSelectedFilters] =
+    useState<SelectedFilterSortOptions>({
+      tags: [],
+      files: [],
+      priorities: [],
+      status: [],
+      sortCmp: 'text',
+      reversed: false
+    })
 
-  const tags = taskList.flatMap((item) => Array.from(item.tags)).unique()
+  const tags = getTagsList()
   const files = taskList.map((item) => item.position.visual).unique()
-  const priorities = taskList.map((item) => item.priority.toString()).unique()
-  const status = taskList.map((item) => item.status.toString()).unique()
-
-  const sortCmpMethod =
-    TaskItemSort.TaskItemSortMap[
-      selectedFilters.sortCmp as keyof typeof TaskItemSort.TaskItemSortMap
-    ]
+  const priorities = getPrioritisList()
+  const status = getStatusList()
 
   let filteredTaskList = taskList
-    .filter(TaskItemFilter.filterTags(selectedFilters.tags))
-    .filter(TaskItemFilter.filterPriorities(selectedFilters.priorities))
-    .filter(TaskItemFilter.filterStatus(selectedFilters.status))
-    .sort(sortCmpMethod)
+    .filter(makeTagsFilter(selectedFilters.tags))
+    .filter(makePrioritiesFilter(selectedFilters.priorities))
+    .filter(makeStatusFilter(selectedFilters.status))
+    .sort(makeSortCmp(selectedFilters.sortCmp))
   if (selectedFilters.reversed) {
     filteredTaskList = filteredTaskList.reverse()
   }
@@ -76,7 +74,7 @@ export const TimelineView = () => {
 
   const sortedInvolvedDates = filteredTaskList
     .flatMap((t) => {
-      return TaskItemInfo.getTaskDateList(t).unique()
+      return getTaskDateList(t).unique()
     })
     .unique()
     .sort((a, b) => {
@@ -90,7 +88,7 @@ export const TimelineView = () => {
       return d.year()
     })
     .unique()
-    .sort((a, b) => a - b)
+    .sort((a, b) => b - a)
 
   console.debug('filtered item list: ', filteredTaskList)
   console.debug('years: ', sortedInvolvedYears, sortedInvolvedDates)
@@ -105,7 +103,7 @@ export const TimelineView = () => {
               .map((d) => {
                 return {
                   key: d.format(innerDateFormat),
-                  value: filteredTaskList.filter(TaskItemFilter.filterDate(d))
+                  value: filteredTaskList.filter(makeDateFilter(d))
                 }
               })
               .map((e) => [e.key, e.value])
@@ -116,25 +114,6 @@ export const TimelineView = () => {
   )
 
   console.debug('data to render: ', yearDateTaskMap)
-  const FilterSortSelectorListCached = useMemo(
-    () => (
-      <FilterSelectorList
-        options={
-          {
-            tags: tags,
-            files: files,
-            priorities: priorities,
-            status: status,
-            sortCmp: Object.keys(TaskItemSort.TaskItemSortMap),
-            reversed: false
-          } as FilterSortOptions
-        }
-        selectedFilters={selectedFilters}
-        setSelectedFilters={setSelectedFilters}
-      />
-    ),
-    [tags, files, priorities, status]
-  )
 
   //TODO: background color need to adjust according to the theme
   return (
@@ -146,9 +125,25 @@ export const TimelineView = () => {
       >
         <div className='sticky top-0 z-50 flex min-h-max flex-col gap-2 bg-inherit bg-opacity-0'>
           <OptionsPanel />
-          <TodayCard unfinishedCnt={10} />
+          <TodayCard />
           {/* <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} /> */}
-          {FilterSortSelectorListCached}
+          <FilterSelectorList
+            options={{
+              tags: tags,
+              files: files,
+              priorities: priorities,
+              status: status,
+              sortCmp: SortOptions,
+              reversed: false
+            }}
+            selectedFilters={selectedFilters}
+            setSelectedFilters={(value) =>
+              setSelectedFilters((prev) => ({
+                ...prev,
+                ...value
+              }))
+            }
+          />
           {forwardUnfinishedTasks}
           <div>
             {selectedFilters.files}
@@ -159,14 +154,11 @@ export const TimelineView = () => {
         </div>
         <div className='relative z-40'>
           {sortedInvolvedYears.map((y) => {
+            const tasksOfYear = yearDateTaskMap.get(y)
             return (
-              <YearAccordion
-                key={y}
-                year={y}
-                dateTaskMap={
-                  (yearDateTaskMap.get(y) || {}) as Map<string, TaskItem[]>
-                }
-              />
+              tasksOfYear && (
+                <YearAccordion key={y} year={y} dateTaskMap={tasksOfYear} />
+              )
             )
           })}
         </div>

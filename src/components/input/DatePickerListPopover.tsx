@@ -6,14 +6,14 @@ import {
   DatePicker
 } from '@nextui-org/react'
 import { CalendarDate } from '@internationalized/date'
-import { iconMap } from '../asserts/icons'
 // import { innerDateFormat } from "../../util/defs";
 import { useEffect, useState } from 'react'
-import { TaskItemDateTime } from '../../tasks/TaskItem'
 import moment from 'moment'
 import { timeZone } from '../../util/defs'
+import { TaskItemDateTime } from '../../@types/task-item'
+import { DueIcon } from '../asserts/icons/due'
 
-function DatePickerItem({
+const DatePickerItem = ({
   labelPrefix,
   date,
   setDate
@@ -21,7 +21,7 @@ function DatePickerItem({
   labelPrefix: string
   date: moment.Moment
   setDate: (d: moment.Moment) => void
-}) {
+}) => {
   return (
     <DatePicker
       size='sm'
@@ -40,13 +40,13 @@ function DatePickerItem({
   )
 }
 
-function DatePickerListPopover({
+export const DatePickerListPopover = ({
   initialDates,
   summitDates
 }: {
   initialDates: TaskItemDateTime
   summitDates: (dates: TaskItemDateTime) => void
-}) {
+}) => {
   // const todayDateString = moment().format(innerDateFormat);
   const [dueDate, setDueDate] = useState(initialDates.due || moment())
   const [startDate, setStartDate] = useState(initialDates.start || moment())
@@ -56,7 +56,7 @@ function DatePickerListPopover({
       start: startDate
     } as TaskItemDateTime
     summitDates(dates)
-  }, [dueDate, startDate])
+  }, [dueDate, startDate, summitDates])
 
   return (
     <Popover
@@ -69,7 +69,7 @@ function DatePickerListPopover({
       <PopoverTrigger>
         <Avatar
           alt='Dates'
-          icon={iconMap.dueIcon}
+          icon={<DueIcon />}
           size='sm'
           radius='sm'
           isBordered={false}
@@ -78,7 +78,7 @@ function DatePickerListPopover({
           }}
         />
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className='flex flex-col gap-2'>
         <DatePickerItem
           key='due'
           labelPrefix='Due at: '
@@ -95,5 +95,3 @@ function DatePickerListPopover({
     </Popover>
   )
 }
-
-export default DatePickerListPopover

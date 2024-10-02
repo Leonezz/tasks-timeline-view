@@ -1,119 +1,105 @@
-import IconOnlyBadge from './IconOnlyBadge'
-import TagBadge from './TagBadge'
-import { Fragment, MouseEventHandler } from 'react'
-// import { getFileTitle } from '../../util/string'
-import { iconMap } from '../asserts/icons'
-import IconDateBadge from './IconDateBadge'
-import IconTextBadge from './IconTextBadge'
-import { TaskItem } from '../../tasks/TaskItem'
+import { IconOnlyBadge } from './IconOnlyBadge'
+import { TagBadge } from './TagBadge'
+import { MouseEventHandler } from 'react'
+import { IconDateBadge } from './IconDateBadge'
+import { IconTextBadge } from './IconTextBadge'
 import { useTaskPriorityConfig } from '../options/GlobalOption'
+import { TaskItem } from '../../@types/task-item'
+import { TaskIcon } from '../asserts/icons/task'
+import { StartIcon } from '../asserts/icons/start'
+import { ScheduledIcon } from '../asserts/icons/scheduled'
+import { DoneIcon } from '../asserts/icons/done'
+import { DueIcon } from '../asserts/icons/due'
+import { RepeatIcon } from '../asserts/icons/repeat'
+import { FileIcon } from '../asserts/icons/file'
+import { ThemeColor } from '../../@types/base'
 
-function TaskInfoLine({
+export const TaskInfoLine = ({
   item,
   onModifyTask
 }: {
   item: TaskItem
   onModifyTask?: MouseEventHandler
-}) {
-  const dates = item.dateTime
-
-  const buildDateBadge = (
-    date: moment.Moment | undefined,
-    ariaLabelPrefix: string,
-    icon: JSX.Element,
-    color?: string
-  ) => {
-    if (!date) return <Fragment />
-    return (
-      <IconDateBadge
-        key={ariaLabelPrefix}
-        ariaLabelPrefix={ariaLabelPrefix}
-        date={date}
-        icon={icon}
-        color={color || 'default'}
-      />
-    )
-  }
-
-  const createDateBadge = buildDateBadge(
-    dates?.created,
-    'create at ',
-    iconMap.taskIcon
-  )
-
-  const startDateBadge = buildDateBadge(
-    dates?.start,
-    'start at ',
-    iconMap.startIcon
-  )
-  const scheduledDateBadge = buildDateBadge(
-    dates?.scheduled,
-    'scheduled to ',
-    iconMap.scheduledIcon
-  )
-  const dueDateBadge = buildDateBadge(dates?.due, 'due at ', iconMap.dueIcon)
-  const completeDateBadge = buildDateBadge(
-    dates?.completion,
-    'complete at ',
-    iconMap.doneIcon,
-    'text-success'
-  )
-
-  const buildIconTextBadge = (
-    icon: JSX.Element,
-    label?: string,
-    ariaLabelPrefix?: string,
-    ariaLabel?: string,
-    color?: string
-  ) => {
-    if (!label) return <Fragment />
-    return (
-      <IconTextBadge
-        key={label}
-        label={label}
-        ariaLabelPrefix={ariaLabelPrefix}
-        ariaLabel={ariaLabel}
-        icon={icon}
-        color={color}
-      />
-    )
-  }
+}) => {
+  const { created, start, due, completion, scheduled } = item.dateTime
 
   const recurrenceLabel =
     (item.recurrence && item.recurrence.toText()) || 'no repeat'
-  const recurrenceBadge = buildIconTextBadge(
-    iconMap.repeatIcon,
-    recurrenceLabel,
-    'recurrent: ',
-    recurrenceLabel
-  )
+
+  const { priority, position } = item
 
   const { getPriorityIcon, getPriorityColor } = useTaskPriorityConfig()
-  const priorityBadge = buildIconTextBadge(
-    getPriorityIcon(item.priority),
-    item.priority,
-    'priority: ',
-    item.priority,
-    'text-' + getPriorityColor(item.priority)
-  )
-  const positionBadge = buildIconTextBadge(
-    iconMap.fileIcon,
-    item.position.visual,
-    item.position.visual
-  )
+  const PriorityIcon = getPriorityIcon(priority)
 
   return (
     <div className='flex flex-col flex-wrap gap-1'>
       <div key='datetime' className='flex flex-wrap gap-1'>
         {onModifyTask && <IconOnlyBadge key={1} onclick={onModifyTask} />}
-        {createDateBadge}
-        {startDateBadge}
-        {scheduledDateBadge}
-        {dueDateBadge}
-        {completeDateBadge}
-        {recurrenceBadge}
-        {priorityBadge}
-        {positionBadge}
+        {created && (
+          <IconDateBadge
+            icon={<TaskIcon width={12} height={12} />}
+            key='create at'
+            ariaLabelPrefix='create at '
+            date={created}
+          />
+        )}
+        {start && (
+          <IconDateBadge
+            icon={<StartIcon width={12} height={12} />}
+            key='start at'
+            ariaLabelPrefix='start at '
+            date={start}
+            color='primary'
+          />
+        )}
+        {scheduled && (
+          <IconDateBadge
+            icon={<ScheduledIcon width={12} height={12} />}
+            key='scheduled to'
+            ariaLabelPrefix='scheduled to '
+            date={scheduled}
+            color='secondary'
+          />
+        )}
+        {due && (
+          <IconDateBadge
+            icon={<DueIcon width={12} height={12} />}
+            key='due at '
+            ariaLabelPrefix='due at '
+            date={due}
+            color='danger'
+          />
+        )}
+        {completion && (
+          <IconDateBadge
+            icon={<DoneIcon width={12} height={12} />}
+            key='complete at'
+            ariaLabelPrefix='complete at'
+            date={completion}
+            color='success'
+          />
+        )}
+        <IconTextBadge
+          key={priority}
+          label={priority}
+          ariaLabelPrefix='priority: '
+          ariaLabel={priority}
+          icon={<PriorityIcon width={12} height={12} />}
+          color={getPriorityColor(priority) as ThemeColor}
+        />
+        <IconTextBadge
+          key={recurrenceLabel}
+          label={recurrenceLabel}
+          ariaLabelPrefix='report: '
+          ariaLabel={recurrenceLabel}
+          icon={<RepeatIcon width={12} height={12} />}
+        />
+        <IconTextBadge
+          key={position.visual}
+          label={position.visual}
+          ariaLabel={position.visual}
+          icon={<FileIcon width={12} height={12} />}
+        />
       </div>
       <div key='tags' className='flex flex-wrap gap-1'>
         {Array.from(item.tags).map((t, i) => {
@@ -123,7 +109,7 @@ function TaskInfoLine({
             <TagBadge
               key={i}
               tag={t}
-              tagPalette={{} as Map<string, string>}
+              tagPalette={new Map()}
               // onTagClick={handleTagClick}
             />
             // )}
@@ -134,5 +120,3 @@ function TaskInfoLine({
     </div>
   )
 }
-
-export default TaskInfoLine

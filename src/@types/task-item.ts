@@ -12,7 +12,7 @@ export interface TaskItemDateTime {
   /** If present, then the day that work on this task is scheduled. */
   scheduled?: moment.Moment
   /** MISC dates */
-  misc: Map<string, moment.Moment>
+  misc?: Map<string, moment.Moment>
 }
 
 interface Loc {
@@ -45,6 +45,19 @@ interface TaskItemContent {
 //     Low = 'Low'
 // }
 
+export const TaskStatus = [
+  'done',
+  'scheduled',
+  'todo',
+  'overdue',
+  'cancelled',
+  'unplanned'
+] as const
+export type TaskStatus = (typeof TaskStatus)[number]
+
+export const TaskPriorities = ['high', 'medium', 'no', 'low'] as const
+export type TaskPriority = (typeof TaskPriorities)[number]
+
 export interface TaskItem {
   /**
    * Date time infomation of a task item
@@ -57,11 +70,11 @@ export interface TaskItem {
   /**
    * Task item status
    */
-  status: string
+  status: TaskStatus
   /**
    * Task item priority
    */
-  priority: string
+  priority: TaskPriority
   content: TaskItemContent
   location?: string
   /**
@@ -81,8 +94,8 @@ export interface TaskItem {
 
 export const GlobalEmptyItem = {
   dateTime: {} as TaskItemDateTime,
-  status: '',
-  priority: '',
+  status: 'todo',
+  priority: 'no',
   content: {
     rawText: '',
     visual: ''

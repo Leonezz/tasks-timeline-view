@@ -1,14 +1,15 @@
 import { MouseEventHandler } from 'react'
-import TaskItemInfoBadge from './TaskItemInfoBadge'
+import { TaskItemInfoBadge } from './TaskItemInfoBadge'
+import { ThemeColor } from '../../@types/base'
 
-function IconTextBadge({
+export const IconTextBadge = ({
   icon,
   labelPrefix,
   label,
   labelSuffix,
   ariaLabelPrefix,
   ariaLabel,
-  ariaLabelSuffix,
+  // ariaLabelSuffix,
   onClick,
   color
 }: {
@@ -20,23 +21,22 @@ function IconTextBadge({
   ariaLabel?: string
   ariaLabelSuffix?: string
   onClick?: MouseEventHandler
-  color?: string
-}) {
+  color?: ThemeColor
+}) => {
   labelPrefix = labelPrefix || ''
   labelSuffix = labelSuffix || ''
   ariaLabel = ariaLabel || ''
   ariaLabelPrefix = ariaLabelPrefix || ''
-  ariaLabelSuffix = ariaLabelSuffix || ''
+  // ariaLabelSuffix = ariaLabelSuffix || ''
 
   return (
     <TaskItemInfoBadge
       icon={icon}
       label={labelPrefix + label + labelSuffix}
-      ariaLabel={'' + ariaLabelPrefix + ariaLabel + labelSuffix}
+      ariaLabel={ariaLabelPrefix + ariaLabel + labelSuffix}
       onClick={onClick}
+      color={color === undefined ? 'default' : color}
       iconColor={color}
     />
   )
 }
-
-export default IconTextBadge

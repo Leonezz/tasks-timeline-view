@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   CheckboxGroup,
   Popover,
@@ -10,28 +10,21 @@ import {
 import { ChipStyleCheckbox } from './ChipStyleCheckbox'
 // import { iconMap } from "../asserts/icons";
 
-function FilterSelector({
+export const FilterSelector = ({
   options,
   label,
   selectedOptions,
   setSelectedOptions
 }: {
-  options: string[]
+  options: Readonly<string[]>
   label: string
   selectedOptions: string[]
   setSelectedOptions: (s: string[]) => void
-}) {
+}) => {
   const selectedOptionsCnt = useMemo(
     () => selectedOptions.length,
     [selectedOptions]
   )
-
-  // clear all selected when all selected
-  useEffect(() => {
-    if (selectedOptionsCnt == options.length) {
-      setSelectedOptions([])
-    }
-  }, [selectedOptionsCnt])
 
   return (
     <Popover placement='bottom'>
@@ -62,7 +55,13 @@ function FilterSelector({
           }
           orientation='vertical'
           value={selectedOptions}
-          onValueChange={setSelectedOptions}
+          onValueChange={(value) => {
+            if (value.length === options.length) {
+              setSelectedOptions([])
+            } else {
+              setSelectedOptions(value)
+            }
+          }}
         >
           {options.map((option, i) => (
             <ChipStyleCheckbox showicon={true} key={i} value={option}>
@@ -75,4 +74,3 @@ function FilterSelector({
   )
 }
 
-export default FilterSelector

@@ -9,7 +9,7 @@ import {
 import moment from 'moment'
 import { useGeneralOption } from '../options/GlobalOption'
 
-function DateCalendarIcon({ date }: { date: moment.Moment }) {
+export const DateCalendarIcon = ({ date }: { date: moment.Moment }) => {
   const month = date.format('MMM')
   const day = date.format('DD')
   const weekday = date.format('ddd')
@@ -21,16 +21,16 @@ function DateCalendarIcon({ date }: { date: moment.Moment }) {
       return (
         <Card
           className={
-            'h-12 w-12 items-center gap-0 border-small shadow-none ' +
+            'h-10 w-10 items-center gap-0 border-small shadow-none ' +
             weekendClassNames
           }
           radius='sm'
         >
-          <CardHeader className='justify-center px-1 py-0 text-center font-extrabold text-red-500'>
+          <CardHeader className='justify-center px-1 py-0 text-center text-sm font-extrabold text-red-500'>
             {dateIconStyle === 'monthday' ? month : weekday}
           </CardHeader>
           <Divider />
-          <CardFooter className='justify-center px-1 py-0 text-center text-xl font-extrabold'>
+          <CardFooter className='justify-center px-1 py-0 text-center text-medium font-extrabold'>
             {day}
           </CardFooter>
         </Card>
@@ -52,5 +52,3 @@ function DateCalendarIcon({ date }: { date: moment.Moment }) {
       return <Fragment />
   }
 }
-
-export default DateCalendarIcon

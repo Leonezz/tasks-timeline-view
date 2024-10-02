@@ -1,121 +1,50 @@
-import { useEffect, useMemo, useState, Fragment } from 'react'
-import FilterSelector from './FilterSelector'
-import SortOptionSelector from './SortSelector'
+import { FilterSelector } from './FilterSelector'
+import { SortOptionSelector } from './SortSelector'
 import { FilterSortOptions, SelectedFilterSortOptions } from './types'
 
-function FilterSelectorList({
+export const FilterSelectorList = ({
   options,
   selectedFilters,
   setSelectedFilters
 }: {
   options: FilterSortOptions
   selectedFilters: SelectedFilterSortOptions
-  setSelectedFilters: (filters: SelectedFilterSortOptions) => void
-}) {
-  const [filterTags, setFilterTags] = useState<string[]>(selectedFilters.tags)
-  const [filterFiles, setFilterFiles] = useState<string[]>(
-    selectedFilters.files
-  )
-  const [filterPriorities, setFilterPriorities] = useState<string[]>(
-    selectedFilters.priorities
-  )
-  const [filterStatus, setFilterStatus] = useState<string[]>(
-    selectedFilters.status
-  )
-  const [sortCmp, setSortCmp] = useState(selectedFilters.sortCmp)
-  const [sortReversed, setSortReversed] = useState<boolean>(
-    selectedFilters.reversed
-  )
-
-  useEffect(() => {
-    setSelectedFilters({
-      tags: filterTags,
-      files: filterFiles,
-      priorities: filterPriorities,
-      status: filterStatus,
-      sortCmp: sortCmp,
-      reversed: sortReversed
-    })
-  }, [
-    filterTags,
-    filterFiles,
-    filterPriorities,
-    filterStatus,
-    sortCmp,
-    sortReversed
-  ])
-
-  const BuildFilterSelector = (
-    label: string,
-    options: string[],
-    selectd: string[],
-    setSelected: (s: string[]) => void
-  ) =>
-    options && options.length > 0 ? (
-      <FilterSelector
-        key={label}
-        label={label}
-        options={options}
-        selectedOptions={selectd}
-        setSelectedOptions={setSelected}
-      />
-    ) : (
-      <Fragment />
-    )
-
-  const TagFilterSelector = useMemo(
-    () => BuildFilterSelector('Tags', options.tags, filterTags, setFilterTags),
-    [options.tags, filterTags]
-  )
-  const FileFilterSelector = useMemo(
-    () =>
-      BuildFilterSelector('Files', options.files, filterFiles, setFilterFiles),
-    [options.files, filterFiles]
-  )
-  const PriorityFilterSelector = useMemo(
-    () =>
-      BuildFilterSelector(
-        'Priority',
-        options.priorities,
-        filterPriorities,
-        setFilterPriorities
-      ),
-    [options.priorities, filterPriorities]
-  )
-  const StatusFilterSelector = useMemo(
-    () =>
-      BuildFilterSelector(
-        'Status',
-        options.status,
-        filterStatus,
-        setFilterStatus
-      ),
-    [options.status, filterStatus]
-  )
-
-  const SortOptionSelectorCached = useMemo(
-    () => (
-      <SortOptionSelector
-        options={options.sortCmp}
-        label='Sort'
-        selectedOption={sortCmp}
-        setSelectedOption={setSortCmp}
-        reversed={sortReversed}
-        setReversed={setSortReversed}
-      />
-    ),
-    [options.sortCmp, sortCmp, sortReversed]
-  )
-
+  setSelectedFilters: (filters: Partial<SelectedFilterSortOptions>) => void
+}) => {
   return (
     <div className='flex flex-wrap gap-2 px-2'>
-      {TagFilterSelector}
-      {FileFilterSelector}
-      {PriorityFilterSelector}
-      {StatusFilterSelector}
-      {SortOptionSelectorCached}
+      <FilterSelector
+        label='Tags'
+        options={options.tags}
+        selectedOptions={selectedFilters.tags}
+        setSelectedOptions={(s) => setSelectedFilters({ tags: s })}
+      />
+      <FilterSelector
+        label='File'
+        options={options.files}
+        selectedOptions={selectedFilters.files}
+        setSelectedOptions={(s) => setSelectedFilters({ files: s })}
+      />
+      <FilterSelector
+        label='Priority'
+        options={options.priorities}
+        selectedOptions={selectedFilters.priorities}
+        setSelectedOptions={(s) => setSelectedFilters({ priorities: s })}
+      />
+      <FilterSelector
+        label='Status'
+        options={options.status}
+        selectedOptions={selectedFilters.status}
+        setSelectedOptions={(s) => setSelectedFilters({ status: s })}
+      />
+      <SortOptionSelector
+        label='Sort'
+        options={options.sortCmp}
+        selectedOption={selectedFilters.sortCmp}
+        setSelectedOption={(s) => setSelectedFilters({ sortCmp: s })}
+        reversed={selectedFilters.reversed}
+        setReversed={(r) => setSelectedFilters({ reversed: r })}
+      />
     </div>
   )
 }
-
-export default FilterSelectorList

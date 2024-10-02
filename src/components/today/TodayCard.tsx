@@ -2,7 +2,7 @@ import { Card, CardHeader, Chip } from '@nextui-org/react'
 import moment from 'moment'
 import { visualDateFormat } from '../../util/defs'
 import { useGeneralOption } from '../options/GlobalOption'
-function TodayCard({ unfinishedCnt }: { unfinishedCnt: number }) {
+function TodayCard() {
   const { todayFocus, setTodayFocus } = useGeneralOption()
   return (
     <Card
@@ -25,9 +25,9 @@ function TodayCard({ unfinishedCnt }: { unfinishedCnt: number }) {
         >
           Today
         </Chip>
-        <div className='text-md text-default-500'>
+        <span className='text-md font-mono text-default-500'>
           {moment().format(visualDateFormat)}
-        </div>
+        </span>
       </CardHeader>
     </Card>
   )

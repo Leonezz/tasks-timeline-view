@@ -8,11 +8,11 @@ import {
   Selection,
   Switch
 } from '@nextui-org/react'
-import { settingsIcon } from '../asserts/icons'
 import { useGeneralOption } from './GlobalOption'
 import { DateIconStyles } from './OptionDef'
+import { SettingsIcon } from '../asserts/icons/setting'
 
-function OptionsPanel() {
+export const OptionsPanel = () => {
   const {
     forwardUnfinishedTasks,
     setForwardUnfinishedTasks,
@@ -24,7 +24,7 @@ function OptionsPanel() {
   return (
     <Popover>
       <PopoverTrigger>
-        <Avatar icon={settingsIcon}></Avatar>
+        <Avatar icon={<SettingsIcon />} />
       </PopoverTrigger>
       <PopoverContent>
         <Switch
@@ -51,5 +51,3 @@ function OptionsPanel() {
     </Popover>
   )
 }
-
-export default OptionsPanel

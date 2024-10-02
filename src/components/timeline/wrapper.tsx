@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { TaskItem } from '../../tasks/TaskItem'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
 import { TimelineView } from './TimelineView'
 import '../../../dist/style.css'
+import { TaskItem } from '../../@types/task-item'
 
 type TimelineWrapperProps = {
   initialItems: TaskItem[]

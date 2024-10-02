@@ -8,18 +8,19 @@ import {
 } from '@nextui-org/react'
 import { useState } from 'react'
 import moment from 'moment'
-import TaskItemCheckbox from '../item/TaskItemCheckbox'
-import DateTaskStatisticsLine, {
+import { TaskItemCheckbox } from '../item/TaskItemCheckbox'
+import {
+  DateTaskStatisticsLine,
   CounterType
 } from '../date/DateTaskStatisticsLine'
-import DateCalendarIcon from '../date/DateCalendarIcon'
-import YearHeaderProgress from './YearHeaderProgress'
-import YearUnfinishedTip from './YearUnfinishedTip'
-import { TaskItem } from '../../tasks/TaskItem'
+import { DateCalendarIcon } from '../date/DateCalendarIcon'
+import { YearHeaderProgress } from './YearHeaderProgress'
+import { YearUnfinishedTip } from './YearUnfinishedTip'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
 import { useGeneralOption, useTaskStatusConfig } from '../options/GlobalOption'
-import { addIcon } from '../asserts/icons'
-import NewTaskQuickInput from '../input/NewTaskQuickInput'
+import { NewTaskQuickInput } from '../input/NewTaskQuickInput'
+import { TaskItem } from '../../@types/task-item'
+import { AddIcon } from '../asserts/icons/add'
 
 const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
   const [isAdding, setIsAdding] = useState(false)
@@ -38,9 +39,10 @@ const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
         <Button
           onClick={() => setIsAdding(true)}
           variant='light'
-          startContent={addIcon}
-          className='trainsition-colors items-left flex w-fit 
-                    gap-1.5 px-0.5 py-0.5 align-middle text-sm text-neutral-400 hover:text-neutral-800'
+          size='sm'
+          startContent={<AddIcon />}
+          className='trainsition-colors items-left flex w-fit items-center gap-1.5 px-0 py-0
+                    align-middle text-sm text-neutral-400 hover:text-neutral-800'
         >
           New Task
         </Button>
@@ -49,13 +51,13 @@ const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
   )
 }
 
-function YearAccordion({
+export const YearAccordion = ({
   year,
   dateTaskMap
 }: {
   year: number
   dateTaskMap: Map<string, TaskItem[]>
-}) {
+}) => {
   const dates: string[] = Array.from(dateTaskMap.keys()).sort((a, b) => {
     return a < b ? -1 : a === b ? 0 : 1
   })
@@ -110,12 +112,12 @@ function YearAccordion({
       fullWidth
       classNames={{
         base:
-          'shadow-none bg-origin-content bg-transparent tasktimeline-yearcard ' +
+          'shadow-none bg-origin-content bg-transparent ' +
           (hideAll ? 'hidden' : '')
       }}
     >
       <CardHeader
-        className={'flex-col items-center ' + (todayFocus ? 'hidden' : '')}
+        className={'flex-col items-center pt-1 ' + (todayFocus ? 'hidden' : '')}
       >
         <span className='text-3xl font-bold'>{year.toString()}</span>
         <YearUnfinishedTip
@@ -136,7 +138,7 @@ function YearAccordion({
           itemClasses={itemClasses}
           showDivider={false}
         >
-          {dates.map((d: string, i: number) => {
+          {dates.map((d: string) => {
             const taskList = dateTaskMap.get(d) || []
             const formattedDate = moment(d, innerDateFormat).format(
               visualDateFormat
@@ -144,12 +146,12 @@ function YearAccordion({
             const counters = statusConfigs.map(
               (config: (typeof statusConfigs)[0]) => {
                 return {
-                  label: config.label,
+                  label: config.status,
                   color: config.color,
                   isDoneType: config.isDoneType,
                   cnt: taskList.reduce(
                     (result, item) =>
-                      result + item.status === config.label ? 1 : 0,
+                      result + (item.status === config.status ? 1 : 0),
                     0
                   )
                 } as CounterType
@@ -157,7 +159,7 @@ function YearAccordion({
             )
             return (
               <AccordionItem
-                key={i}
+                key={d}
                 aria-label={formattedDate}
                 title={formattedDate}
                 subtitle={<DateTaskStatisticsLine counters={counters} />}
@@ -166,8 +168,8 @@ function YearAccordion({
                 }
                 className={hideHead(d) ? 'hidden' : ''}
               >
-                {taskList.map((t, i) => (
-                  <TaskItemCheckbox key={i} item={t} />
+                {taskList.map((t) => (
+                  <TaskItemCheckbox key={t.uuid} item={t} />
                 ))}
                 <AddTaskButton dateStr={d} />
               </AccordionItem>
@@ -178,5 +180,3 @@ function YearAccordion({
     </Card>
   )
 }
-
-export default YearAccordion

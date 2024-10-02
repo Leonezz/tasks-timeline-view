@@ -1,4 +1,7 @@
-import { iconMap, priorityIcon } from '../asserts/icons'
+import { ComponentType } from 'react'
+import { TaskPriority } from '../../@types/task-item'
+import { PriorityIcon } from '../asserts/icons/priority'
+import { TaskIcon } from '../asserts/icons/task'
 import {
   TaskPriorityConfig,
   TaskPriorityConfigType,
@@ -33,7 +36,9 @@ export const useGeneralOption = create<
 }))
 
 type TaskStatusConfigActions = {
-  getIconFromStatus: (status: string) => JSX.Element
+  getIconFromStatus: (
+    status: string
+  ) => ComponentType<{ width?: number; height?: number }>
   getStatusColor: (status: string) => string
   isStatusDoneType: (status: string) => boolean
 }
@@ -44,23 +49,21 @@ export const useTaskStatusConfig = create<
   statusConfigs: TaskStatusConfig.statusConfigs,
   getIconFromStatus: (status: string) => {
     const configs: TaskStatusDef[] = get().statusConfigs
-    const config = configs.filter((item) => item.label === status)
-    if (config.length === 0) return iconMap.taskIcon
-    const icon = config[0].icon
-    if (typeof icon === 'string') {
-      return <img src={icon} alt='' />
+    const config = configs.filter((item) => item.status === status)
+    if (config.length === 0) {
+      return TaskIcon
     }
-    return icon
+    return config[0].icon
   },
   getStatusColor: (status: string) => {
     const configs: TaskStatusDef[] = get().statusConfigs
-    const config = configs.filter((item) => item.label === status)
+    const config = configs.filter((item) => item.status === status)
     if (config.length === 0) return 'default'
     return config[0].color || ''
   },
   isStatusDoneType: (status: string) => {
     const configs: TaskStatusDef[] = get().statusConfigs
-    const config = configs.filter((item) => item.label === status)
+    const config = configs.filter((item) => item.status === status)
     if (config.length === 0) return false
     return config[0].isDoneType
   }
@@ -84,9 +87,11 @@ export const useVaultConfig = create<VaultConfigType & VaultConfigActions>(
 
 type TaskPriorityConfigActions = {
   getTaskPriorityLabels: () => string[]
-  getPriorityIcon: (p: string) => JSX.Element
-  getPriorityColor: (p: string) => string
-  getPrioritySort: (p: string) => number
+  getPriorityIcon: (
+    p: TaskPriority
+  ) => ComponentType<{ width?: number; height?: number }>
+  getPriorityColor: (p: TaskPriority) => string
+  getPrioritySort: (p: TaskPriority) => number
 }
 
 export const useTaskPriorityConfig = create<
@@ -94,28 +99,31 @@ export const useTaskPriorityConfig = create<
 >((set, get) => ({
   priorityConfigs: TaskPriorityConfig.priorityConfigs,
   getTaskPriorityLabels: () =>
-    get().priorityConfigs.map((config: TaskPriorityDef) => config.label),
-  getPriorityIcon: (p: string) => {
+    get().priorityConfigs.map((config: TaskPriorityDef) => config.priority),
+  getPriorityIcon: (p: TaskPriority) => {
     const config = get().priorityConfigs.filter(
-      (config: TaskPriorityDef) => config.label === p
+      (config: TaskPriorityDef) => config.priority === p
     )
-    if (config.length !== 1) return priorityIcon
-    if (typeof config[0].icon === 'string')
-      return <img src={config[0].icon} alt='' />
+    if (config.length !== 1) {
+      return PriorityIcon
+    }
+
     return config[0].icon
   },
   getPriorityColor: (p: string) => {
     const config = get().priorityConfigs.filter(
-      (config: TaskPriorityDef) => config.label === p
+      (config: TaskPriorityDef) => config.priority === p
     )
     if (config.length !== 1) return 'default'
     return config[0].color || 'default'
   },
   getPrioritySort: (p: string) => {
     const config = get().priorityConfigs.filter(
-      (config: TaskPriorityDef) => config.label === p
+      (config: TaskPriorityDef) => config.priority === p
     )
-    if (config.length !== 1) return 0
+    if (config.length !== 1) {
+      return 0
+    }
     return config[0].sortBy
   }
 }))

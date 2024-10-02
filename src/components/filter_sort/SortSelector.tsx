@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import {
   Dropdown,
   DropdownMenu,
@@ -8,9 +7,9 @@ import {
   Switch,
   DropdownSection
 } from '@nextui-org/react'
-import { Selection } from '@nextui-org/react'
+import { SortOptions } from '../../util/task-item/sort'
 
-function SortOptionSelector({
+export const SortOptionSelector = ({
   options,
   label,
   selectedOption,
@@ -18,24 +17,13 @@ function SortOptionSelector({
   reversed,
   setReversed
 }: {
-  options: string[]
+  options: Readonly<SortOptions[]>
   label: string
-  selectedOption: string
-  setSelectedOption: (s: string) => void
+  selectedOption: SortOptions
+  setSelectedOption: (s: SortOptions) => void
   reversed: boolean
   setReversed: (r: boolean) => void
-}) {
-  const [sortCmp, setSortCmp] = useState<Selection>(new Set([selectedOption]))
-
-  useEffect(() => {
-    if (sortCmp === 'all' || sortCmp.size === 0) {
-      setSelectedOption('')
-    } else {
-      const selectedValue = Array.from(sortCmp)[0]
-      setSelectedOption(selectedValue.valueOf().toString())
-    }
-  }, [sortCmp])
-
+}) => {
   const isActive = selectedOption.length > 0 || reversed
 
   console.debug('sort selector re-redener', selectedOption)
@@ -58,8 +46,10 @@ function SortOptionSelector({
       </DropdownTrigger>
       <DropdownMenu
         selectionMode='single'
-        selectedKeys={sortCmp}
-        onSelectionChange={setSortCmp}
+        selectedKeys={selectedOption}
+        onSelectionChange={(keys) => {
+          setSelectedOption(Array.from(keys).join('') as SortOptions)
+        }}
         classNames={{
           base: 'w-fit'
         }}
@@ -88,4 +78,3 @@ function SortOptionSelector({
   )
 }
 
-export default SortOptionSelector

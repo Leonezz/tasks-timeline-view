@@ -1,5 +1,6 @@
-import { MouseEventHandler } from 'react'
+import { CSSProperties, MouseEventHandler } from 'react'
 import { Chip } from '@nextui-org/react'
+import { ThemeColor } from '../../@types/base'
 
 export const CheckIcon = ({
   size,
@@ -26,7 +27,7 @@ export const CheckIcon = ({
   )
 }
 
-function TaskItemInfoBadge({
+export const TaskItemInfoBadge = ({
   label,
   ariaLabel,
   icon,
@@ -34,17 +35,19 @@ function TaskItemInfoBadge({
   color,
   isIconOnly,
   className,
-  iconColor
+  iconColor,
+  style
 }: {
   label?: string
   ariaLabel?: string
   icon?: JSX.Element
   onClick?: MouseEventHandler
-  color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
+  color?: ThemeColor
   isIconOnly?: boolean
   className?: string
-  iconColor?: string
-}) {
+  iconColor?: ThemeColor
+  style?: CSSProperties
+}) => {
   isIconOnly = isIconOnly || false
   let contentPaddingLeft = 'pl-1'
   if (isIconOnly) {
@@ -57,17 +60,18 @@ function TaskItemInfoBadge({
       aria-label={ariaLabel || ''}
       onClick={onClick}
       variant='flat'
-      color={color || 'default'}
-      className={className}
+      color={color}
+      size='sm'
+      radius='sm'
+      className={`${className} h-fit items-center py-0.5 pr-0`}
       classNames={{
-        base: 'w-full h-5 pt-0.5 pb-0.5 pl-1 pr-1 border-opacity-50 hover:border-opacity-100',
-        content: 'text-md pr-0 align-middle font-mono ' + contentPaddingLeft,
-        avatar: 'h-4 w-4 ' + iconColor
+        base: 'border-opacity-50 hover:border-opacity-100 ',
+        content: 'text-sx align-middle font-mono ' + contentPaddingLeft,
+        avatar: 'text-' + iconColor
       }}
+      style={{ ...style }}
     >
       {label}
     </Chip>
   )
 }
-
-export default TaskItemInfoBadge

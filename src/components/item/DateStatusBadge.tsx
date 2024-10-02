@@ -2,7 +2,7 @@
  * @deprecated
  */
 import { ReactElement } from 'react'
-import TaskItemInfoBadge from './TaskItemInfoBadge'
+import { TaskItemInfoBadge } from './TaskItemInfoBadge'
 
 function CalenderIcon({ icon }: { icon: JSX.Element }) {
   icon.props['width'] = 14
@@ -10,8 +10,8 @@ function CalenderIcon({ icon }: { icon: JSX.Element }) {
   return icon
 }
 
-function DateStatusBadge({
-  className,
+export const DateStatusBadge = ({
+  // className,
   ariaLabel,
   label,
   icon
@@ -20,11 +20,11 @@ function DateStatusBadge({
   ariaLabel: string
   label: string
   icon: JSX.Element
-}): ReactElement {
+}): ReactElement => {
   return (
     <TaskItemInfoBadge
       ariaLabel={ariaLabel}
-      icon={<CalenderIcon icon={icon}></CalenderIcon>}
+      icon={<CalenderIcon icon={icon} />}
       label={label}
     />
   )

@@ -13,7 +13,7 @@ export type DropdownStyleSingleSelectItem = {
   color: string
 }
 
-function TrivialSingleSelect({
+export const TrivialSingleSelect = ({
   options,
   selectedKeys,
   setSelectedKey,
@@ -22,10 +22,10 @@ function TrivialSingleSelect({
 }: {
   options: (DropdownStyleSingleSelectItem | string)[]
   selectedKeys: Set<string>
-  setSelectedKey: (key: string) => any
+  setSelectedKey: (key: string) => void
   icon: JSX.Element
   ariaLabel: string
-}) {
+}) => {
   const getOptionLabel = (option: (typeof options)[number]) =>
     typeof option === 'string' ? option : option.label
   const labels = options.map((option) => getOptionLabel(option))
@@ -80,5 +80,3 @@ function TrivialSingleSelect({
     </Dropdown>
   )
 }
-
-export default TrivialSingleSelect

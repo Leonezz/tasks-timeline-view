@@ -1,28 +1,30 @@
 import { useCallback, useState } from 'react'
 import { Button, Input } from '@nextui-org/react'
-import TrivialSingleSelect from './TrivialSingleSelect'
-import { enterIcon, iconMap } from '../asserts/icons'
-import DatePickerListPopover from './DatePickerListPopover'
-import { GlobalEmptyItem, TaskItem } from '../../tasks/TaskItem'
-import { TaskItemParser } from '../../tasks/TaskItemUtil'
+import { TrivialSingleSelect } from './TrivialSingleSelect'
+import { DatePickerListPopover } from './DatePickerListPopover'
 import moment from 'moment'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
+import { GlobalEmptyItem, TaskItem } from '../../@types/task-item'
+import { TaskItemParser } from '../../tasks/TaskItemUtil'
+import { FileIcon } from '../asserts/icons/file'
+import { PriorityIcon } from '../asserts/icons/priority'
+import { EnterIcon } from '../asserts/icons/enter'
 // import { BUS } from '../../datastore/todoStoreEvents'
 
-function InputPanel({
+export const InputPanel = ({
   newItemDestinationOptions,
   priorityOptions
 }: {
   newItemDestinationOptions: string[]
   priorityOptions?: string[]
-}) {
+}) => {
   const [taskItem, setTaskItem] = useState<TaskItem>(GlobalEmptyItem)
   const { add } = useTodoItemStore()
   const summitTaskItem = useCallback(() => {
     if (taskItem.content.rawText.trim().length === 0) return
     add({ item: taskItem })
     // BUS.emit('AddTaskItem', taskItem)
-  }, [taskItem])
+  }, [taskItem, add])
 
   taskItem.content.rawText = TaskItemParser.generateTaskItemRawText(taskItem)
 
@@ -58,7 +60,7 @@ function InputPanel({
         <div className='relative flex items-center gap-0 border-0 bg-transparent outline-none'>
           <TrivialSingleSelect
             key={'destination'}
-            icon={iconMap.fileIcon}
+            icon={<FileIcon />}
             ariaLabel='List'
             options={newItemDestinationOptions}
             selectedKeys={new Set(taskItem?.position.visual)}
@@ -77,7 +79,7 @@ function InputPanel({
           <TrivialSingleSelect
             key={'priorities'}
             ariaLabel='Priority'
-            icon={iconMap.priorityIcon}
+            icon={<PriorityIcon />}
             options={priorityOptions}
             selectedKeys={new Set(taskItem?.priority)}
             setSelectedKey={(v: string) => {
@@ -112,7 +114,7 @@ function InputPanel({
             isIconOnly
             variant='light'
             size='sm'
-            startContent={enterIcon}
+            startContent={<EnterIcon />}
             onClick={summitTaskItem}
           />
         </div>
@@ -120,5 +122,3 @@ function InputPanel({
     />
   )
 }
-
-export default InputPanel

@@ -14,7 +14,6 @@ import {
   RadioProps,
   Select,
   SelectItem,
-  Selection,
   Tab,
   Tabs,
   UseDisclosureProps,
@@ -24,19 +23,10 @@ import {
 } from '@nextui-org/react'
 import { today, startOfMonth, endOfMonth } from '@internationalized/date'
 import moment from 'moment'
-import { Fragment, useCallback, useEffect, useState } from 'react'
-import { innerDateFormat, timeZone } from '../../util/defs'
+import { Fragment, useState } from 'react'
+import { timeZone } from '../../util/defs'
 import { ChipStyleCheckbox } from '../filter_sort/ChipStyleCheckbox'
-import {
-  Options as RRuleOptions,
-  RRule,
-  Frequency,
-  ByWeekday,
-  Weekday
-} from 'rrule'
-
-// import { BUS } from '../../datastore/todoStoreEvents'
-import { useTodoItemStore } from '../../datastore/useTodoStore'
+import { Options as RRuleOptions, RRule, Frequency } from 'rrule'
 
 const RecurrenceNumInput = ({
   prefix,
@@ -89,6 +79,16 @@ export const CustomRadio = (props: RadioProps) => {
   )
 }
 
+const trimAsArray = (value: null | undefined | any | any[]): any[] => {
+  if (value === null || value === undefined) {
+    return []
+  }
+  if (Array.isArray(value)) {
+    return value
+  }
+  return [value]
+}
+
 const RecurrenceIntervalModeTabs = ({
   initialOptions,
   onValueChange
@@ -122,106 +122,6 @@ const RecurrenceIntervalModeTabs = ({
     initialOptions.freq !== undefined ? initialOptions.freq : Frequency.DAILY
   )
 
-  // repeat interval
-  const [dailyInterval, setDailyInterval] = useState(
-    initialOptions.freq !== undefined && initialOptions.freq === Frequency.DAILY
-      ? initialOptions.interval || 1
-      : 1
-  )
-  const [weeklyInterval, setWeeklyInterval] = useState(
-    initialOptions.freq !== undefined &&
-      initialOptions.freq === Frequency.WEEKLY
-      ? initialOptions.interval || 1
-      : 1
-  )
-  const [monthlyInterval, setMonthlyInterval] = useState(
-    initialOptions.freq !== undefined &&
-      initialOptions.freq === Frequency.MONTHLY
-      ? initialOptions.interval || 1
-      : 1
-  )
-
-  // repeat spec day
-  const initialByWeekday =
-    initialOptions.byweekday !== null &&
-    initialOptions.byweekday !== undefined &&
-    typeof initialOptions.byweekday === typeof [RRule.MO]
-      ? (initialOptions.byweekday as ByWeekday[])
-      : typeof initialOptions.byweekday === typeof RRule.MO
-        ? [initialOptions.byweekday as ByWeekday]
-        : [RRule.MO]
-  const [repeatWeekdays, setRepeatWeekdays] = useState(initialByWeekday)
-  const onSelectWeekday = (selected: boolean, wd: Weekday) => {
-    if (selected) {
-      setRepeatWeekdays((prev) => [...prev, wd])
-    } else {
-      setRepeatWeekdays((prev) => prev.filter((v) => v !== wd))
-    }
-  }
-
-  const initialByMonthDay =
-    initialOptions.bymonthday !== null &&
-    initialOptions.bymonthday !== undefined &&
-    typeof initialOptions.bymonthday === typeof [1]
-      ? (initialOptions.bynmonthday as number[])
-      : typeof initialOptions.bymonthday === 'number'
-        ? [initialOptions.bymonthday as number]
-        : [1]
-  const [repeatMonthdays, setRepeatMonthdays] = useState(initialByMonthDay)
-
-  const [repeatMonthDayMode, setRepeatMonthDayMode] = useState(
-    'monthday' as 'monthday' | 'weekday'
-  )
-  const initialRepeatStepos =
-    initialOptions.bysetpos !== null &&
-    initialOptions.bysetpos !== undefined &&
-    typeof initialOptions.bysetpos === typeof [1]
-      ? (initialOptions.bysetpos as number[])
-      : typeof initialOptions.bysetpos === 'number'
-        ? [initialOptions.bysetpos as number]
-        : [1]
-  const [repeatStepos, setRepeatStepos] = useState(initialRepeatStepos)
-
-  useEffect(() => {
-    onValueChange({
-      ...initialOptions,
-      freq: repeatBy,
-      interval:
-        repeatBy === Frequency.DAILY
-          ? dailyInterval
-          : repeatBy === Frequency.WEEKLY
-            ? weeklyInterval
-            : monthlyInterval,
-      byweekday:
-        repeatBy === Frequency.WEEKLY ||
-        (repeatBy === Frequency.MONTHLY && repeatMonthDayMode === 'weekday')
-          ? repeatWeekdays
-          : null,
-      bymonthday:
-        repeatBy === Frequency.MONTHLY && repeatMonthDayMode === 'monthday'
-          ? repeatMonthdays
-          : null,
-      bysetpos:
-        repeatBy === Frequency.MONTHLY && repeatMonthDayMode === 'weekday'
-          ? repeatStepos
-          : null,
-      bynmonthday: null,
-      bynweekday: null,
-      byhour: null,
-      byminute: null,
-      bysecond: null
-    })
-  }, [
-    repeatBy,
-    dailyInterval,
-    weeklyInterval,
-    monthlyInterval,
-    repeatMonthDayMode,
-    repeatWeekdays,
-    repeatMonthdays,
-    repeatStepos
-  ])
-
   return (
     <Tabs
       classNames={{
@@ -230,15 +130,23 @@ const RecurrenceIntervalModeTabs = ({
       selectedKey={repeatBy.toString()}
       onSelectionChange={(k) => {
         setRepeatBy(Number(k))
+        onValueChange({ freq: Number(k) })
       }}
     >
       <Tab title='Day' key={Frequency.DAILY} value={Frequency.DAILY}>
         <RecurrenceNumInput
           prefix='Every'
-          postfix='Days'
+          postfix='Times'
           props={{
-            value: dailyInterval.toString(),
-            onValueChange: (v) => setDailyInterval(Number(v))
+            value: (initialOptions.interval || 1).toString(),
+            onValueChange: (v) =>
+              onValueChange({
+                interval: Number(v),
+                freq: Frequency.DAILY,
+                byweekday: undefined,
+                bymonthday: undefined,
+                bysetpos: undefined
+              })
           }}
         />
       </Tab>
@@ -250,10 +158,15 @@ const RecurrenceIntervalModeTabs = ({
       >
         <RecurrenceNumInput
           prefix='Every'
-          postfix='Weeks'
+          postfix='Times'
           props={{
-            value: weeklyInterval.toString(),
-            onValueChange: (v) => setWeeklyInterval(Number(v))
+            value: (initialOptions.interval || 1).toString(),
+            onValueChange: (v) =>
+              onValueChange({
+                interval: Number(v),
+                freq: Frequency.WEEKLY,
+                bymonthday: undefined
+              })
           }}
         />
         <div className='flex flex-row gap-2'>
@@ -266,8 +179,23 @@ const RecurrenceIntervalModeTabs = ({
                 radius='sm'
                 showicon={false}
                 key={wd.toString()}
-                isSelected={repeatWeekdays.includes(wd)}
-                onValueChange={(s) => onSelectWeekday(s, wd)}
+                isSelected={trimAsArray(initialOptions.byweekday).includes(wd)}
+                onValueChange={(selected) => {
+                  const weekdays = trimAsArray(initialOptions.byweekday)
+                  if (selected) {
+                    onValueChange({
+                      byweekday: [...weekdays, wd],
+                      freq: Frequency.DAILY,
+                      bymonthday: undefined
+                    })
+                  } else {
+                    onValueChange({
+                      byweekday: [...weekdays.filter((v) => v !== wd)],
+                      freq: Frequency.DAILY,
+                      bymonthday: undefined
+                    })
+                  }
+                }}
               >
                 {wd.toString()}
               </ChipStyleCheckbox>
@@ -283,21 +211,27 @@ const RecurrenceIntervalModeTabs = ({
       >
         <RecurrenceNumInput
           prefix='Every'
-          postfix='Months'
+          postfix='Times'
           props={{
-            value: monthlyInterval.toString(),
-            onValueChange: (v) => setMonthlyInterval(Number(v))
+            value: (initialOptions.interval || 1).toString(),
+            onValueChange: (v) =>
+              onValueChange({
+                interval: Number(v),
+                freq: Frequency.DAILY
+              })
           }}
         />
-        <RadioGroup
-          value={repeatMonthDayMode}
-          onValueChange={(v) => {
-            if (v === 'weekday' || v === 'monthday') {
-              setRepeatMonthDayMode(v)
+        <RadioGroup>
+          <CustomRadio
+            value='weekday'
+            key='weekday'
+            onSelect={() =>
+              onValueChange({
+                bymonthday: undefined,
+                freq: Frequency.MONTHLY
+              })
             }
-          }}
-        >
-          <CustomRadio value='weekday' key='weekday'>
+          >
             <div className='flex flex-col gap-3'>
               <div className='flex flex-row gap-2'>
                 <h2 className='min-w-max self-center'>Every</h2>
@@ -305,19 +239,17 @@ const RecurrenceIntervalModeTabs = ({
                   size='sm'
                   selectionMode='multiple'
                   disallowEmptySelection
-                  selectedKeys={repeatStepos.map((k) => k.toString())}
-                  onSelectionChange={(ks: Selection) => {
-                    if (ks === 'all') {
-                      setRepeatStepos(weekIndexs)
-                    } else {
-                      setRepeatStepos(
-                        [...ks.values()]
-                          .map((v) => Number(v.toString()))
-                          .sort((a, b) => {
-                            return a * b * (a - b)
-                          })
-                      )
-                    }
+                  selectedKeys={trimAsArray(initialOptions.bysetpos).map((k) =>
+                    k.toString()
+                  )}
+                  onSelectionChange={(ks) => {
+                    const selectedKeys = Array.from(ks)
+                    onValueChange({
+                      freq: Frequency.MONTHLY,
+                      bysetpos: selectedKeys
+                        .map((v) => Number(v.toString()))
+                        .sort((a, b) => a * b * (a - b))
+                    })
                   }}
                   key='weekidx'
                   aria-label='which week'
@@ -333,16 +265,16 @@ const RecurrenceIntervalModeTabs = ({
                   size='sm'
                   selectionMode='single'
                   disallowEmptySelection
-                  selectedKeys={repeatWeekdays.map((k) => k.toString())}
+                  selectedKeys={trimAsArray(initialOptions.byweekday).map((k) =>
+                    k.toString()
+                  )}
                   onSelectionChange={(k) => {
-                    if (k === 'all') return
                     const selectedWeekDays = Array.from(k)
-                    if (selectedWeekDays.length === 0) {
-                      setRepeatWeekdays([])
-                    } else {
-                      setRepeatWeekdays([
-                        Number(selectedWeekDays[0].valueOf().toString())
-                      ])
+                    if (selectedWeekDays.length === 1) {
+                      onValueChange({
+                        byweekday: Number(selectedWeekDays[0]),
+                        freq: Frequency.MONTHLY
+                      })
                     }
                   }}
                   key='weekday'
@@ -363,14 +295,29 @@ const RecurrenceIntervalModeTabs = ({
                   <ChipStyleCheckbox
                     showicon={false}
                     key={d}
-                    isSelected={repeatMonthdays.includes(d)}
+                    isSelected={trimAsArray(initialOptions.bymonthday).includes(
+                      d
+                    )}
                     onValueChange={(s) => {
+                      const currentMonthDays = trimAsArray(
+                        initialOptions.bymonthday
+                      )
                       if (s) {
-                        setRepeatMonthdays((prev) => [...prev, d])
+                        onValueChange({
+                          bymonthday: [...currentMonthDays, d],
+                          freq: Frequency.MONTHLY,
+                          bysetpos: undefined,
+                          byweekday: undefined
+                        })
                       } else {
-                        setRepeatMonthdays((prev) =>
-                          prev.filter((v) => v !== d)
-                        )
+                        onValueChange({
+                          bymonthday: [
+                            ...currentMonthDays.filter((v) => v !== d)
+                          ],
+                          freq: Frequency.MONTHLY,
+                          bysetpos: undefined,
+                          byweekday: undefined
+                        })
                       }
                     }}
                   >
@@ -393,37 +340,23 @@ const RecurrenceRangeEdit = ({
   ruleOption: Partial<RRuleOptions>
   onValueChange: (option: Partial<RRuleOptions>) => void
 }) => {
-  const todayStr = moment().format(innerDateFormat)
-  const [startDate, setStartDate] = useState(todayStr)
-
-  const [endMode, setEndMode] = useState('no' as 'no' | 'cnt' | 'util')
-
-  const [repeatCnt, setRepeatCnt] = useState(ruleOption.count || 1)
-  const initialEndDate =
-    ruleOption.until !== null && ruleOption.until !== undefined
-      ? moment(ruleOption.until as Date).format(innerDateFormat)
-      : moment().format(innerDateFormat)
-  const [endDate, setEndDate] = useState(initialEndDate)
-
-  useEffect(() => {
-    onValueChange({
-      ...ruleOption,
-      dtstart: moment(startDate).utc(true).toDate(),
-      count: endMode === 'cnt' ? repeatCnt : null,
-      until: endMode === 'util' ? moment(endDate).utc(true).toDate() : null
-    })
-  }, [startDate, endMode, repeatCnt, endDate])
-
   return (
     <Fragment>
       <Tabs
         classNames={{
           tabList: 'w-full'
         }}
-        selectedKey={endMode}
-        onSelectionChange={(s) => {
-          if (s === 'no' || s === 'cnt' || s === 'util') {
-            setEndMode(s)
+        onSelectionChange={(key) => {
+          if (key === 'no') {
+            onValueChange({
+              count: undefined,
+              until: undefined,
+              dtstart: undefined
+            })
+          } else if (key === 'cnt') {
+            onValueChange({ until: undefined, count: undefined })
+          } else if (key === 'util') {
+            onValueChange({ count: undefined, until: undefined })
           }
         }}
       >
@@ -435,8 +368,8 @@ const RecurrenceRangeEdit = ({
             prefix='Repeat'
             postfix='Times'
             props={{
-              value: repeatCnt.toString(),
-              onValueChange: (v) => setRepeatCnt(Number(v))
+              value: (ruleOption.count || 1).toString(),
+              onValueChange: (v) => onValueChange({ count: Number(v) })
             }}
           />
         </Tab>
@@ -445,8 +378,8 @@ const RecurrenceRangeEdit = ({
             label='Repeat Util '
             labelPlacement='outside-left'
             type='date'
-            value={endDate}
-            onValueChange={(s) => setEndDate(s)}
+            value={ruleOption.until?.toString()}
+            onValueChange={(s) => onValueChange({ until: moment(s).toDate() })}
           />
         </Tab>
       </Tabs>
@@ -459,14 +392,21 @@ const RecurrenceRangeEdit = ({
             label: 'min-w-max',
             mainWrapper: 'w-full'
           }}
-          value={startDate}
-          onValueChange={setStartDate}
+          value={ruleOption.dtstart?.toString()}
+          onValueChange={(value) =>
+            onValueChange({ dtstart: moment(value).toDate() })
+          }
         />
         <Checkbox
-          isSelected={startDate === todayStr}
+          isSelected={
+            ruleOption.dtstart?.toDateString() ===
+            moment().toDate().toDateString()
+          }
           onValueChange={(v) => {
             if (v) {
-              setStartDate(todayStr)
+              onValueChange({
+                dtstart: moment().toDate()
+              })
             }
           }}
         >
@@ -491,9 +431,10 @@ const RecurrencePreview = ({
       endOfMonth(previewMonth).toDate(timeZone),
       true
     )
-    .map((d) => d.getDay())
+    .map((d) => d.getDate())
+  console.log(rruleOptions, rule, rule.toString(), dates)
   const isDateAvaliable = (date: DateValue) => {
-    return dates.includes(date.toDate(timeZone).getDay())
+    return dates.includes(date.toDate(timeZone).getDate())
   }
 
   return (
@@ -509,23 +450,17 @@ const RecurrencePreview = ({
   )
 }
 
-const TaskRecurrenceModal = ({
+export const TaskRecurrenceModal = ({
   disclosure,
   recurrence,
-  id
+  onRecurrenceChange
 }: {
   disclosure: UseDisclosureProps
   recurrence: RRule
-  id: string
+  onRecurrenceChange: (value: RRule) => void
 }) => {
-  const { edit } = useTodoItemStore()
-
   const [rruleOption, setRRuleOption] = useState(recurrence.origOptions)
 
-  const summitRRuleOption = useCallback(() => {
-    edit({ id: id, value: { recurrence: new RRule(rruleOption) } })
-    // BUS.emit('ChangeTaskProperty', id, { recurrence: new RRule(rruleOption) })
-  }, [rruleOption, id, edit])
   return (
     <Modal
       isOpen={disclosure.isOpen}
@@ -543,7 +478,12 @@ const TaskRecurrenceModal = ({
               <h1>Repeat Mode</h1>
               <RecurrenceIntervalModeTabs
                 initialOptions={rruleOption}
-                onValueChange={setRRuleOption}
+                onValueChange={(value) =>
+                  setRRuleOption((prev) => ({
+                    ...prev,
+                    ...value
+                  }))
+                }
               />
 
               <Divider />
@@ -551,7 +491,12 @@ const TaskRecurrenceModal = ({
               <h1>Repeat Range</h1>
               <RecurrenceRangeEdit
                 ruleOption={rruleOption}
-                onValueChange={setRRuleOption}
+                onValueChange={(value) =>
+                  setRRuleOption((prev) => ({
+                    ...prev,
+                    ...value
+                  }))
+                }
               />
             </ModalBody>
 
@@ -569,7 +514,7 @@ const TaskRecurrenceModal = ({
                 <Button
                   color='primary'
                   onClick={() => {
-                    summitRRuleOption()
+                    onRecurrenceChange(new RRule(rruleOption))
                     onClose()
                   }}
                 >
@@ -583,5 +528,3 @@ const TaskRecurrenceModal = ({
     </Modal>
   )
 }
-
-export default TaskRecurrenceModal

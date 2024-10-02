@@ -2,19 +2,22 @@ import { useCallback } from 'react'
 import { Button, Textarea } from '@nextui-org/react'
 import { useState } from 'react'
 import moment from 'moment'
-import DatePickerListPopover from './DatePickerListPopover'
+import { DatePickerListPopover } from './DatePickerListPopover'
+
+import { useTaskPriorityConfig, useVaultConfig } from '../options/GlobalOption'
+import {
+  TrivialSingleSelect,
+  DropdownStyleSingleSelectItem
+} from './TrivialSingleSelect'
+import { TaskPriorityDef } from '../options/OptionDef'
+import { useTodoItemStore } from '../../datastore/useTodoStore'
 import {
   GlobalEmptyItem,
   TaskItem,
-  TaskItemDateTime
-} from '../../tasks/TaskItem'
-import { useTaskPriorityConfig, useVaultConfig } from '../options/GlobalOption'
-import TrivialSingleSelect, {
-  DropdownStyleSingleSelectItem
-} from './TrivialSingleSelect'
-import { fileIcon } from '../asserts/icons'
-import { TaskPriorityDef } from '../options/OptionDef'
-import { useTodoItemStore } from '../../datastore/useTodoStore'
+  TaskItemDateTime,
+  TaskPriority
+} from '../../@types/task-item'
+import { FileIcon } from '../asserts/icons/file'
 // import { BUS } from '../../datastore/todoStoreEvents'
 
 const CategorySelect = ({
@@ -22,7 +25,7 @@ const CategorySelect = ({
   setCategory
 }: {
   initialCategory: string
-  setCategory: (c: string) => any
+  setCategory: (c: string) => void
 }) => {
   const { getAllCategories } = useVaultConfig()
   const categoryOptions = getAllCategories()
@@ -31,7 +34,7 @@ const CategorySelect = ({
       options={categoryOptions}
       selectedKeys={new Set([initialCategory])}
       setSelectedKey={setCategory}
-      icon={fileIcon}
+      icon={<FileIcon />}
       ariaLabel='Category'
     />
   )
@@ -41,8 +44,8 @@ const PrioritySelect = ({
   initialPriority,
   setPriority
 }: {
-  initialPriority: string
-  setPriority: (p: string) => any
+  initialPriority: TaskPriority
+  setPriority: (p: TaskPriority) => void
 }) => {
   const { priorityConfigs, getPriorityIcon } = useTaskPriorityConfig()
   const prioritySelectOptions = priorityConfigs
@@ -50,29 +53,30 @@ const PrioritySelect = ({
     .map(
       (v: TaskPriorityDef) =>
         ({
-          label: v.label,
-          icon: v.icon,
+          label: v.priority,
+          icon: <v.icon />,
           color: v.color
-        }) as DropdownStyleSingleSelectItem
+        }) satisfies DropdownStyleSingleSelectItem
     )
+  const Icon = getPriorityIcon(initialPriority)
   return (
     <TrivialSingleSelect
       options={prioritySelectOptions}
       selectedKeys={new Set([initialPriority])}
-      setSelectedKey={setPriority}
-      icon={getPriorityIcon(initialPriority)}
+      setSelectedKey={(key) => setPriority(key as TaskPriority)}
+      icon={<Icon />}
       ariaLabel='Priority'
     />
   )
 }
 
-const NewTaskQuickInput = ({
+export const NewTaskQuickInput = ({
   onCancel,
   onAdd,
   initialDate
 }: {
-  onCancel: () => any
-  onAdd: () => any
+  onCancel: () => void
+  onAdd: () => void
   initialDate?: moment.Moment
 }) => {
   const [text, setText] = useState('')
@@ -85,7 +89,7 @@ const NewTaskQuickInput = ({
   } as TaskItemDateTime)
 
   const [category, setCategory] = useState('')
-  const [priority, setPriority] = useState('No')
+  const [priority, setPriority] = useState<TaskPriority>('no')
 
   const { add } = useTodoItemStore()
 
@@ -103,12 +107,12 @@ const NewTaskQuickInput = ({
         },
         dateTime: { ...dates, created: moment() },
         priority: priority,
-        status: 'Todo'
+        status: 'todo'
       }
-    } as TaskItem
+    } satisfies TaskItem
     add({ item: newItem })
     // BUS.emit('AddTaskItem', newItem)
-  }, [text, dates, category, priority])
+  }, [text, dates, category, priority, add])
 
   return (
     <div>
@@ -148,5 +152,3 @@ const NewTaskQuickInput = ({
     </div>
   )
 }
-
-export default NewTaskQuickInput

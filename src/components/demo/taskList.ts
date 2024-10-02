@@ -1,10 +1,10 @@
 import moment from 'moment'
-import { TaskItem } from '../../tasks/TaskItem'
+import { TaskItem } from '../../@types/task-item'
 
 export const TodoList: TaskItem[] = [
   {
-    status: 'Done',
-    priority: 'High',
+    status: 'done',
+    priority: 'high',
     content: {
       rawText: '- [x] Unchecked ✅ 2023-11-14',
       visual: 'Unchecked'
@@ -21,8 +21,8 @@ export const TodoList: TaskItem[] = [
     uuid: ''
   },
   {
-    status: 'Cancelled',
-    priority: 'High',
+    status: 'cancelled',
+    priority: 'high',
     content: {
       rawText: '- [x] Unchecked ✅ 2023-11-14',
       visual: 'Unchecked'
@@ -39,8 +39,8 @@ export const TodoList: TaskItem[] = [
     uuid: ''
   },
   {
-    status: 'Done',
-    priority: 'Medium',
+    status: 'done',
+    priority: 'medium',
     content: {
       rawText: '- [x] Checked',
       visual: 'Checked'
@@ -57,8 +57,8 @@ export const TodoList: TaskItem[] = [
     uuid: ''
   },
   {
-    status: 'Overdue',
-    priority: 'Low',
+    status: 'overdue',
+    priority: 'low',
     content: {
       rawText: '- [>] Rescheduled',
       visual: 'Rescheduled'
@@ -75,8 +75,8 @@ export const TodoList: TaskItem[] = [
     uuid: ''
   },
   {
-    status: 'Todo',
-    priority: 'Low',
+    status: 'todo',
+    priority: 'low',
     content: {
       rawText: '- [>] Rescheduled',
       visual: 'Rescheduled'
@@ -93,8 +93,8 @@ export const TodoList: TaskItem[] = [
     uuid: ''
   },
   {
-    status: 'Unplanned',
-    priority: 'Low',
+    status: 'unplanned',
+    priority: 'low',
     content: {
       rawText: '- [>] Rescheduled',
       visual: 'Rescheduled'
@@ -111,8 +111,8 @@ export const TodoList: TaskItem[] = [
     uuid: ''
   },
   {
-    status: 'Scheduled',
-    priority: 'Low',
+    status: 'scheduled',
+    priority: 'low',
     content: {
       rawText: '- [>] Rescheduled',
       visual: 'Rescheduled'

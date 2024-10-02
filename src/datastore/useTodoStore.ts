@@ -1,8 +1,10 @@
 // import { useEffect, useSyncExternalStore } from 'react'
-import { TaskItem } from '../tasks/TaskItem'
 import { v4 as uuidv4 } from 'uuid'
 // import { BUS } from './todoStoreEvents'
 import { create } from 'zustand'
+import { TaskItem, TaskPriority, TaskStatus } from '../@types/task-item'
+import { Moment } from 'moment'
+import { getTaskDateList } from '../util/task-item/info'
 
 type StoreTaskItem = Omit<TaskItem, 'uuid'>
 
@@ -17,6 +19,10 @@ type todoStoreActions = {
   edit: ({ id, value }: { id: string; value: Partial<StoreTaskItem> }) => void
   query: ({ id }: { id: string }) => TaskItem | undefined
   getAll: () => TaskItem[]
+  getTagsList: () => string[]
+  getPrioritisList: () => TaskPriority[]
+  getStatusList: () => TaskStatus[]
+  getDatesList: () => Moment[]
 }
 
 export const useTodoItemStore = create<todoStore & todoStoreActions>(
@@ -69,6 +75,32 @@ export const useTodoItemStore = create<todoStore & todoStoreActions>(
     },
     getAll: () => {
       return [...get().data.values()]
+    },
+    getTagsList: () => {
+      return get()
+        .getAll()
+        .flatMap((v) => [...v.tags])
+        .unique()
+    },
+    getPrioritisList: () => {
+      return get()
+        .getAll()
+        .map((v) => v.priority)
+        .unique()
+    },
+    getStatusList: () => {
+      return get()
+        .getAll()
+        .map((v) => v.status)
+        .unique()
+    },
+    getDatesList: () => {
+      return get()
+        .getAll()
+        .flatMap((t) => {
+          return getTaskDateList(t)
+        })
+        .unique()
     }
   })
 )

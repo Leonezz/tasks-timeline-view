@@ -1,50 +1,25 @@
-import React, {
-  Fragment,
-  Key,
-  ReactElement,
-  useCallback,
-  useState
-} from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import {
-  Chip,
   Button,
-  Checkbox,
   Divider,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Select,
-  SelectItem,
-  SelectSection,
-  Selection,
   Tab,
   Tabs,
-  Textarea,
-  UseDisclosureProps,
-  useDisclosure,
-  Autocomplete,
-  AutocompleteItem,
-  SelectItemProps
-} from '@nextui-org/react'
-import { enterIcon, fileIcon, tagIcon } from '../asserts/icons'
-import {
-  useTaskPriorityConfig,
-  useTaskStatusConfig
-} from '../options/GlobalOption'
-import { TaskPriorityDef, TaskStatusDef } from '../options/OptionDef'
-import TaskRecurrenceModal from './TaskRecurrence'
-import { innerDateTimeFormat } from '../../util/defs'
-import moment from 'moment'
+  UseDisclosureProps} from '@nextui-org/react'
 
-import { TaskItem } from '../../tasks/TaskItem'
 // import { BUS } from '../../datastore/todoStoreEvents'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
 import { RRule } from 'rrule'
+import { TaskItem } from '../../@types/task-item'
+import { TaskItemBasicInfoEdit } from './TaskItemBasicInfoEdit'
+import { TaskItemDatesEdit } from './TaskItemDatesEdit'
+import { TaskItemRepeatEdit } from './TaskItemRepeatEdit'
 
-const selectRenderRowWithIconAndColor = ({
+export const selectRenderRowWithIconAndColor = ({
   label,
   icon,
   color
@@ -61,168 +36,7 @@ const selectRenderRowWithIconAndColor = ({
   )
 }
 
-const TagsSelect = ({
-  selectedTags,
-  onSelectTags
-}: {
-  selectedTags: Set<string>
-  onSelectTags: (value: React.SetStateAction<Set<string>>) => void
-}) => {
-  const renderTagsRow = (tag: string) => {
-    return (
-      <Chip size='sm' variant='flat' key={tag}>
-        {tag}
-      </Chip>
-    )
-  }
-  const NewTagInputConfirmButton = () => {
-    return (
-      <Button
-        isIconOnly={true}
-        variant='light'
-        onClick={() => {
-          // this is not working... why?
-          onSelectTags((prev) => new Set([newTagContent, ...prev]))
-          setTagOptions((prev) => new Set([newTagContent, ...prev]))
-          setNewTagContent('')
-        }}
-      >
-        {enterIcon}
-      </Button>
-    )
-  }
-  const [newTagContent, setNewTagContent] = useState('')
-  const [tagOptions, setTagOptions] = useState(
-    new Set([...selectedTags, 'test1', 'test2'])
-  )
-  return (
-    <Select
-      items={tagOptions.entries()}
-      selectionMode='multiple'
-      selectedKeys={selectedTags}
-      onSelectionChange={(keys: Selection) => {
-        if (keys === 'all') {
-          return
-        }
-        onSelectTags(
-          new Set([...keys.values()].map((k) => k.valueOf().toString()))
-        )
-      }}
-      label='Tags'
-      startContent={tagIcon}
-      labelPlacement='outside'
-      renderValue={(items) =>
-        items.map((v) => renderTagsRow(v.textValue || '-'))
-      }
-    >
-      <SelectSection
-        key={1}
-        classNames={{
-          heading: 'flex w-full sticky z-20 top-1 '
-        }}
-        title={
-          (
-            <Input
-              size='sm'
-              value={newTagContent}
-              onValueChange={setNewTagContent}
-              startContent={'New Tag'}
-              endContent={<NewTagInputConfirmButton />}
-            />
-          ) as ReactElement & string
-        }
-      >
-        {Array.from(tagOptions).map((t) => (
-          <SelectItem key={t}>{t}</SelectItem>
-        ))}
-      </SelectSection>
-    </Select>
-  )
-}
-
-const CategoryListSelect = ({
-  initialCategory
-}: {
-  initialCategory: string
-}) => {
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
-  const options = new Set(['test1', 'test2'])
-  return (
-    <Autocomplete
-      items={options.entries()}
-      label='Category'
-      multiple={true}
-      startContent={fileIcon}
-      labelPlacement='outside'
-      inputMode='text'
-      menuTrigger='input'
-      inputValue={selectedCategory}
-      onInputChange={(v) => setSelectedCategory(v)}
-      allowsCustomValue
-      selectedKey={selectedCategory}
-      onSelectionChange={(k: Key | null) => {
-        if (typeof k === 'string') {
-          setSelectedCategory(k)
-        }
-      }}
-    >
-      {[...options].map((option) => (
-        <AutocompleteItem key={option.toString()}>{option}</AutocompleteItem>
-      ))}
-    </Autocomplete>
-  )
-}
-
-const PrioritySelect = ({
-  priority,
-  setPriority
-}: {
-  priority: string
-  setPriority: (p: string) => void
-}) => {
-  priority = priority.trim()
-  priority = priority === '' ? 'No' : priority
-
-  const { priorityConfigs, getPriorityIcon, getPriorityColor } =
-    useTaskPriorityConfig()
-  const renderPriorityRow = (priority: TaskPriorityDef) =>
-    selectRenderRowWithIconAndColor({
-      label: priority.label,
-      icon: getPriorityIcon(priority.label),
-      color: getPriorityColor(priority.label)
-    })
-  return (
-    <Select
-      selectedKeys={[priority]}
-      onSelectionChange={(keys) => {
-        if (keys === 'all' || keys.size !== 1) return
-        const selection = [...keys.keys()][0].valueOf().toString()
-        setPriority(selection)
-      }}
-      items={priorityConfigs}
-      renderValue={(items) =>
-        items.map(
-          (item) => item.data && renderPriorityRow(item.data as TaskPriorityDef)
-        )
-      }
-      selectionMode='single'
-      label='Priority'
-      labelPlacement='outside'
-    >
-      {(priority: TaskPriorityDef) => (
-        <SelectItem
-          key={priority.label}
-          startContent={getPriorityIcon(priority.label)}
-          color={getPriorityColor(priority.label) as SelectItemProps['color']}
-        >
-          {priority.label}
-        </SelectItem>
-      )}
-    </Select>
-  )
-}
-
-const TaskItemEditModal = ({
+export const TaskItemEditModal = ({
   item,
   disclosure
 }: {
@@ -231,81 +45,29 @@ const TaskItemEditModal = ({
 }) => {
   const { edit } = useTodoItemStore()
 
-  const [taskItemContentVisual, setTaskItemContentVisual] = useState(
-    item.content.visual
-  )
-
-  const [isStartDateEnabled, setStartDateEnabled] = useState(true)
-  const [startDate, setStartDate] = useState(
-    item.dateTime.start?.format(innerDateTimeFormat) ||
-      moment().format(innerDateTimeFormat)
-  )
-  const [isDueDateEnabled, setDueDateEnabled] = useState(true)
-  const [dueDate, setDueDate] = useState(
-    item.dateTime.due?.format(innerDateTimeFormat) ||
-      moment().format(innerDateTimeFormat)
-  )
-  const [isDoneDateEnabled, setDoneDateEnabled] = useState(false)
-  const [doneDate, setDoneDate] = useState(
-    item.dateTime.completion?.format(innerDateTimeFormat) ||
-      moment().format(innerDateTimeFormat)
-  )
-
-  const [selectedTags, setSelectedTags] = useState(item.tags)
-
-  const [priority, setPriority] = useState(item.priority)
-
-  const { statusConfigs, getIconFromStatus } = useTaskStatusConfig()
-  const [taskStatus, setTaskStatus] = useState(item.status)
-
-  const renderStatusRow = (statusOption: TaskStatusDef) =>
-    selectRenderRowWithIconAndColor({
-      label: statusOption.label,
-      icon: getIconFromStatus(statusOption.label),
-      color: statusOption.color || 'default'
-    })
-
-  const editTaskRecurrenceDisclosure = useDisclosure()
+  const [localItem, setLocalItem] = useState(item)
+  useEffect(() => setLocalItem(item), [item])
 
   const summitEdit = useCallback(() => {
     edit({
-      id: item.uuid,
+      id: localItem.uuid,
       value: {
+        ...item,
+        ...localItem,
         content: {
           ...item.content,
-          visual: taskItemContentVisual
+          ...localItem.content
         },
         dateTime: {
           ...item.dateTime,
-          start: isStartDateEnabled
-            ? moment(startDate, innerDateTimeFormat)
-            : undefined,
-          due: isDueDateEnabled
-            ? moment(dueDate, innerDateTimeFormat)
-            : undefined,
-          completion: isDoneDateEnabled
-            ? moment(doneDate, innerDateTimeFormat)
-            : undefined
+          ...localItem.dateTime
         },
-        tags: selectedTags,
-        priority: priority,
-        status: taskStatus
+        tags: localItem.tags,
+        priority: localItem.priority,
+        status: localItem.status
       }
     })
-  }, [
-    item,
-    taskItemContentVisual,
-    isStartDateEnabled,
-    startDate,
-    isDueDateEnabled,
-    dueDate,
-    isDoneDateEnabled,
-    doneDate,
-    selectedTags,
-    priority,
-    taskStatus,
-    edit
-  ])
+  }, [localItem, edit, item])
 
   return (
     <Fragment>
@@ -331,121 +93,58 @@ const TaskItemEditModal = ({
                   }}
                 >
                   <Tab title='Basic' className='flex flex-col gap-2'>
-                    <Textarea
-                      value={taskItemContentVisual}
-                      onValueChange={setTaskItemContentVisual}
-                      label='Content'
-                      labelPlacement='outside'
-                    />
-                    <CategoryListSelect initialCategory='' />
-                    <PrioritySelect
-                      priority={priority}
-                      setPriority={setPriority}
-                    />
-                    <TagsSelect
-                      selectedTags={selectedTags}
-                      onSelectTags={setSelectedTags}
+                    <TaskItemBasicInfoEdit
+                      value={{
+                        contentVisual: localItem.content.visual,
+                        priority: localItem.priority,
+                        tags: localItem.tags
+                      }}
+                      onValueChange={({ contentVisual, priority, tags }) =>
+                        setLocalItem((prev) => ({
+                          ...prev,
+                          content: {
+                            ...prev.content,
+                            visual: contentVisual || prev.content.visual
+                          },
+                          priority: priority || prev.priority,
+                          tags: tags || prev.tags
+                        }))
+                      }
                     />
                   </Tab>
                   <Tab title='Dates and Status' className='flex flex-col gap-2'>
-                    <div className='flex flex-row gap-2'>
-                      <Input
-                        isReadOnly={!isStartDateEnabled}
-                        label='Start At'
-                        type='datetime-local'
-                        labelPlacement='inside'
-                        value={startDate}
-                        onValueChange={setStartDate}
-                      />
-                      <Checkbox
-                        isSelected={isStartDateEnabled}
-                        onValueChange={setStartDateEnabled}
-                      />
-                    </div>
-                    <div className='flex flex-row gap-2'>
-                      <Input
-                        isReadOnly={!isDueDateEnabled}
-                        label='Due At'
-                        type='datetime-local'
-                        labelPlacement='inside'
-                        value={dueDate}
-                        onValueChange={setDueDate}
-                      />
-                      <Checkbox
-                        isSelected={isDueDateEnabled}
-                        onValueChange={setDueDateEnabled}
-                      />
-                    </div>
-                    <Select
-                      items={statusConfigs}
-                      selectionMode='single'
-                      selectedKeys={new Set([taskStatus])}
-                      onSelectionChange={(s) => {
-                        if (s === 'all') {
-                          return
-                        }
-                        const keys = Array.from(s.keys())
-                        const statusLabel = keys[0].valueOf().toString()
-                        setDoneDateEnabled(statusLabel === 'Done')
-                        setTaskStatus(statusLabel)
+                    <TaskItemDatesEdit
+                      value={{
+                        status: localItem.status,
+                        ...localItem.dateTime
                       }}
-                      label='Status'
-                      labelPlacement='outside'
-                      renderValue={(items) => {
-                        return items.map(
-                          (item) =>
-                            item.data &&
-                            renderStatusRow(item.data as TaskStatusDef)
-                        )
-                      }}
-                    >
-                      {(option: TaskStatusDef) => (
-                        <SelectItem
-                          startContent={getIconFromStatus(option.label)}
-                          key={option.label}
-                          color={option.color}
-                        >
-                          {option.label}
-                        </SelectItem>
-                      )}
-                    </Select>
-
-                    <div className='flex flex-row gap-2'>
-                      <Input
-                        isReadOnly={!isDoneDateEnabled}
-                        label='Done At'
-                        type='datetime-local'
-                        labelPlacement='inside'
-                        value={doneDate}
-                        onValueChange={setDoneDate}
-                      />
-                      <Checkbox
-                        isSelected={isDoneDateEnabled}
-                        onValueChange={setDoneDateEnabled}
-                      />
-                    </div>
+                      onValueChange={(value) =>
+                        setLocalItem((prev) => ({
+                          ...prev,
+                          status: value.status || prev.status,
+                          dateTime: {
+                            ...prev.dateTime,
+                            start: value.start || prev.dateTime.start,
+                            due: value.due || prev.dateTime.due,
+                            completion:
+                              value.completion || prev.dateTime.completion
+                          }
+                        }))
+                      }
+                    />
                   </Tab>
                   <Tab title='Repeat' className='flex flex-col gap-2'>
-                    <Select
-                      label='Repeat Mode'
-                      labelPlacement='outside'
-                      selectionMode='single'
-                    >
-                      <SelectItem key='none'>No Repeat</SelectItem>
-                      <SelectItem key='day'>Every Day</SelectItem>
-                      <SelectItem key='week'>Every Week</SelectItem>
-                      <SelectItem key='weekday'>Every Weekday</SelectItem>
-                      <SelectItem key='weekend'>Every Weekend</SelectItem>
-                      <SelectItem key='month'>Every Month</SelectItem>
-                      <SelectItem
-                        onEmptied={undefined}
-                        key='customize'
-                        onClick={editTaskRecurrenceDisclosure.onOpen}
-                      >
-                        Customize
-                      </SelectItem>
-                    </Select>
-                    <Input type='date' label='Until' labelPlacement='inside' />
+                    <TaskItemRepeatEdit
+                      value={{
+                        recurrence: localItem.recurrence || new RRule()
+                      }}
+                      onValueChange={(v) =>
+                        setLocalItem((prev) => ({
+                          ...prev,
+                          recurrence: v
+                        }))
+                      }
+                    />
                   </Tab>
                 </Tabs>
               </ModalBody>
@@ -470,13 +169,6 @@ const TaskItemEditModal = ({
           )}
         </ModalContent>
       </Modal>
-      <TaskRecurrenceModal
-        disclosure={editTaskRecurrenceDisclosure}
-        recurrence={item.recurrence || new RRule()}
-        id={item.uuid}
-      />
     </Fragment>
   )
 }
-
-export default TaskItemEditModal

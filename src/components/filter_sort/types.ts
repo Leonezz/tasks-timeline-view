@@ -1,9 +1,11 @@
+import { SortOptions } from '../../util/task-item/sort'
+
 export interface FilterSortOptions {
   tags: string[]
   files: string[]
   priorities: string[]
   status: string[]
-  sortCmp: string[]
+  sortCmp: Readonly<SortOptions[]>
   reversed: boolean
 }
 
@@ -12,6 +14,6 @@ export interface SelectedFilterSortOptions {
   files: string[]
   priorities: string[]
   status: string[]
-  sortCmp: string
+  sortCmp: SortOptions
   reversed: boolean
 }
