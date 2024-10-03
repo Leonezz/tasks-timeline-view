@@ -9,7 +9,8 @@ import {
   ModalHeader,
   Tab,
   Tabs,
-  UseDisclosureProps} from '@nextui-org/react'
+  UseDisclosureProps
+} from '@nextui-org/react'
 
 // import { BUS } from '../../datastore/todoStoreEvents'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
@@ -95,19 +96,26 @@ export const TaskItemEditModal = ({
                   <Tab title='Basic' className='flex flex-col gap-2'>
                     <TaskItemBasicInfoEdit
                       value={{
-                        contentVisual: localItem.content.visual,
+                        contentVisual: localItem.content.title,
                         priority: localItem.priority,
-                        tags: localItem.tags
+                        tags: localItem.tags,
+                        list: localItem.list
                       }}
-                      onValueChange={({ contentVisual, priority, tags }) =>
+                      onValueChange={({
+                        contentVisual,
+                        priority,
+                        tags,
+                        list
+                      }) =>
                         setLocalItem((prev) => ({
                           ...prev,
                           content: {
                             ...prev.content,
-                            visual: contentVisual || prev.content.visual
+                            visual: contentVisual || prev.content.title
                           },
                           priority: priority || prev.priority,
-                          tags: tags || prev.tags
+                          tags: tags || prev.tags,
+                          list: list || prev.list
                         }))
                       }
                     />

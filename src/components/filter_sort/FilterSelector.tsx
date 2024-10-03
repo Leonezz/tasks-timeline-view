@@ -8,21 +8,38 @@ import {
   Button
 } from '@nextui-org/react'
 import { ChipStyleCheckbox } from './ChipStyleCheckbox'
+import { TaskItem, TaskPriority, TaskStatus } from '../../@types/task-item'
 // import { iconMap } from "../asserts/icons";
+type FilterTypes = {
+  Tags: string
+  List: TaskItem['list']
+  Priority: TaskPriority
+  Status: TaskStatus
+}
 
-export const FilterSelector = ({
+const to_string = <Key extends keyof FilterTypes>(
+  key: Key,
+  item: FilterTypes[Key]
+): string => {
+  if (key === 'List') {
+    return (item as FilterTypes['List']).visual
+  }
+  return item as string
+}
+
+export const FilterSelector = <Key extends keyof FilterTypes>({
   options,
   label,
   selectedOptions,
   setSelectedOptions
 }: {
-  options: Readonly<string[]>
-  label: string
-  selectedOptions: string[]
-  setSelectedOptions: (s: string[]) => void
+  options: Readonly<Set<FilterTypes[Key]>>
+  label: Key
+  selectedOptions: Set<FilterTypes[Key]>
+  setSelectedOptions: (s: Set<FilterTypes[Key]>) => void
 }) => {
   const selectedOptionsCnt = useMemo(
-    () => selectedOptions.length,
+    () => selectedOptions.size,
     [selectedOptions]
   )
 
@@ -44,33 +61,44 @@ export const FilterSelector = ({
             <div className='flex items-center justify-between gap-2'>
               <p>{`${selectedOptionsCnt} ${label} selected`}</p>
               <Button
-                onClick={() => setSelectedOptions([])}
+                onClick={() => setSelectedOptions(new Set())}
                 size='sm'
                 isDisabled={selectedOptionsCnt === 0}
                 className='p-0'
+                color='primary'
+                variant='light'
               >
                 Clear All
               </Button>
             </div>
           }
           orientation='vertical'
-          value={selectedOptions}
+          value={[...selectedOptions].map((v) => to_string(label, v))}
           onValueChange={(value) => {
-            if (value.length === options.length) {
-              setSelectedOptions([])
+            if (value.length === options.size) {
+              setSelectedOptions(new Set())
             } else {
-              setSelectedOptions(value)
+              const selectedValues = [...options].filter((v) =>
+                value.includes(to_string(label, v))
+              )
+              setSelectedOptions(new Set(selectedValues))
             }
           }}
         >
-          {options.map((option, i) => (
-            <ChipStyleCheckbox showicon={true} key={i} value={option}>
-              {option}
-            </ChipStyleCheckbox>
-          ))}
+          {[...options].map((option) => {
+            const option_str = to_string(label, option)
+            return (
+              <ChipStyleCheckbox
+                showicon={true}
+                key={option_str}
+                value={option_str}
+              >
+                {option_str}
+              </ChipStyleCheckbox>
+            )
+          })}
         </CheckboxGroup>
       </PopoverContent>
     </Popover>
   )
 }
-

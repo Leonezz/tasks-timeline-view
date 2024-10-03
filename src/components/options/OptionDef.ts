@@ -93,12 +93,6 @@ export const TaskStatusConfig = {
 
 export type TaskStatusConfigType = typeof TaskStatusConfig
 
-export const VaultConfig = {
-  allCategories: [] as string[]
-}
-
-export type VaultConfigType = typeof VaultConfig
-
 export type TaskPriorityDef = {
   priority: TaskPriority
   sortBy: number

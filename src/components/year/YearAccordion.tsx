@@ -39,9 +39,10 @@ const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
         <Button
           onClick={() => setIsAdding(true)}
           variant='light'
+          color='primary'
           size='sm'
           startContent={<AddIcon />}
-          className='trainsition-colors items-left flex w-fit items-center gap-1.5 px-0 py-0
+          className='trainsition-colors items-left flex w-fit items-center gap-1.5 px-1 py-0
                     align-middle text-sm text-neutral-400 hover:text-neutral-800'
         >
           New Task
@@ -115,6 +116,7 @@ export const YearAccordion = ({
           'shadow-none bg-origin-content bg-transparent ' +
           (hideAll ? 'hidden' : '')
       }}
+      className='max-w-full'
     >
       <CardHeader
         className={'flex-col items-center pt-1 ' + (todayFocus ? 'hidden' : '')}
@@ -166,11 +168,19 @@ export const YearAccordion = ({
                 indicator={
                   <DateCalendarIcon date={moment(d, innerDateFormat)} />
                 }
-                className={hideHead(d) ? 'hidden' : ''}
+                className={`${hideHead(d) ? 'hidden' : ''} max-w-full overflow-clip`}
               >
-                {taskList.map((t) => (
-                  <TaskItemCheckbox key={t.uuid} item={t} />
-                ))}
+                {taskList.length === 0 ? (
+                  <div className='flex items-center justify-center pt-20'>
+                    <span className='font-sans text-lg text-neutral-300'>
+                      No Tasks Today
+                    </span>
+                  </div>
+                ) : (
+                  taskList.map((t) => (
+                    <TaskItemCheckbox key={t.uuid} item={t} />
+                  ))
+                )}
                 <AddTaskButton dateStr={d} />
               </AccordionItem>
             )

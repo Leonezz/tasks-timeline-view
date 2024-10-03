@@ -20,10 +20,10 @@ export const FilterSelectorList = ({
         setSelectedOptions={(s) => setSelectedFilters({ tags: s })}
       />
       <FilterSelector
-        label='File'
-        options={options.files}
-        selectedOptions={selectedFilters.files}
-        setSelectedOptions={(s) => setSelectedFilters({ files: s })}
+        label='List'
+        options={options.lists}
+        selectedOptions={selectedFilters.lists}
+        setSelectedOptions={(s) => setSelectedFilters({ lists: s })}
       />
       <FilterSelector
         label='Priority'

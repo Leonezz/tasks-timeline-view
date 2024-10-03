@@ -5,11 +5,17 @@ import { create } from 'zustand'
 import { TaskItem, TaskPriority, TaskStatus } from '../@types/task-item'
 import { Moment } from 'moment'
 import { getTaskDateList } from '../util/task-item/info'
+import { uniqueBy } from '../util/arrray/unique'
+import { innerDateTimeFormat } from '../util/defs'
 
 type StoreTaskItem = Omit<TaskItem, 'uuid'>
 
+type HandlerType = (item: TaskItem) => void
 type todoStore = {
   data: Map<string, TaskItem>
+  onItemChange?: HandlerType
+  onItemAdd?: HandlerType
+  onItemRemove?: HandlerType
 }
 
 type todoStoreActions = {
@@ -18,16 +24,26 @@ type todoStoreActions = {
   delete: ({ id }: { id: string }) => void
   edit: ({ id, value }: { id: string; value: Partial<StoreTaskItem> }) => void
   query: ({ id }: { id: string }) => TaskItem | undefined
+  registerHandlers: ({
+    onItemAdd,
+    onItemChange,
+    onItemRemove
+  }: {
+    onItemChange: HandlerType
+    onItemAdd: HandlerType
+    onItemRemove: HandlerType
+  }) => void
   getAll: () => TaskItem[]
-  getTagsList: () => string[]
-  getPrioritisList: () => TaskPriority[]
-  getStatusList: () => TaskStatus[]
-  getDatesList: () => Moment[]
+  getTagsSet: () => Set<string>
+  getPrioritisSet: () => Set<TaskPriority>
+  getStatusSet: () => Set<TaskStatus>
+  getDatesSet: () => Set<Moment>
 }
 
 export const useTodoItemStore = create<todoStore & todoStoreActions>(
   (set, get) => ({
     data: new Map(),
+    taskListOptions: new Set(),
     init: ({ items }) => {
       set((prev) => {
         prev.data = new Map()
@@ -47,8 +63,16 @@ export const useTodoItemStore = create<todoStore & todoStoreActions>(
         ...prev,
         data: prev.data.set(id, { ...item, uuid: id })
       }))
+      const onAddHandler = get().onItemAdd
+      if (onAddHandler !== undefined) {
+        onAddHandler({ ...item, uuid: id })
+      }
     },
     delete: ({ id }) => {
+      const item = get().query({ id: id })
+      if (item === undefined) {
+        return
+      }
       set((prev) => {
         prev.data.delete(id)
         return {
@@ -56,6 +80,10 @@ export const useTodoItemStore = create<todoStore & todoStoreActions>(
           data: prev.data
         }
       })
+      const onDeleteHandler = get().onItemRemove
+      if (onDeleteHandler !== undefined) {
+        onDeleteHandler(item)
+      }
     },
     edit: ({ id, value }) => {
       const currentValue = get().data.get(id)
@@ -69,38 +97,56 @@ export const useTodoItemStore = create<todoStore & todoStoreActions>(
           ...value
         })
       }))
+      const onEditHandler = get().onItemChange
+      if (onEditHandler !== undefined) {
+        onEditHandler({ ...currentValue, ...value })
+      }
     },
     query: ({ id }) => {
       return get().data.get(id)
     },
+    registerHandlers({ onItemAdd, onItemChange, onItemRemove }) {
+      set({
+        onItemAdd: onItemAdd,
+        onItemChange: onItemChange,
+        onItemRemove: onItemRemove
+      })
+    },
     getAll: () => {
       return [...get().data.values()]
     },
-    getTagsList: () => {
-      return get()
-        .getAll()
-        .flatMap((v) => [...v.tags])
-        .unique()
+    getTagsSet: () => {
+      return new Set(
+        get()
+          .getAll()
+          .flatMap((v) => [...v.tags])
+      )
     },
-    getPrioritisList: () => {
-      return get()
-        .getAll()
-        .map((v) => v.priority)
-        .unique()
+    getPrioritisSet: () => {
+      return new Set(
+        get()
+          .getAll()
+          .map((v) => v.priority)
+      )
     },
-    getStatusList: () => {
-      return get()
-        .getAll()
-        .map((v) => v.status)
-        .unique()
+    getStatusSet: () => {
+      return new Set(
+        get()
+          .getAll()
+          .map((v) => v.status)
+      )
     },
-    getDatesList: () => {
-      return get()
-        .getAll()
-        .flatMap((t) => {
-          return getTaskDateList(t)
-        })
-        .unique()
+    getDatesSet: () => {
+      return new Set(
+        uniqueBy(
+          get()
+            .getAll()
+            .flatMap((t) => {
+              return getTaskDateList(t)
+            }),
+          (v) => v.format(innerDateTimeFormat)
+        )
+      )
     }
   })
 )

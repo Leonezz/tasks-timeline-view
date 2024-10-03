@@ -39,7 +39,7 @@ const RecurrenceNumInput = ({
 }) => {
   return (
     <div className='flex flex-row gap-2'>
-      <span className='self-center'>{prefix}</span>
+      <span className='self-center text-medium font-semibold'>{prefix}</span>
       <Input
         {...props}
         type='number'
@@ -54,7 +54,7 @@ const RecurrenceNumInput = ({
         }}
         min={1}
       />
-      <span className='self-center'>{postfix}</span>
+      <span className='self-center text-medium font-semibold'>{postfix}</span>
     </div>
   )
 }
@@ -169,9 +169,12 @@ const RecurrenceIntervalModeTabs = ({
               })
           }}
         />
-        <div className='flex flex-row gap-2'>
-          <label className='min-w-max' htmlFor='weekdays'>
-            Weekday:{' '}
+        <div className='flex flex-col gap-2'>
+          <label
+            className='min-w-max text-medium font-semibold'
+            htmlFor='weekdays'
+          >
+            Weekday
           </label>
           <div className='flex flex-row flex-wrap gap-2' id='weekdays'>
             {weekdays.map((wd) => (
@@ -232,64 +235,68 @@ const RecurrenceIntervalModeTabs = ({
               })
             }
           >
-            <div className='flex flex-col gap-3'>
-              <div className='flex flex-row gap-2'>
-                <h2 className='min-w-max self-center'>Every</h2>
-                <Select
-                  size='sm'
-                  selectionMode='multiple'
-                  disallowEmptySelection
-                  selectedKeys={trimAsArray(initialOptions.bysetpos).map((k) =>
-                    k.toString()
-                  )}
-                  onSelectionChange={(ks) => {
-                    const selectedKeys = Array.from(ks)
+            <div className='flex flex-row gap-2'>
+              <Select
+                items={weekIndexs.entries()}
+                label={<span className='text-medium font-semibold'>Every</span>}
+                labelPlacement='outside-left'
+                selectionMode='multiple'
+                disallowEmptySelection
+                selectedKeys={trimAsArray(initialOptions.bysetpos).map((k) =>
+                  k.toString()
+                )}
+                onSelectionChange={(ks) => {
+                  const selectedKeys = Array.from(ks)
+                  onValueChange({
+                    freq: Frequency.MONTHLY,
+                    bysetpos: selectedKeys
+                      .map((v) => Number(v.toString()))
+                      .sort((a, b) => a * b * (a - b))
+                  })
+                }}
+                key='weekidx'
+                aria-label='which week'
+                className='items-center'
+              >
+                {([, value]) => (
+                  <SelectItem key={value} value={value}>
+                    {weekIndexToStr(value)}
+                  </SelectItem>
+                )}
+              </Select>
+              <Select
+                label={<span className='text-medium font-semibold'>Weeks</span>}
+                items={weekdays}
+                labelPlacement='outside-left'
+                selectionMode='single'
+                disallowEmptySelection
+                selectedKeys={trimAsArray(initialOptions.byweekday).map((k) =>
+                  k.toString()
+                )}
+                onSelectionChange={(k) => {
+                  const selectedWeekDays = Array.from(k)
+                  if (selectedWeekDays.length === 1) {
                     onValueChange({
-                      freq: Frequency.MONTHLY,
-                      bysetpos: selectedKeys
-                        .map((v) => Number(v.toString()))
-                        .sort((a, b) => a * b * (a - b))
+                      byweekday: Number(selectedWeekDays[0]),
+                      freq: Frequency.MONTHLY
                     })
-                  }}
-                  key='weekidx'
-                  aria-label='which week'
-                >
-                  {weekIndexs.map((w) => (
-                    <SelectItem key={w} value={w}>
-                      {weekIndexToStr(w)}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <h2 className='min-w-max self-center'>Weeks</h2>
-                <Select
-                  size='sm'
-                  selectionMode='single'
-                  disallowEmptySelection
-                  selectedKeys={trimAsArray(initialOptions.byweekday).map((k) =>
-                    k.toString()
-                  )}
-                  onSelectionChange={(k) => {
-                    const selectedWeekDays = Array.from(k)
-                    if (selectedWeekDays.length === 1) {
-                      onValueChange({
-                        byweekday: Number(selectedWeekDays[0]),
-                        freq: Frequency.MONTHLY
-                      })
-                    }
-                  }}
-                  key='weekday'
-                  aria-label='which weekday'
-                >
-                  {weekdays.map((wd) => (
-                    <SelectItem key={wd.weekday}>{wd.toString()}</SelectItem>
-                  ))}
-                </Select>
-              </div>
+                  }
+                }}
+                key='weekday'
+                aria-label='which weekday'
+                className='items-center'
+              >
+                {(item) => (
+                  <SelectItem key={item.weekday} value={item.toString()}>
+                    {item.toString()}
+                  </SelectItem>
+                )}
+              </Select>
             </div>
           </CustomRadio>
           <CustomRadio value='monthday' key='monthday'>
             <div className='flex flex-col gap-3'>
-              <h2 className='min-w-max'>Month day</h2>
+              <span className='text-medium font-semibold'>Month day</span>
               <div className='flex flex-row flex-wrap gap-2'>
                 {monthdays.map((d) => (
                   <ChipStyleCheckbox
@@ -360,8 +367,15 @@ const RecurrenceRangeEdit = ({
           }
         }}
       >
-        <Tab title='Infinity' key='no' value='no'>
-          No range
+        <Tab
+          title='Infinity'
+          key='no'
+          value='no'
+          className='flex justify-center'
+        >
+          <span className='font-mono text-medium text-neutral-300'>
+            No range
+          </span>
         </Tab>
         <Tab title='Count' key='cnt' value='cnt'>
           <RecurrenceNumInput
@@ -375,44 +389,46 @@ const RecurrenceRangeEdit = ({
         </Tab>
         <Tab title='Util' key='util' value='util'>
           <Input
-            label='Repeat Util '
-            labelPlacement='outside-left'
+            label={
+              <span className='text-medium font-semibold'>Repeat Util</span>
+            }
+            labelPlacement='outside'
             type='date'
             value={ruleOption.until?.toString()}
             onValueChange={(s) => onValueChange({ until: moment(s).toDate() })}
           />
         </Tab>
       </Tabs>
-      <div className='flex w-full flex-row gap-2'>
-        <Input
-          label='Start Date '
-          labelPlacement='outside-left'
-          type='date'
-          classNames={{
-            label: 'min-w-max',
-            mainWrapper: 'w-full'
-          }}
-          value={ruleOption.dtstart?.toString()}
-          onValueChange={(value) =>
-            onValueChange({ dtstart: moment(value).toDate() })
-          }
-        />
-        <Checkbox
-          isSelected={
-            ruleOption.dtstart?.toDateString() ===
-            moment().toDate().toDateString()
-          }
-          onValueChange={(v) => {
-            if (v) {
-              onValueChange({
-                dtstart: moment().toDate()
-              })
+      <Input
+        label={<span className='text-medium font-semibold'>Start Date</span>}
+        labelPlacement='outside'
+        type='date'
+        classNames={{
+          label: 'min-w-max',
+          mainWrapper: 'w-full'
+        }}
+        value={ruleOption.dtstart?.toString()}
+        onValueChange={(value) =>
+          onValueChange({ dtstart: moment(value).toDate() })
+        }
+        endContent={
+          <Checkbox
+            isSelected={
+              ruleOption.dtstart?.toDateString() ===
+              moment().toDate().toDateString()
             }
-          }}
-        >
-          Today
-        </Checkbox>
-      </div>
+            onValueChange={(v) => {
+              if (v) {
+                onValueChange({
+                  dtstart: moment().toDate()
+                })
+              }
+            }}
+          >
+            Today
+          </Checkbox>
+        }
+      />
     </Fragment>
   )
 }
@@ -475,7 +491,7 @@ export const TaskRecurrenceModal = ({
             <ModalHeader>Repeat</ModalHeader>
             <Divider />
             <ModalBody>
-              <h1>Repeat Mode</h1>
+              <span className='text-medium font-semibold'>Repeat Mode</span>
               <RecurrenceIntervalModeTabs
                 initialOptions={rruleOption}
                 onValueChange={(value) =>
@@ -488,7 +504,7 @@ export const TaskRecurrenceModal = ({
 
               <Divider />
 
-              <h1>Repeat Range</h1>
+              <span className='text-medium font-semibold'>Repeat Range</span>
               <RecurrenceRangeEdit
                 ruleOption={rruleOption}
                 onValueChange={(value) =>
@@ -504,7 +520,7 @@ export const TaskRecurrenceModal = ({
 
             <ModalFooter className='flex flex-col'>
               <div className='flex flex-col'>
-                <h1>Preview</h1>
+                <span className='text-large font-semibold'>Preview</span>
                 <RecurrencePreview rruleOptions={rruleOption} />
               </div>
               <div className='flex flex-row gap-2 self-end'>

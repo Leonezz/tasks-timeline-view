@@ -1,9 +1,9 @@
 import { Input, Select, SelectItem, useDisclosure } from '@nextui-org/react'
-import { Fragment } from 'react/jsx-runtime'
 import { Frequency, RRule } from 'rrule'
 import { TaskRecurrenceModal } from './TaskRecurrence'
 import { useState } from 'react'
 import moment from 'moment'
+import { innerDateFormat } from '../../util/defs'
 
 type TaskItemRepeatEditProps = {
   value: { recurrence: RRule }
@@ -21,9 +21,9 @@ export const TaskItemRepeatEdit = ({
   const [untilDate, setUntilDate] = useState<string>()
   const until = moment(untilDate)
   return (
-    <Fragment>
+    <div className='flex flex-col gap-3'>
       <Select
-        label='Repeat Mode'
+        label={<span className='text-medium font-semibold'>Repeat Mode</span>}
         labelPlacement='outside'
         selectionMode='single'
         selectedKeys={[selectedKey]}
@@ -82,8 +82,9 @@ export const TaskItemRepeatEdit = ({
       </Select>
       <Input
         type='date'
-        label='Until'
-        labelPlacement='inside'
+        label={<span className='text-medium font-semibold'>Until</span>}
+        labelPlacement='outside'
+        placeholder={moment().format(innerDateFormat)}
         value={untilDate}
         onValueChange={setUntilDate}
         isDisabled={isCustomize}
@@ -93,6 +94,6 @@ export const TaskItemRepeatEdit = ({
         recurrence={recurrence}
         onRecurrenceChange={(v) => onValueChange(v)}
       />
-    </Fragment>
+    </div>
   )
 }

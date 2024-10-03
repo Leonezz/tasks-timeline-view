@@ -39,32 +39,36 @@ export const TaskItemDatesEdit = ({
     )
   }
   return (
-    <Fragment>
-      <div className='flex flex-row gap-2'>
-        <Input
-          isReadOnly={!enableStartTime}
-          label='Start At'
-          type='datetime-local'
-          labelPlacement='inside'
-          value={start?.format(innerDateTimeFormat)}
-          onValueChange={(value) => onValueChange({ start: moment(value) })}
-        />
-        <Checkbox
-          isSelected={enableStartTime}
-          onValueChange={setEnableStartTime}
-        />
-      </div>
-      <div className='flex flex-row gap-2'>
-        <Input
-          isReadOnly={!enableDueTime}
-          label='Due At'
-          type='datetime-local'
-          labelPlacement='inside'
-          value={due?.format(innerDateTimeFormat)}
-          onValueChange={(value) => onValueChange({ due: moment(value) })}
-        />
-        <Checkbox isSelected={enableDueTime} onValueChange={setEnableDueTime} />
-      </div>
+    <div className='flex flex-col gap-3'>
+      <Input
+        isReadOnly={!enableStartTime}
+        label={<span className='text-medium font-semibold'>Start At</span>}
+        type='datetime-local'
+        labelPlacement='outside'
+        endContent={
+          <Checkbox
+            isSelected={enableStartTime}
+            onValueChange={setEnableStartTime}
+          />
+        }
+        placeholder={moment().format(innerDateTimeFormat)}
+        value={start?.format(innerDateTimeFormat)}
+        onValueChange={(value) => onValueChange({ start: moment(value) })}
+      />
+      <Input
+        isReadOnly={!enableDueTime}
+        label={<span className='text-medium font-semibold'>Due At</span>}
+        type='datetime-local'
+        labelPlacement='outside'
+        endContent={
+          <Checkbox
+            isSelected={enableDueTime}
+            onValueChange={setEnableDueTime}
+          />
+        }
+        value={due?.format(innerDateTimeFormat)}
+        onValueChange={(value) => onValueChange({ due: moment(value) })}
+      />
       <Select
         items={statusConfigs}
         selectionMode='single'
@@ -79,7 +83,7 @@ export const TaskItemDatesEdit = ({
           })
           setEnableDoneTime(isLabelDone)
         }}
-        label='Status'
+        label={<span className='text-medium font-semibold'>Status</span>}
         labelPlacement='outside'
         renderValue={(items) => {
           return items.map(
@@ -101,22 +105,21 @@ export const TaskItemDatesEdit = ({
         }}
       </Select>
 
-      <div className='flex flex-row gap-2'>
-        <Input
-          isReadOnly={!enableDoneTime}
-          label='Done At'
-          type='datetime-local'
-          labelPlacement='inside'
-          value={completion?.format(innerDateTimeFormat)}
-          onValueChange={(value) =>
-            onValueChange({ completion: moment(value) })
-          }
-        />
-        <Checkbox
-          isSelected={enableDoneTime}
-          onValueChange={setEnableDoneTime}
-        />
-      </div>
-    </Fragment>
+      <Input
+        isReadOnly={!enableDoneTime}
+        label={<span className='text-medium font-semibold'>Done At</span>}
+        type='datetime-local'
+        labelPlacement='outside'
+        placeholder={moment().format(innerDateTimeFormat)}
+        value={completion?.format(innerDateTimeFormat)}
+        onValueChange={(value) => onValueChange({ completion: moment(value) })}
+        endContent={
+          <Checkbox
+            isSelected={enableDoneTime}
+            onValueChange={setEnableDoneTime}
+          />
+        }
+      />
+    </div>
   )
 }

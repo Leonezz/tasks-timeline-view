@@ -43,17 +43,15 @@ export const InputPanel = ({
         innerWrapper: 'justify-end p-0 border-none',
         inputWrapper: 'p-0 h-fit'
       }}
-      value={taskItem?.content.visual}
+      value={taskItem.content.title}
       onValueChange={(v) => {
-        setTaskItem(
-          (prev) =>
-            ({
-              ...prev,
-              content: {
-                visual: v
-              }
-            }) as TaskItem
-        )
+        setTaskItem((prev) => ({
+          ...prev,
+          content: {
+            ...prev.content,
+            title: v
+          }
+        }))
       }}
       placeholder='new tasks'
       endContent={
@@ -63,17 +61,15 @@ export const InputPanel = ({
             icon={<FileIcon />}
             ariaLabel='List'
             options={newItemDestinationOptions}
-            selectedKeys={new Set(taskItem?.position.visual)}
+            selectedKeys={new Set(taskItem?.list.visual)}
             setSelectedKey={(v: string) => {
-              setTaskItem(
-                (prev) =>
-                  ({
-                    ...prev,
-                    position: {
-                      visual: v
-                    }
-                  }) as TaskItem
-              )
+              setTaskItem((prev) => ({
+                ...prev,
+                list: {
+                  ...prev.list,
+                  visual: v
+                }
+              }))
             }}
           />
           <TrivialSingleSelect

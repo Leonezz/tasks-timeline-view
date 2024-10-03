@@ -1,4 +1,6 @@
-import { TaskItem } from '../../@types/task-item'
+import { TaskItem, TaskPriority, TaskStatus } from '../../@types/task-item'
+import { uniqueBy } from '../arrray/unique'
+import { innerDateTimeFormat } from '../defs'
 import { getTaskDateList } from './info'
 
 export const makeDateTimeFilter = (
@@ -6,7 +8,9 @@ export const makeDateTimeFilter = (
   by: moment.unitOfTime.StartOf
 ) => {
   return (item: TaskItem) => {
-    const dates = getTaskDateList(item).unique()
+    const dates = uniqueBy(getTaskDateList(item), (item) =>
+      item.format(innerDateTimeFormat)
+    )
     if (!dates) return false
     return dates.some((d) => d.isSame(date, by))
   }
@@ -24,7 +28,9 @@ export const makeDateTimeRangeFilter = (
   by: moment.unitOfTime.StartOf
 ) => {
   return (item: TaskItem) => {
-    const dates = getTaskDateList(item).unique()
+    const dates = uniqueBy(getTaskDateList(item), (item) =>
+      item.format(innerDateTimeFormat)
+    )
     if (!dates) return false
     return dates.some((d) => d.isBetween(from, to, by))
   }
@@ -33,16 +39,16 @@ export const makeDateRangeFilter = (from: moment.Moment, to: moment.Moment) => {
   return makeDateTimeRangeFilter(from, to, 'date')
 }
 
-export const makeTagsFilter = (tags: string[]) => {
+export const makeTagsFilter = (tags: Set<string>) => {
   return (item: TaskItem) =>
-    tags.length === 0 || tags.some((tag) => item.tags.has(tag))
+    tags.size === 0 || [...tags].some((tag) => item.tags.has(tag))
 }
 
-export const makePrioritiesFilter = (priorities: string[]) => {
+export const makePrioritiesFilter = (priorities: Set<TaskPriority>) => {
   return (item: TaskItem) =>
-    priorities.length === 0 || priorities.includes(item.priority)
+    priorities.size === 0 || priorities.has(item.priority)
 }
 
-export const makeStatusFilter = (status: string[]) => {
-  return (item: TaskItem) => status.length === 0 || status.includes(item.status)
+export const makeStatusFilter = (status: Set<TaskStatus>) => {
+  return (item: TaskItem) => status.size === 0 || status.has(item.status)
 }

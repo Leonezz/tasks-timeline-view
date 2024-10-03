@@ -15,27 +15,15 @@ export interface TaskItemDateTime {
   misc?: Map<string, moment.Moment>
 }
 
-interface Loc {
-  line: number
-  col: number
-  offset: number
-}
-
-interface Pos {
-  start: Loc
-  end: Loc
-}
-
-interface TaskItemPosition {
-  visual: string
-  filePath?: string
-  filePos?: Pos
-}
-
-interface TaskItemContent {
+type TaskList = {
   rawText: string
   visual: string
-  description?: string
+}
+
+type TaskItemContent = {
+  rawText: string
+  title: string
+  detail?: string
 }
 
 // export enum BasicTaskItemPriority {
@@ -76,7 +64,6 @@ export interface TaskItem {
    */
   priority: TaskPriority
   content: TaskItemContent
-  location?: string
   /**
    * Tags
    */
@@ -84,7 +71,7 @@ export interface TaskItem {
   /**
    * The position where the item is
    */
-  position: TaskItemPosition
+  list: TaskList
   /**
    * MISC metadate
    */
@@ -92,18 +79,19 @@ export interface TaskItem {
   uuid: string
 }
 
-export const GlobalEmptyItem = {
-  dateTime: {} as TaskItemDateTime,
+export const GlobalEmptyItem: TaskItem = {
+  dateTime: {},
   status: 'todo',
   priority: 'no',
   content: {
     rawText: '',
-    visual: ''
-  } as TaskItemContent,
+    title: ''
+  },
   tags: new Set(),
-  position: {
-    visual: ''
-  } as TaskItemPosition,
+  list: {
+    visual: '',
+    rawText: ''
+  },
   meta: {},
   uuid: ''
-} as TaskItem
+}

@@ -10,9 +10,7 @@ import {
   TaskStatusConfigType,
   TaskStatusDef,
   TimelineOption,
-  TimelineOptionType,
-  VaultConfig,
-  VaultConfigType
+  TimelineOptionType
 } from './OptionDef'
 import { create } from 'zustand'
 
@@ -68,22 +66,6 @@ export const useTaskStatusConfig = create<
     return config[0].isDoneType
   }
 }))
-
-type VaultConfigActions = {
-  getAllCategories: () => string[]
-  setAllCategories: (c: string[]) => void
-}
-
-export const useVaultConfig = create<VaultConfigType & VaultConfigActions>(
-  (set, get) => ({
-    allCategories: VaultConfig.allCategories,
-    getAllCategories: () => {
-      return get().allCategories
-    },
-    setAllCategories: (categoryList: string[]) =>
-      set(() => ({ allCategories: categoryList }))
-  })
-)
 
 type TaskPriorityConfigActions = {
   getTaskPriorityLabels: () => string[]

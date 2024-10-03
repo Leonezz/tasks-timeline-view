@@ -4,7 +4,7 @@ import { useState } from 'react'
 import moment from 'moment'
 import { DatePickerListPopover } from './DatePickerListPopover'
 
-import { useTaskPriorityConfig, useVaultConfig } from '../options/GlobalOption'
+import { useTaskPriorityConfig } from '../options/GlobalOption'
 import {
   TrivialSingleSelect,
   DropdownStyleSingleSelectItem
@@ -18,24 +18,35 @@ import {
   TaskPriority
 } from '../../@types/task-item'
 import { FileIcon } from '../asserts/icons/file'
+import { useVaultConfigStore } from '../../datastore/useValutConfigStore'
+import { uniqueBy } from '../../util/arrray/unique'
 // import { BUS } from '../../datastore/todoStoreEvents'
 
 const CategorySelect = ({
   initialCategory,
   setCategory
 }: {
-  initialCategory: string
-  setCategory: (c: string) => void
+  initialCategory: TaskItem['list']
+  setCategory: (c: TaskItem['list']) => void
 }) => {
-  const { getAllCategories } = useVaultConfig()
-  const categoryOptions = getAllCategories()
+  const predefinedLists = useVaultConfigStore((state) => state.taskLists)
+  const itemLists = uniqueBy(
+    useTodoItemStore((state) => state.getAll().map((v) => v.list)),
+    (v) => v.rawText + v.visual
+  )
+  const taskListOptions = [...predefinedLists, ...itemLists]
   return (
     <TrivialSingleSelect
-      options={categoryOptions}
-      selectedKeys={new Set([initialCategory])}
-      setSelectedKey={setCategory}
+      options={taskListOptions.map((v) => v.rawText)}
+      selectedKeys={new Set([initialCategory.rawText])}
+      setSelectedKey={(key) => {
+        const selectedItem = taskListOptions.filter((v) => v.rawText === key)
+        if (selectedItem.length === 1) {
+          setCategory(selectedItem[0])
+        }
+      }}
       icon={<FileIcon />}
-      ariaLabel='Category'
+      ariaLabel='List'
     />
   )
 }
@@ -88,31 +99,32 @@ export const NewTaskQuickInput = ({
     due: initialDate
   } as TaskItemDateTime)
 
-  const [category, setCategory] = useState('')
+  const [list, setList] = useState<TaskItem['list']>({
+    rawText: '',
+    visual: ''
+  })
   const [priority, setPriority] = useState<TaskPriority>('no')
 
   const { add } = useTodoItemStore()
 
   const handleSubmitNewTask = useCallback(() => {
     if (text.trim().length === 0) return
-    const newItem = {
+    const newItem: TaskItem = {
       ...GlobalEmptyItem,
       ...{
         content: {
           rawText: text,
-          visual: text
+          title: text
         },
-        position: {
-          visual: category
-        },
+        list: list,
         dateTime: { ...dates, created: moment() },
         priority: priority,
         status: 'todo'
       }
-    } satisfies TaskItem
+    }
     add({ item: newItem })
     // BUS.emit('AddTaskItem', newItem)
-  }, [text, dates, category, priority, add])
+  }, [text, dates, list, priority, add])
 
   return (
     <div>
@@ -124,10 +136,7 @@ export const NewTaskQuickInput = ({
       />
       <div className='mt-1.5 flex justify-between'>
         <div className='flex items-center gap-0'>
-          <CategorySelect
-            initialCategory={category}
-            setCategory={setCategory}
-          />
+          <CategorySelect initialCategory={list} setCategory={setList} />
           <PrioritySelect
             initialPriority={priority}
             setPriority={setPriority}

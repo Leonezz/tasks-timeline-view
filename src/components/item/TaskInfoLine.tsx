@@ -26,7 +26,7 @@ export const TaskInfoLine = ({
   const recurrenceLabel =
     (item.recurrence && item.recurrence.toText()) || 'no repeat'
 
-  const { priority, position } = item
+  const { priority, list: position } = item
 
   const { getPriorityIcon, getPriorityColor } = useTaskPriorityConfig()
   const PriorityIcon = getPriorityIcon(priority)

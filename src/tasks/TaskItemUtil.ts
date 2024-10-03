@@ -24,6 +24,6 @@ export const TaskItemParser = {
       metaDateArr.push(`#${t}`)
     }
     const metaDataStr = metaDateArr.join(' ') || ''
-    return item.content.visual + ' ' + metaDataStr
+    return item.content.title + ' ' + metaDataStr
   }
 }

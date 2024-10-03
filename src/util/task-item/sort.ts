@@ -3,9 +3,9 @@ import { TaskItem } from '../../@types/task-item'
 export const SortOptions = ['text', 'due date'] as const
 export type SortOptions = (typeof SortOptions)[number]
 export const sortByText = (a: TaskItem, b: TaskItem): number => {
-  return a.content.visual < b.content.visual
+  return a.content.title < b.content.title
     ? 1
-    : a.content.visual === b.content.visual
+    : a.content.title === b.content.title
       ? 0
       : -1
 }

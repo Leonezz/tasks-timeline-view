@@ -16,6 +16,7 @@ import { TaskItemEditModal } from './EditItemModal'
 import moment from 'moment'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
 import { TaskItem, TaskStatus } from '../../@types/task-item'
+import { EditableText } from '../atomic/EditableText'
 
 const CheckboxIcon = ({
   status,
@@ -88,7 +89,7 @@ const CheckboxIcon = ({
 }
 
 export const TaskItemCheckbox = ({ item }: { item: TaskItem }) => {
-  const taskItemContent = item.content.visual || ''
+  const taskItemContent = item.content.title
   const itemStatus = item.status
   // const checkboxIcon = TaskStatusUtil.getStatusIcon(itemStatus)
 
@@ -97,28 +98,23 @@ export const TaskItemCheckbox = ({ item }: { item: TaskItem }) => {
 
   return (
     <Fragment>
-      <div className='flex flex-row justify-between'>
+      <div className='flex flex-row justify-between pb-1'>
         <Checkbox
           icon={<CheckboxIcon status={itemStatus} item={item} />}
           isSelected={isStatusDoneType(itemStatus)}
           lineThrough
           classNames={{
-            wrapper: 'align-top before:hidden after:hidden'
+            wrapper: 'align-top before:hidden after:hidden',
+            label: 'w-full justify-start'
           }}
-          onAuxClick={(e) => e.stopPropagation()}
-          onAuxClickCapture={(e) => e.stopPropagation()}
+          className='w-[90%] max-w-[90%] overflow-hidden'
         >
-          <p
-            className={
-              'pl-1 ' + isStatusDoneType(itemStatus)
-                ? 'text-' + statusColor
-                : ''
-            }
-          >
-            {taskItemContent}
-          </p>
+          <EditableText
+            value={taskItemContent}
+            onValueChange={(value) => console.log(value)}
+          />
         </Checkbox>
-        <div className='text-nowrap pt-1 align-top font-mono text-sm text-default-500'>
+        <div className='text-nowrap pt-1 align-top font-mono text-sm text-default-500 '>
           {item.dateTime?.due?.format('h:m, A') || ''}
         </div>
       </div>

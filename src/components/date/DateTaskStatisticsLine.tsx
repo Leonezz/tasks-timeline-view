@@ -19,10 +19,11 @@ export const DateTaskStatisticsLine = ({
     0
   )
   const { getIconFromStatus } = useTaskStatusConfig()
+  const totalCount = counters.reduce((prev, cur) => prev + cur.cnt, 0)
 
   if (todoCnt === 0) {
     return (
-      <span className='font-mono text-sm text-neutral-400'>{`${counters.length} tasks all done`}</span>
+      <span className='font-mono text-sm text-neutral-400'>{`${totalCount} tasks all finished`}</span>
     )
   }
   const ariaLabelSuffix = 'tasks on this date.'
