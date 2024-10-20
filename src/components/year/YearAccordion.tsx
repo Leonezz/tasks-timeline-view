@@ -119,7 +119,7 @@ export const YearAccordion = ({
       className='max-w-full'
     >
       <CardHeader
-        className={'flex-col items-center pt-1 ' + (todayFocus ? 'hidden' : '')}
+        className={`flex-col items-center px-0 py-0 pt-1 ${todayFocus ? 'hidden' : ''}`}
       >
         <span className='text-3xl font-bold'>{year.toString()}</span>
         <YearUnfinishedTip
@@ -168,7 +168,11 @@ export const YearAccordion = ({
                 indicator={
                   <DateCalendarIcon date={moment(d, innerDateFormat)} />
                 }
-                className={`${hideHead(d) ? 'hidden' : ''} max-w-full overflow-clip`}
+                className={`${hideHead(d) ? 'hidden' : ''} max-w-full overflow-clip `}
+                classNames={{
+                  content: 'grid grid-cols-1 gap-1',
+                  trigger: 'px-0 py-1'
+                }}
               >
                 {taskList.length === 0 ? (
                   <div className='flex items-center justify-center pt-20'>

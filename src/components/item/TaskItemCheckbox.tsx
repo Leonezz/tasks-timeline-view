@@ -95,39 +95,49 @@ export const TaskItemCheckbox = ({ item }: { item: TaskItem }) => {
 
   const { getStatusColor, isStatusDoneType } = useTaskStatusConfig()
   const statusColor = getStatusColor(itemStatus)
+  const { edit } = useTodoItemStore()
 
   return (
-    <Fragment>
-      <div className='flex flex-row justify-between pb-1'>
-        <Checkbox
-          icon={<CheckboxIcon status={itemStatus} item={item} />}
-          isSelected={isStatusDoneType(itemStatus)}
-          lineThrough
-          classNames={{
-            wrapper: 'align-top before:hidden after:hidden',
-            label: 'w-full justify-start'
-          }}
-          className='w-[90%] max-w-[90%] overflow-hidden'
-        >
-          <EditableText
-            value={taskItemContent}
-            onValueChange={(value) => console.log(value)}
-          />
-        </Checkbox>
-        <div className='text-nowrap pt-1 align-top font-mono text-sm text-default-500 '>
-          {item.dateTime?.due?.format('h:m, A') || ''}
-        </div>
-      </div>
+    <div className='flex flex-col'>
+      <Checkbox
+        icon={<CheckboxIcon status={itemStatus} item={item} />}
+        classNames={{
+          wrapper: 'align-top before:hidden after:hidden'
+        }}
+        className='pb-1'
+      />
       <div className='flex'>
         <div
           className={
-            "after:content[''] mr-2 flex w-5 flex-shrink-0 justify-center pb-1 pt-1 after:flex after:h-full after:w-[1px] " +
+            "after:content[''] mr-2 flex w-5 flex-shrink-0 justify-center pb-1 pt-2 after:flex after:h-full after:w-[1px] " +
             'after:bg-' +
             statusColor
           }
         />
-        <TaskInfoLine item={item} />
+        <div className=' -mt-4 w-full'>
+          <div className=' flex w-full max-w-full flex-row items-start justify-between text-medium'>
+            <EditableText
+              classNames={{
+                text: `${isStatusDoneType(itemStatus) ? 'line-through' : ''} text-${statusColor}`
+              }}
+              value={taskItemContent}
+              onValueChange={(value) => {
+                if (value !== item.content.title) {
+                  edit({
+                    id: item.uuid,
+                    value: { content: { ...item.content, title: value } }
+                  })
+                }
+              }}
+            />
+
+            <div className=' w-fit min-w-fit text-nowrap font-mono text-sm text-default-500 '>
+              {item.dateTime?.due?.format('h:m, A') || ''}
+            </div>
+          </div>
+          <TaskInfoLine item={item} />
+        </div>
       </div>
-    </Fragment>
+    </div>
   )
 }

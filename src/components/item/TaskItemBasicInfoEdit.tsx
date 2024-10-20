@@ -9,7 +9,6 @@ import {
   Textarea
 } from '@nextui-org/react'
 import { ReactElement, useState } from 'react'
-import { Fragment } from 'react/jsx-runtime'
 import { FileIcon } from '../asserts/icons/file'
 import { TaskItem, TaskPriority } from '../../@types/task-item'
 import { useTaskPriorityConfig } from '../options/GlobalOption'

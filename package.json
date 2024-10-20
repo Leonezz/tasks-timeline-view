@@ -23,6 +23,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "dev": "npm start",
+    "tailwindcss": "npx tailwindcss --watch -i src/index.css -o dist/style.css",
     "start": "storybook dev -p 6006",
     "storybook": "npm start",
     "build-docs": "storybook build -o docs && touch ./docs/.nojekyll",
