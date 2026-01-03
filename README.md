@@ -1,5 +1,7 @@
 # tasks-timeline-view
 
+! this project is abandoned and restarted in: https://github.com/Leonezz/tasks-timeline-components, the reason I give up continue working on this repo is that it uses too much high level libraries which are highly unstable, for example I spent a lot of time trying to make the UI styles to work as expected after some updates, which is frustrating.
+
 > Made with create-react-library
 
 [![NPM](https://img.shields.io/npm/v/tasks-timeline-view.svg)](https://www.npmjs.com/package/tasks-timeline-view) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
