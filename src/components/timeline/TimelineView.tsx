@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
-import { NextUIProvider, ScrollShadow } from '@nextui-org/react'
+import { HeroUIProvider, ScrollShadow } from '@heroui/react'
 import moment from 'moment'
 import { YearAccordion } from '../year/YearAccordion'
 import { FilterSelectorList } from '../filter_sort/FilterSortSelectorList'
-import { SelectedFilterSortOptions } from '../filter_sort/types'
+import type { SelectedFilterSortOptions } from '../filter_sort/types'
 
 import { innerDateFormat, innerDateTimeFormat } from '../../util/defs'
 import TodayCard from '../today/TodayCard'
 import { useGeneralOption } from '../options/GlobalOption'
 import { OptionsPanel } from '../options/OptionsPanel'
-import { TimelineOptionType } from '../options/OptionDef'
+import type { TimelineOptionType } from '../options/OptionDef'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
 import {
   makeDateFilter,
@@ -19,14 +19,13 @@ import {
 } from '../../util/task-item/filter'
 import { makeSortCmp, SortOptions } from '../../util/task-item/sort'
 import { getTaskDateList } from '../../util/task-item/info'
-import { TaskItem } from '../../@types/task-item'
-import '../../../dist/style.css'
+import type { TaskItem } from '../../@types/task-item'
 import { unique, uniqueBy } from '../../util/arrray/unique'
 import { useVaultConfigStore } from '../../datastore/useValutConfigStore'
 
 type TimelineViewProps = {
   initialItems: TaskItem[]
-  initialTaskLists: TaskItem['list'][]
+  initialTaskLists: Array<TaskItem['list']>
   onItemChange?: (item: TaskItem) => void
   onItemAdd?: (item: TaskItem) => void
   onItemRemove?: (item: TaskItem) => void
@@ -38,7 +37,6 @@ export const TimelineView = ({
   onItemChange,
   onItemRemove
 }: TimelineViewProps) => {
-  console.debug('raw item list: ', initialItems)
   const {
     getAll,
     getTagsSet,
@@ -119,7 +117,6 @@ export const TimelineView = ({
     filteredTaskList = filteredTaskList.map((t) => {
       if (!t.dateTime?.misc) t.dateTime.misc = new Map()
       t.dateTime.misc.set('forward', moment())
-      console.debug('add today to task')
       return t
     })
   } else {
@@ -151,8 +148,6 @@ export const TimelineView = ({
     })
   ).sort((a, b) => b - a)
 
-  console.debug('filtered item list: ', filteredTaskList)
-  console.debug('years: ', sortedInvolvedYears, sortedInvolvedDates)
   const yearDateTaskMap: Map<number, Map<string, TaskItem[]>> = new Map(
     sortedInvolvedYears
       .map((y) => {
@@ -174,17 +169,15 @@ export const TimelineView = ({
       .map((e) => [e.key, e.value])
   )
 
-  console.debug('data to render: ', yearDateTaskMap)
-
   //TODO: background color need to adjust according to the theme
   return (
-    <NextUIProvider>
+    <HeroUIProvider>
       <ScrollShadow
         hideScrollBar
         visibility='bottom'
         className='h-screen max-w-full overflow-clip bg-white pb-5'
       >
-        <div className='sticky top-0 z-50 flex min-h-max flex-col gap-2 bg-inherit bg-opacity-0'>
+        <div className='bg-opacity-0 sticky top-0 z-50 flex min-h-max flex-col gap-2 bg-inherit'>
           <OptionsPanel />
           <TodayCard />
           {/* <InputPanel newItemDestinationOptions={['a', 'b', 'ccc']} /> */}
@@ -224,6 +217,6 @@ export const TimelineView = ({
           })}
         </div>
       </ScrollShadow>
-    </NextUIProvider>
+    </HeroUIProvider>
   )
 }

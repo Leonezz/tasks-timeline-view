@@ -1,6 +1,6 @@
 import { FilterSelector } from './FilterSelector'
 import { SortOptionSelector } from './SortSelector'
-import { FilterSortOptions, SelectedFilterSortOptions } from './types'
+import type { FilterSortOptions, SelectedFilterSortOptions } from './types'
 
 export const FilterSelectorList = ({
   options,

@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react'
-import { Button, Input } from '@nextui-org/react'
+import { Button, Input } from '@heroui/react'
 import { TrivialSingleSelect } from './TrivialSingleSelect'
 import { DatePickerListPopover } from './DatePickerListPopover'
 import moment from 'moment'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
-import { GlobalEmptyItem, TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
+import { GlobalEmptyItem } from '../../@types/task-item'
 import { TaskItemParser } from '../../tasks/TaskItemUtil'
 import { FileIcon } from '../asserts/icons/file'
 import { PriorityIcon } from '../asserts/icons/priority'
@@ -21,19 +22,24 @@ export const InputPanel = ({
   const [taskItem, setTaskItem] = useState<TaskItem>(GlobalEmptyItem)
   const { add } = useTodoItemStore()
   const summitTaskItem = useCallback(() => {
-    if (taskItem.content.rawText.trim().length === 0) return
-    add({ item: taskItem })
+    if (taskItem.content.title.trim().length === 0) return
+    const newItem = {
+      ...taskItem,
+      content: {
+        ...taskItem.content,
+        rawText: TaskItemParser.generateTaskItemRawText(taskItem)
+      }
+    }
+    add({ item: newItem })
     // BUS.emit('AddTaskItem', taskItem)
   }, [taskItem, add])
-
-  taskItem.content.rawText = TaskItemParser.generateTaskItemRawText(taskItem)
 
   priorityOptions = priorityOptions || ['No', 'Low', 'Mid', 'High']
 
   return (
     <Input
       id='task-input'
-      label={taskItem.content.rawText}
+      label={TaskItemParser.generateTaskItemRawText(taskItem)}
       labelPlacement='outside'
       size='sm'
       classNames={{
@@ -99,6 +105,7 @@ export const InputPanel = ({
                 (prev) =>
                   ({
                     ...prev,
+
                     dateTime: {
                       ...dates
                     }

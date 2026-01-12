@@ -1,8 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TimelineView } from './TimelineView'
 import moment from 'moment'
-import { TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
 import { v4 as uuid } from 'uuid'
+import '../../index.css'
 
 let TodoList: TaskItem[] = [
   {

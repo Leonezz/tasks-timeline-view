@@ -1,7 +1,7 @@
 /**
  * @deprecated
  */
-import { ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { TaskItemInfoBadge } from './TaskItemInfoBadge'
 
 function CalenderIcon({ icon }: { icon: JSX.Element }) {

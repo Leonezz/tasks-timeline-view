@@ -6,8 +6,8 @@ import {
   Chip,
   Switch,
   DropdownSection
-} from '@nextui-org/react'
-import { SortOptions } from '../../util/task-item/sort'
+} from '@heroui/react'
+import type { SortOptions } from '../../util/task-item/sort'
 
 export const SortOptionSelector = ({
   options,
@@ -17,7 +17,7 @@ export const SortOptionSelector = ({
   reversed,
   setReversed
 }: {
-  options: Readonly<SortOptions[]>
+  options: readonly SortOptions[]
   label: string
   selectedOption: SortOptions
   setSelectedOption: (s: SortOptions) => void
@@ -25,8 +25,6 @@ export const SortOptionSelector = ({
   setReversed: (r: boolean) => void
 }) => {
   const isActive = selectedOption.length > 0 || reversed
-
-  console.debug('sort selector re-redener', selectedOption)
 
   return (
     <Dropdown
@@ -77,4 +75,3 @@ export const SortOptionSelector = ({
     </Dropdown>
   )
 }
-

@@ -1,8 +1,8 @@
-import { AccordionItem } from '@nextui-org/react'
-import moment from 'moment'
+import { AccordionItem } from '@heroui/react'
+import type moment from 'moment'
 import { TaskItemCheckbox } from '../item/TaskItemCheckbox'
 import { innerDateFormat } from '../../util/defs'
-import { TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
 
 export const TaskDateAccordionItem = ({
   date,

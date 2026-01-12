@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react'
+import type { MouseEventHandler } from 'react'
 import { TaskItemInfoBadge } from './TaskItemInfoBadge'
 import { PencilIcon } from '../asserts/icons/pencil'
 

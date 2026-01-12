@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { TaskItem } from '../@types/task-item'
+import type { TaskItem } from '../@types/task-item'
 
 type VaultConfig = {
   taskLists: Set<TaskItem['list']>
@@ -9,7 +9,8 @@ type VaultConfigActions = {
 }
 
 export const useVaultConfigStore = create<VaultConfig & VaultConfigActions>(
-  (set, get) => ({
+  (set) => ({
+    // Removed 'get' parameter
     taskLists: new Set(),
     setTaskLists: (list) => set((prev) => ({ ...prev, taskLists: list }))
   })

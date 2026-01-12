@@ -5,21 +5,19 @@ import {
   Card,
   CardBody,
   CardHeader
-} from '@nextui-org/react'
+} from '@heroui/react'
 import { useState } from 'react'
 import moment from 'moment'
 import { TaskItemCheckbox } from '../item/TaskItemCheckbox'
-import {
-  DateTaskStatisticsLine,
-  CounterType
-} from '../date/DateTaskStatisticsLine'
+import type { CounterType } from '../date/DateTaskStatisticsLine'
+import { DateTaskStatisticsLine } from '../date/DateTaskStatisticsLine'
 import { DateCalendarIcon } from '../date/DateCalendarIcon'
 import { YearHeaderProgress } from './YearHeaderProgress'
 import { YearUnfinishedTip } from './YearUnfinishedTip'
 import { innerDateFormat, visualDateFormat } from '../../util/defs'
 import { useGeneralOption, useTaskStatusConfig } from '../options/GlobalOption'
 import { NewTaskQuickInput } from '../input/NewTaskQuickInput'
-import { TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
 import { AddIcon } from '../asserts/icons/add'
 
 const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
@@ -42,8 +40,7 @@ const AddTaskButton = ({ dateStr }: { dateStr: string }) => {
           color='primary'
           size='sm'
           startContent={<AddIcon />}
-          className='trainsition-colors items-left flex w-fit items-center gap-1.5 px-1 py-0
-                    align-middle text-sm text-neutral-400 hover:text-neutral-800'
+          className='trainsition-colors items-left flex w-fit items-center gap-1.5 px-1 py-0 align-middle text-sm text-neutral-400 hover:text-neutral-800'
         >
           New Task
         </Button>
@@ -168,7 +165,7 @@ export const YearAccordion = ({
                 indicator={
                   <DateCalendarIcon date={moment(d, innerDateFormat)} />
                 }
-                className={`${hideHead(d) ? 'hidden' : ''} max-w-full overflow-clip `}
+                className={`${hideHead(d) ? 'hidden' : ''} max-w-full overflow-clip`}
                 classNames={{
                   content: 'grid grid-cols-1 gap-1',
                   trigger: 'px-0 py-1'

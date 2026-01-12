@@ -1,15 +1,16 @@
+import type { DropdownItemProps } from '@heroui/react'
 import {
   Dropdown,
   DropdownItem,
   DropdownTrigger,
   Avatar,
-  DropdownMenu,
-  DropdownItemProps
-} from '@nextui-org/react'
+  DropdownMenu
+} from '@heroui/react'
+import type { ComponentType } from 'react' // Removed ReactElement
 
 export type DropdownStyleSingleSelectItem = {
   label: string
-  icon: JSX.Element
+  icon: ComponentType<{ width?: number; height?: number }>
   color: string
 }
 
@@ -17,20 +18,26 @@ export const TrivialSingleSelect = ({
   options,
   selectedKeys,
   setSelectedKey,
-  icon,
+  icon: IconComponent,
   ariaLabel
 }: {
-  options: (DropdownStyleSingleSelectItem | string)[]
+  options: Array<DropdownStyleSingleSelectItem | string>
   selectedKeys: Set<string>
   setSelectedKey: (key: string) => void
-  icon: JSX.Element
+  icon: ComponentType<{ width?: number; height?: number }>
   ariaLabel: string
 }) => {
   const getOptionLabel = (option: (typeof options)[number]) =>
     typeof option === 'string' ? option : option.label
   const labels = options.map((option) => getOptionLabel(option))
-  const getOptionIcon = (option: (typeof options)[number]) =>
-    typeof option === 'string' ? icon : option.icon
+  const getOptionIcon = (option: (typeof options)[number]) => {
+    if (typeof option === 'string') {
+      return <IconComponent />
+    } else {
+      const OptionIconComponent = option.icon
+      return <OptionIconComponent />
+    }
+  }
   const getOptionColor = (option: (typeof options)[number]) =>
     typeof option === 'string' ? 'default' : option.color
   return (
@@ -43,7 +50,7 @@ export const TrivialSingleSelect = ({
     >
       <DropdownTrigger>
         <Avatar
-          icon={icon}
+          icon={<IconComponent />}
           size='sm'
           radius='sm'
           isBordered={false}

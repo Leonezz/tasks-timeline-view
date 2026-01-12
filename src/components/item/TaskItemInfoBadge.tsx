@@ -1,6 +1,6 @@
-import { CSSProperties, MouseEventHandler } from 'react'
-import { Chip } from '@nextui-org/react'
-import { ThemeColor } from '../../@types/base'
+import type { CSSProperties, MouseEventHandler } from 'react'
+import { Chip } from '@heroui/react'
+import type { ThemeColor } from '../../@types/base'
 
 export const CheckIcon = ({
   size,
@@ -48,21 +48,18 @@ export const TaskItemInfoBadge = ({
   iconColor?: ThemeColor
   style?: CSSProperties
 }) => {
-  isIconOnly = isIconOnly || false
-  let contentPaddingLeft = 'pl-1'
-  if (isIconOnly) {
-    contentPaddingLeft = 'pl-0'
-  }
+  isIconOnly = isIconOnly ?? false
+  const contentPaddingLeft = isIconOnly ? 'pl-0' : 'pl-2'
+
   return (
     <Chip
-      avatar={icon || ''}
-      // startContent={}
+      startContent={icon || ''}
       aria-label={ariaLabel || ''}
       onClick={onClick}
       variant='flat'
       color={color}
       size='sm'
-      radius='sm'
+      radius='lg'
       className={`${className} h-fit items-center py-0.5 pr-0`}
       classNames={{
         base: 'border-opacity-50 hover:border-opacity-100 ',

@@ -1,4 +1,4 @@
-import { ThemeColor } from '../../@types/base'
+import type { ThemeColor } from '../../@types/base'
 import { IconTextBadge } from '../item/IconTextBadge'
 import { useTaskStatusConfig } from '../options/GlobalOption'
 

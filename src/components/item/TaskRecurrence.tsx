@@ -1,9 +1,14 @@
+import type {
+  InputProps,
+  RadioProps,
+  UseDisclosureProps,
+  DateValue
+} from '@heroui/react'
 import {
   Button,
   Checkbox,
   Divider,
   Input,
-  InputProps,
   Modal,
   ModalBody,
   ModalContent,
@@ -11,22 +16,20 @@ import {
   ModalHeader,
   Radio,
   RadioGroup,
-  RadioProps,
   Select,
   SelectItem,
   Tab,
   Tabs,
-  UseDisclosureProps,
   cn,
-  RangeCalendar,
-  DateValue
-} from '@nextui-org/react'
+  RangeCalendar
+} from '@heroui/react'
 import { today, startOfMonth, endOfMonth } from '@internationalized/date'
 import moment from 'moment'
 import { Fragment, useState } from 'react'
 import { timeZone } from '../../util/defs'
 import { ChipStyleCheckbox } from '../filter_sort/ChipStyleCheckbox'
-import { Options as RRuleOptions, RRule, Frequency } from 'rrule'
+import type { Options as RRuleOptions } from 'rrule'
+import { RRule, Frequency } from 'rrule'
 
 const RecurrenceNumInput = ({
   prefix,
@@ -39,7 +42,7 @@ const RecurrenceNumInput = ({
 }) => {
   return (
     <div className='flex flex-row gap-2'>
-      <span className='self-center text-medium font-semibold'>{prefix}</span>
+      <span className='text-medium self-center font-semibold'>{prefix}</span>
       <Input
         {...props}
         type='number'
@@ -54,7 +57,7 @@ const RecurrenceNumInput = ({
         }}
         min={1}
       />
-      <span className='self-center text-medium font-semibold'>{postfix}</span>
+      <span className='text-medium self-center font-semibold'>{postfix}</span>
     </div>
   )
 }
@@ -171,7 +174,7 @@ const RecurrenceIntervalModeTabs = ({
         />
         <div className='flex flex-col gap-2'>
           <label
-            className='min-w-max text-medium font-semibold'
+            className='text-medium min-w-max font-semibold'
             htmlFor='weekdays'
           >
             Weekday
@@ -265,8 +268,8 @@ const RecurrenceIntervalModeTabs = ({
                 )}
               </Select>
               <Select
-                label={<span className='text-medium font-semibold'>Weeks</span>}
                 items={weekdays}
+                label={<span className='text-medium font-semibold'>Weeks</span>}
                 labelPlacement='outside-left'
                 selectionMode='single'
                 disallowEmptySelection
@@ -373,7 +376,7 @@ const RecurrenceRangeEdit = ({
           value='no'
           className='flex justify-center'
         >
-          <span className='font-mono text-medium text-neutral-300'>
+          <span className='text-medium font-mono text-neutral-300'>
             No range
           </span>
         </Tab>
@@ -448,7 +451,7 @@ const RecurrencePreview = ({
       true
     )
     .map((d) => d.getDate())
-  console.log(rruleOptions, rule, rule.toString(), dates)
+  // console.log(rruleOptions, rule, rule.toString(), dates)
   const isDateAvaliable = (date: DateValue) => {
     return dates.includes(date.toDate(timeZone).getDate())
   }
@@ -480,8 +483,8 @@ export const TaskRecurrenceModal = ({
   return (
     <Modal
       isOpen={disclosure.isOpen}
-      onOpenChange={disclosure.onChange}
-      onClose={disclosure.onClose}
+      onOpenChange={() => disclosure.onChange()}
+      onClose={() => disclosure.onClose()}
       isDismissable={false}
       scrollBehavior='inside'
     >

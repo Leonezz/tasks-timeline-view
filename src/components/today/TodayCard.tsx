@@ -1,4 +1,4 @@
-import { Card, CardHeader, Chip } from '@nextui-org/react'
+import { Card, CardHeader, Chip } from '@heroui/react'
 import moment from 'moment'
 import { visualDateFormat } from '../../util/defs'
 import { useGeneralOption } from '../options/GlobalOption'
@@ -10,7 +10,7 @@ function TodayCard() {
         base: 'shadow-none bg-origin-content bg-transparent'
       }}
     >
-      <CardHeader className='flex flex-1 cursor-default select-none flex-col items-center gap-1 py-1'>
+      <CardHeader className='flex flex-1 cursor-default flex-col items-center gap-1 py-1 select-none'>
         <Chip
           classNames={{
             base: 'shadow-none bg-transparent',
@@ -25,7 +25,7 @@ function TodayCard() {
         >
           Today
         </Chip>
-        <span className='text-md font-mono text-default-500'>
+        <span className='text-md text-default-500 font-mono'>
           {moment().format(visualDateFormat)}
         </span>
       </CardHeader>

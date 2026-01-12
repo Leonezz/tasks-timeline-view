@@ -1,4 +1,4 @@
-import { TaskItem, TaskPriority, TaskStatus } from '../../@types/task-item'
+import type { TaskItem, TaskPriority, TaskStatus } from '../../@types/task-item'
 import { uniqueBy } from '../arrray/unique'
 import { innerDateTimeFormat } from '../defs'
 import { getTaskDateList } from './info'

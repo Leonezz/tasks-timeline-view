@@ -1,4 +1,4 @@
-import { RRule } from 'rrule'
+import type { RRule } from 'rrule'
 
 export interface TaskItemDateTime {
   /** If present, then the time that this task was created. */

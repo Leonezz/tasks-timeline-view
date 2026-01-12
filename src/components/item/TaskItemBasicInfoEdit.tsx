@@ -7,13 +7,14 @@ import {
   SelectItem,
   SelectSection,
   Textarea
-} from '@nextui-org/react'
-import { ReactElement, useState } from 'react'
+} from '@heroui/react'
+import type { ReactElement } from 'react'
+import { useState } from 'react'
 import { FileIcon } from '../asserts/icons/file'
-import { TaskItem, TaskPriority } from '../../@types/task-item'
+import type { TaskItem, TaskPriority } from '../../@types/task-item'
 import { useTaskPriorityConfig } from '../options/GlobalOption'
-import { TaskPriorityDef } from '../options/OptionDef'
-import { ThemeColor } from '../../@types/base'
+import type { TaskPriorityDef } from '../options/OptionDef'
+import type { ThemeColor } from '../../@types/base'
 import { TagBadge } from './TagBadge'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
 import { EnterIcon } from '../asserts/icons/enter'
@@ -45,7 +46,6 @@ const TaskListSelect = ({ value, onValueChange }: TaskListSelectProps) => {
       startContent={<FileIcon />}
       labelPlacement='outside'
       inputMode='text'
-      menuTrigger='input'
       inputValue={value.rawText}
       onInputChange={(v) => onValueChange({ ...value, rawText: v })}
       allowsCustomValue
@@ -121,6 +121,36 @@ const PrioritySelect = ({
   )
 }
 
+const NewTagInputConfirmButton = ({
+  newTagContent,
+  setTagOptions,
+  onSelectTags,
+  selectedTags
+}: {
+  newTagContent: string
+  setTagOptions: (value: React.SetStateAction<Set<string>>) => void
+  onSelectTags: (value: Set<string>) => void
+  selectedTags: Set<string>
+}) => {
+  return (
+    <Button
+      isIconOnly={true}
+      variant='light'
+      size='sm'
+      className='h-full p-0'
+      onClick={() => {
+        // this is not working... why?
+        if (newTagContent.length > 0) {
+          setTagOptions((prev) => new Set([...prev, newTagContent]))
+          onSelectTags(new Set([...selectedTags, newTagContent]))
+        }
+      }}
+    >
+      <EnterIcon />
+    </Button>
+  )
+}
+
 const TagsSelect = ({
   selectedTags,
   onSelectTags
@@ -128,32 +158,9 @@ const TagsSelect = ({
   selectedTags: Set<string>
   onSelectTags: (value: Set<string>) => void
 }) => {
-  const renderTagsRow = (tag: string) => {
-    return <TagBadge tag={tag} tagPalette={new Map()} />
-  }
-
   const [newTagContent, setNewTagContent] = useState('')
   const { getTagsSet } = useTodoItemStore()
   const [tagOptions, setTagOptions] = useState(() => getTagsSet())
-  const NewTagInputConfirmButton = () => {
-    return (
-      <Button
-        isIconOnly={true}
-        variant='light'
-        size='sm'
-        className='h-full p-0'
-        onClick={() => {
-          // this is not working... why?
-          if (newTagContent.length > 0) {
-            setTagOptions((prev) => new Set([...prev, newTagContent]))
-            onSelectTags(new Set([...selectedTags, newTagContent]))
-          }
-        }}
-      >
-        <EnterIcon />
-      </Button>
-    )
-  }
 
   return (
     <Select
@@ -174,7 +181,7 @@ const TagsSelect = ({
         value: 'flex flex-row gap-1'
       }}
       renderValue={(items) =>
-        items.map((v) => renderTagsRow(v.textValue || '-'))
+        items.map((v) => <TagBadge key={v.key} tag={v.textValue || '-'} tagPalette={new Map()} />) // Directly render TagBadge
       }
     >
       <SelectSection
@@ -198,14 +205,21 @@ const TagsSelect = ({
               startContent={
                 <span className='w-fit min-w-fit text-nowrap'>New Tag</span>
               }
-              endContent={<NewTagInputConfirmButton />}
+              endContent={
+                <NewTagInputConfirmButton
+                  newTagContent={newTagContent}
+                  setTagOptions={setTagOptions}
+                  onSelectTags={onSelectTags}
+                  selectedTags={selectedTags}
+                />
+              }
             />
           ) as ReactElement & string
         }
       >
         {(item) => (
-          <SelectItem key={item[0]} value={item[0]} textValue={item[0]}>
-            {renderTagsRow(item[0])}
+          <SelectItem key={item[0]} textValue={item[0]}>
+            <TagBadge tag={item[0]} tagPalette={new Map()} />
           </SelectItem>
         )}
       </SelectSection>

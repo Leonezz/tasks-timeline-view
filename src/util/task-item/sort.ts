@@ -1,4 +1,4 @@
-import { TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
 
 export const SortOptions = ['text', 'due date'] as const
 export type SortOptions = (typeof SortOptions)[number]

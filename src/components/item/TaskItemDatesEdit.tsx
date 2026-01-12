@@ -1,8 +1,8 @@
-import { Checkbox, Input, Select, SelectItem } from '@nextui-org/react'
-import { TaskItem, TaskStatus } from '../../@types/task-item'
+import { Checkbox, Input, Select, SelectItem } from '@heroui/react'
+import type { TaskItem, TaskStatus } from '../../@types/task-item'
 import { useState } from 'react'
 import { useTaskStatusConfig } from '../options/GlobalOption'
-import { TaskStatusDef } from '../options/OptionDef'
+import type { TaskStatusDef } from '../options/OptionDef'
 import { innerDateTimeFormat } from '../../util/defs'
 import moment from 'moment'
 

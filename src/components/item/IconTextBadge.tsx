@@ -1,6 +1,6 @@
-import { MouseEventHandler } from 'react'
+import type { MouseEventHandler } from 'react'
 import { TaskItemInfoBadge } from './TaskItemInfoBadge'
-import { ThemeColor } from '../../@types/base'
+import type { ThemeColor } from '../../@types/base'
 
 export const IconTextBadge = ({
   icon,

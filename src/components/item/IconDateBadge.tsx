@@ -1,8 +1,8 @@
-import { MouseEventHandler } from 'react'
-import moment from 'moment'
+import type { MouseEventHandler } from 'react'
+import type moment from 'moment'
 import { IconTextBadge } from './IconTextBadge'
 import { innerDateFormat } from '../../util/defs'
-import { ThemeColor } from '../../@types/base'
+import type { ThemeColor } from '../../@types/base'
 
 export const IconDateBadge = ({
   icon,

@@ -1,3 +1,4 @@
+import type { Selection } from '@heroui/react'
 import {
   Avatar,
   Popover,
@@ -5,11 +6,10 @@ import {
   PopoverTrigger,
   Select,
   SelectItem,
-  Selection,
   Switch
-} from '@nextui-org/react'
+} from '@heroui/react'
 import { useGeneralOption } from './GlobalOption'
-import { DateIconStyles } from './OptionDef'
+import type { DateIconStyles } from './OptionDef'
 import { SettingsIcon } from '../asserts/icons/setting'
 
 export const OptionsPanel = () => {
@@ -19,7 +19,6 @@ export const OptionsPanel = () => {
     dateIconStyle,
     setDateIconStyle
   } = useGeneralOption()
-  console.log(dateIconStyle)
   const dateIconStyles = ['monthday', 'weekday', 'weekdayicon']
   return (
     <Popover>

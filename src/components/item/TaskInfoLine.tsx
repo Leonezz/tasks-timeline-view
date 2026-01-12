@@ -1,10 +1,11 @@
 import { IconOnlyBadge } from './IconOnlyBadge'
 import { TagBadge } from './TagBadge'
-import { MouseEventHandler } from 'react'
+import type { MouseEventHandler } from 'react'
+import { useMemo } from 'react'
 import { IconDateBadge } from './IconDateBadge'
 import { IconTextBadge } from './IconTextBadge'
 import { useTaskPriorityConfig } from '../options/GlobalOption'
-import { TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
 import { TaskIcon } from '../asserts/icons/task'
 import { StartIcon } from '../asserts/icons/start'
 import { ScheduledIcon } from '../asserts/icons/scheduled'
@@ -12,7 +13,7 @@ import { DoneIcon } from '../asserts/icons/done'
 import { DueIcon } from '../asserts/icons/due'
 import { RepeatIcon } from '../asserts/icons/repeat'
 import { FileIcon } from '../asserts/icons/file'
-import { ThemeColor } from '../../@types/base'
+import type { ThemeColor } from '../../@types/base'
 
 export const TaskInfoLine = ({
   item,
@@ -29,7 +30,10 @@ export const TaskInfoLine = ({
   const { priority, list: position } = item
 
   const { getPriorityIcon, getPriorityColor } = useTaskPriorityConfig()
-  const PriorityIcon = getPriorityIcon(priority)
+  const priorityIconComponent = useMemo(
+    () => getPriorityIcon(priority), // Returns ComponentType
+    [priority, getPriorityIcon]
+  )
 
   return (
     <div className='flex flex-col flex-wrap gap-1'>
@@ -84,7 +88,7 @@ export const TaskInfoLine = ({
           label={priority}
           ariaLabelPrefix='priority: '
           ariaLabel={priority}
-          icon={<PriorityIcon width={12} height={12} />}
+          icon={priorityIconComponent} // Pass ComponentType
           color={getPriorityColor(priority) as ThemeColor}
         />
         <IconTextBadge
@@ -98,7 +102,7 @@ export const TaskInfoLine = ({
           key={position.visual}
           label={position.visual}
           ariaLabel={position.visual}
-          icon={<FileIcon width={12} height={12} />}
+          icon={<FileIcon />}
         />
       </div>
       <div key='tags' className='flex flex-wrap gap-1'>

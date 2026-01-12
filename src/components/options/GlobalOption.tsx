@@ -1,16 +1,18 @@
-import { ComponentType } from 'react'
-import { TaskPriority } from '../../@types/task-item'
+import type { ComponentType } from 'react'
+import type { TaskPriority } from '../../@types/task-item'
 import { PriorityIcon } from '../asserts/icons/priority'
 import { TaskIcon } from '../asserts/icons/task'
-import {
-  TaskPriorityConfig,
+import type {
   TaskPriorityConfigType,
   TaskPriorityDef,
-  TaskStatusConfig,
   TaskStatusConfigType,
   TaskStatusDef,
-  TimelineOption,
   TimelineOptionType
+} from './OptionDef'
+import {
+  TaskPriorityConfig,
+  TaskStatusConfig,
+  TimelineOption
 } from './OptionDef'
 import { create } from 'zustand'
 

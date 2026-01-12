@@ -4,13 +4,13 @@ import {
   PopoverTrigger,
   Avatar,
   DatePicker
-} from '@nextui-org/react'
+} from '@heroui/react'
 import { CalendarDate } from '@internationalized/date'
 // import { innerDateFormat } from "../../util/defs";
 import { useEffect, useState } from 'react'
 import moment from 'moment'
 import { timeZone } from '../../util/defs'
-import { TaskItemDateTime } from '../../@types/task-item'
+import type { TaskItemDateTime } from '../../@types/task-item'
 import { DueIcon } from '../asserts/icons/due'
 
 const DatePickerItem = ({

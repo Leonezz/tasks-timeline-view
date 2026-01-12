@@ -1,7 +1,7 @@
-import moment from 'moment'
+import type moment from 'moment'
 
 import { innerDateTimeFormat } from '../util/defs'
-import { TaskItem } from '../@types/task-item'
+import type { TaskItem } from '../@types/task-item'
 
 export const TaskItemParser = {
   generateTaskItemRawText: (item: TaskItem): string => {
@@ -13,7 +13,7 @@ export const TaskItemParser = {
       metaDateArr.push(`[[priority::${item.priority}]]`)
     }
     if (item.recurrence) {
-      metaDateArr.push(`[[recurrence::${item.recurrence}]]`)
+      metaDateArr.push(`[[recurrence::${item.recurrence.toText()}]]`)
     }
     for (const [k, v] of Object.entries(item.dateTime)) {
       const date: moment.Moment = v

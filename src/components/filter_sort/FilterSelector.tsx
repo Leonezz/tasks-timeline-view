@@ -6,9 +6,9 @@ import {
   PopoverTrigger,
   Chip,
   Button
-} from '@nextui-org/react'
+} from '@heroui/react'
 import { ChipStyleCheckbox } from './ChipStyleCheckbox'
-import { TaskItem, TaskPriority, TaskStatus } from '../../@types/task-item'
+import type { TaskItem, TaskPriority, TaskStatus } from '../../@types/task-item'
 // import { iconMap } from "../asserts/icons";
 type FilterTypes = {
   Tags: string

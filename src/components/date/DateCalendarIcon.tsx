@@ -1,12 +1,6 @@
 import { Fragment } from 'react'
-import {
-  Card,
-  CardFooter,
-  CardHeader,
-  Divider,
-  Avatar
-} from '@nextui-org/react'
-import moment from 'moment'
+import { Card, CardFooter, CardHeader, Divider, Avatar } from '@heroui/react'
+import type moment from 'moment'
 import { useGeneralOption } from '../options/GlobalOption'
 
 export const DateCalendarIcon = ({ date }: { date: moment.Moment }) => {
@@ -21,7 +15,7 @@ export const DateCalendarIcon = ({ date }: { date: moment.Moment }) => {
       return (
         <Card
           className={
-            'h-10 w-10 items-center gap-0 border-small shadow-none ' +
+            'border-small h-10 w-10 items-center gap-0 shadow-none ' +
             weekendClassNames
           }
           radius='sm'
@@ -30,7 +24,7 @@ export const DateCalendarIcon = ({ date }: { date: moment.Moment }) => {
             {dateIconStyle === 'monthday' ? month : weekday}
           </CardHeader>
           <Divider />
-          <CardFooter className='justify-center px-1 py-0 text-center text-medium font-extrabold'>
+          <CardFooter className='text-medium justify-center px-1 py-0 text-center font-extrabold'>
             {day}
           </CardFooter>
         </Card>

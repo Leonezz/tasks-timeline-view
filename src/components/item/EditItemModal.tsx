@@ -1,4 +1,5 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react' // Removed useRef
+import type { UseDisclosureProps } from '@heroui/react'
 import {
   Button,
   Divider,
@@ -8,14 +9,13 @@ import {
   ModalFooter,
   ModalHeader,
   Tab,
-  Tabs,
-  UseDisclosureProps
-} from '@nextui-org/react'
+  Tabs
+} from '@heroui/react'
 
 // import { BUS } from '../../datastore/todoStoreEvents'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
 import { RRule } from 'rrule'
-import { TaskItem } from '../../@types/task-item'
+import type { TaskItem } from '../../@types/task-item'
 import { TaskItemBasicInfoEdit } from './TaskItemBasicInfoEdit'
 import { TaskItemDatesEdit } from './TaskItemDatesEdit'
 import { TaskItemRepeatEdit } from './TaskItemRepeatEdit'
@@ -46,8 +46,8 @@ export const TaskItemEditModal = ({
 }) => {
   const { edit } = useTodoItemStore()
 
+  // Initialize localItem with item. When item.uuid changes, Modal will remount and state will be re-initialized.
   const [localItem, setLocalItem] = useState(item)
-  useEffect(() => setLocalItem(item), [item])
 
   const summitEdit = useCallback(() => {
     edit({
@@ -73,11 +73,12 @@ export const TaskItemEditModal = ({
   return (
     <Fragment>
       <Modal
+        key={item.uuid} // Add key here to force remount on item change
         backdrop='blur'
         placement='auto'
         isOpen={disclosure.isOpen}
-        onOpenChange={disclosure.onChange}
-        onClose={disclosure.onClose}
+        onOpenChange={() => disclosure.onChange()}
+        onClose={() => disclosure.onClose()}
         isDismissable={false}
       >
         <ModalContent>

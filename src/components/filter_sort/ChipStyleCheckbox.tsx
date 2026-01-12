@@ -1,11 +1,6 @@
-import { SVGProps } from 'react'
-import {
-  useCheckbox,
-  Chip,
-  VisuallyHidden,
-  tv,
-  CheckboxProps
-} from '@nextui-org/react'
+import type { SVGProps } from 'react'
+import type { CheckboxProps } from '@heroui/react'
+import { useCheckbox, Chip, VisuallyHidden, tv } from '@heroui/react'
 
 const CheckIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg

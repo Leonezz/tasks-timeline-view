@@ -20,6 +20,6 @@ export const FileBadge = ({
         (subPath && subPath !== '' ? ' > ' + subPath : '')
       }
       ariaLabel={filePath}
-    ></TaskItemInfoBadge>
+    />
   )
 }

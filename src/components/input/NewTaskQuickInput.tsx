@@ -1,22 +1,20 @@
-import { useCallback } from 'react'
-import { Button, Textarea } from '@nextui-org/react'
+import { useCallback, useMemo } from 'react'
+import { Button, Textarea } from '@heroui/react'
 import { useState } from 'react'
 import moment from 'moment'
 import { DatePickerListPopover } from './DatePickerListPopover'
 
 import { useTaskPriorityConfig } from '../options/GlobalOption'
-import {
-  TrivialSingleSelect,
-  DropdownStyleSingleSelectItem
-} from './TrivialSingleSelect'
-import { TaskPriorityDef } from '../options/OptionDef'
+import type { DropdownStyleSingleSelectItem } from './TrivialSingleSelect'
+import { TrivialSingleSelect } from './TrivialSingleSelect'
+import type { TaskPriorityDef } from '../options/OptionDef'
 import { useTodoItemStore } from '../../datastore/useTodoStore'
-import {
-  GlobalEmptyItem,
+import type {
   TaskItem,
   TaskItemDateTime,
   TaskPriority
 } from '../../@types/task-item'
+import { GlobalEmptyItem } from '../../@types/task-item'
 import { FileIcon } from '../asserts/icons/file'
 import { useVaultConfigStore } from '../../datastore/useValutConfigStore'
 import { uniqueBy } from '../../util/arrray/unique'
@@ -45,7 +43,7 @@ const CategorySelect = ({
           setCategory(selectedItem[0])
         }
       }}
-      icon={<FileIcon />}
+      icon={FileIcon} // Pass ComponentType
       ariaLabel='List'
     />
   )
@@ -61,21 +59,24 @@ const PrioritySelect = ({
   const { priorityConfigs, getPriorityIcon } = useTaskPriorityConfig()
   const prioritySelectOptions = priorityConfigs
     .sort((l: TaskPriorityDef, r: TaskPriorityDef) => r.sortBy - l.sortBy)
-    .map(
-      (v: TaskPriorityDef) =>
-        ({
-          label: v.priority,
-          icon: <v.icon />,
-          color: v.color
-        }) satisfies DropdownStyleSingleSelectItem
-    )
-  const Icon = getPriorityIcon(initialPriority)
+    .map((v: TaskPriorityDef) => {
+      // v.icon is ComponentType
+      return {
+        label: v.priority,
+        icon: v.icon, // Pass ComponentType directly
+        color: v.color
+      } satisfies DropdownStyleSingleSelectItem
+    })
+  const iconComponent = useMemo(
+    () => getPriorityIcon(initialPriority), // This returns ComponentType
+    [initialPriority, getPriorityIcon]
+  )
   return (
     <TrivialSingleSelect
       options={prioritySelectOptions}
       selectedKeys={new Set([initialPriority])}
       setSelectedKey={(key) => setPriority(key as TaskPriority)}
-      icon={<Icon />}
+      icon={iconComponent} // Pass ComponentType
       ariaLabel='Priority'
     />
   )
@@ -132,7 +133,7 @@ export const NewTaskQuickInput = ({
         value={text}
         onValueChange={setText}
         placeholder='Add a new task here'
-        className='w-full text-medium'
+        className='text-medium w-full'
       />
       <div className='mt-1.5 flex justify-between'>
         <div className='flex items-center gap-0'>

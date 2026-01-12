@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem, useDisclosure } from '@nextui-org/react'
+import { Input, Select, SelectItem, useDisclosure } from '@heroui/react'
 import { Frequency, RRule } from 'rrule'
 import { TaskRecurrenceModal } from './TaskRecurrence'
 import { useState } from 'react'

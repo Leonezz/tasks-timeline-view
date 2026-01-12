@@ -2,19 +2,15 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-import tailwindcss from 'tailwindcss'
+import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [
     react(),
     dts({
       insertTypesEntry: true
-    })
+    }),
+    tailwindcss()
   ],
-  css: {
-    postcss: {
-      plugins: [tailwindcss()]
-    }
-  },
   build: {
     sourcemap: true,
     lib: {
